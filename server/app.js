@@ -3,16 +3,23 @@ import dotenv from "dotenv"
 import jwt from "jsonwebtoken"
 import { PrismaClient} from "@prisma/client";
 import cors from "cors"
+import { authRoutes } from "./routes/auth.routes.js";
+import session from "express-session";
 
 dotenv.config()
 
 const app = express()
 const prisma = new PrismaClient();
-
 app.use(cors({origin : "http://localhost:5173"}));
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(
+  session({secret: "secret-code", resave: true, saveUninitialized: false})
+);
+// ! saveUninitialized : false ---> if my session is empty then don't save the session
+
+app.use(authRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the API" })
