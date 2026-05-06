@@ -1,8 +1,10 @@
 import argon from "argon2";
 import { PrismaClient } from "@prisma/client";
-import { getUserByEmail } from "../services/auth.services.js";
+import { getUserByEmail, hashedPassword, verifyPassword } from "../services/auth.services.js";
 const prisma = new PrismaClient();
 import { loginSchema, registerSchema } from "../validators/auth.validators.js";
+import jwt from "jsonwebtoken";
+import { AuthenticateUser } from "../middlewares/auth.middleware.js";
 
 export const registerUser = async (req, res, next) => {
     try {
@@ -24,12 +26,12 @@ export const registerUser = async (req, res, next) => {
             return res.status(400).json({success: false, message: "Email already registered"});
         }
         
-        const hashedPassword = await argon.hash(password);
+        const hashPassword = await hashedPassword(password);
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
-                password: hashedPassword,
+                password: hashPassword,
             }
         });
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
@@ -55,12 +57,14 @@ export const loginUser = async (req, res, next) => {
         if(!user){
             return res.status(404).json({success: false, message: "Email or Password is Incorrect" });
         }
-        const passwordMatch = await argon.verify(user.password, password);
+        const passwordMatch = await verifyPassword(user.password, password)
         if(!passwordMatch) {
             return res.status(400).json({success: false, message: "Email or Password is Incorrect"});
         }
         
-        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, password: user.password}});
+        const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email}, token});
+        await AuthenticateUser(req, res, next);
         next();
     } catch(error) {
         console.error(error);
