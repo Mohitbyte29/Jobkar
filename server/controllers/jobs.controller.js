@@ -75,7 +75,8 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const data = {...req.body, employerId: req.user.id};
+        const { role, description, location, type, minSalary, maxSalary, tags } = req.body;
+        const data = {...req.body, employerId: req.user.id,};
         const job = await prisma.job.create({
             data,
             include: { company: true }
@@ -113,12 +114,13 @@ export const deleteJob = async(req, res) => {
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)}
         })
-        prisma.job.delete(job.id);
+        await prisma.job.delete(job.id);
         res.json({message: "Job deleted successfully"});
     } catch (error){
         console.log(error);
         res.status(500).json({error: "Failed to delete job"});
     }
 }
+
 
 

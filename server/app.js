@@ -5,6 +5,8 @@ import { PrismaClient} from "@prisma/client";
 import cors from "cors"
 import { authRoutes } from "./routes/auth.routes.js";
 import session from "express-session";
+import { jobsRoutes } from "./routes/jobs.routes.js";
+import { companyRoutes } from "./routes/company.routes.js";
 
 dotenv.config()
 
@@ -20,6 +22,8 @@ app.use(
 // ! saveUninitialized : false ---> if my session is empty then don't save the session
 
 app.use(authRoutes);
+app.use(jobsRoutes);
+app.use(companyRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the API" })
