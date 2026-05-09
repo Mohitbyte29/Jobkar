@@ -7,6 +7,8 @@ import { authRoutes } from "./routes/auth.routes.js";
 import session from "express-session";
 import { jobsRoutes } from "./routes/jobs.routes.js";
 import { companyRoutes } from "./routes/company.routes.js";
+import { applicationRoutes } from "./routes/applications.routes.js";
+import { adminRoutes } from "./routes/admin.routes.js";
 
 dotenv.config()
 
@@ -24,6 +26,8 @@ app.use(
 app.use(authRoutes);
 app.use(jobsRoutes);
 app.use(companyRoutes);
+app.use(applicationRoutes);
+app.use(adminRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the API" })

@@ -4,7 +4,7 @@ import { getUserByEmail, hashedPassword, verifyPassword } from "../services/auth
 const prisma = new PrismaClient();
 import { loginSchema, registerSchema } from "../validators/auth.validators.js";
 import jwt from "jsonwebtoken";
-import { AuthenticateUser } from "../middlewares/auth.middleware.js";
+import { authenticateUser } from "../middlewares/auth.middleware.js";
 
 export const registerUser = async (req, res, next) => {
     try {
@@ -64,7 +64,7 @@ export const loginUser = async (req, res, next) => {
         
         const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
         res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email}, token});
-        await AuthenticateUser(req, res, next);
+        await authenticateUser(req, res, next);
         next();
     } catch(error) {
         console.error(error);

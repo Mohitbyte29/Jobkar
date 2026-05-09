@@ -7,6 +7,7 @@ import Categories from './pages/Category';
 import Companies from './pages/Companies';
 import Internships from './pages/Internships';
 import Resources from './pages/Resources';
+import { Jobs } from './pages/Jobs';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/companies' element={<Companies />} />
         <Route path='/internships' element={<Internships />} />
         <Route path='/resources' element={<Resources />} />
+        <Route path='/jobs' element={<Jobs />} />
       </Routes>
     </div>
   )

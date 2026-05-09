@@ -40,11 +40,12 @@ model Company{
   location String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  companyStatus companyStatus @default(ACTIVE)
 
   jobs Job[]
   UserId Int
   user User @relation(fields: [UserId], references: [id])
-
+  
   @@map("companies")
 }
 
@@ -110,4 +111,9 @@ enum APPLICATION_STATUS {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+enum companyStatus {
+  ACTIVE
+  INACTIVE
 }

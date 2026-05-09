@@ -338,9 +338,9 @@ export default function Home() {
       </div>
     </div>
     <div className="mt-12 text-center">
-      <button className="px-10 py-4 border-2 border-primary-container text-primary-container font-label-strong rounded-lg hover:bg-primary-container hover:text-white transition-all">
+      <Link to='/jobs' className="px-10 py-4 border-2 border-primary-container text-primary-container font-label-strong rounded-lg hover:bg-primary-container hover:text-white transition-all">
         Browse All 2,500+ Jobs
-      </button>
+      </Link>
     </div>
   </section>
   {/* Employer Section */}

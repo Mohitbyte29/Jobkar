@@ -1,12 +1,16 @@
 import { PrismaClient } from "@prisma/client";
+import { authenticateAdmin } from "../middlewares/middleware";
 const prisma = new PrismaClient();
 
 export const getCompanies = async(req, res) => {
     try{
         const companies = await prisma.company.findMany({
-            select: {id: true, name: true, description: true, website: true, logoUrl: true, createdAt: true}
+            where: {companyStatus: "ACTIVE"},
+            select: {id: true, name: true, description: true, website: true, logoUrl: true, createdAt: true}, _count: {select: {jobs: true}}
         })
+        
         res.json({companies});
+        
     } catch(error){ 
         console.log(error);
         res.status(500).json({ error: "Failed to fetch companies" });

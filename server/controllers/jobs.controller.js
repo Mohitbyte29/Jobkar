@@ -32,7 +32,7 @@ export const getJobs = async(req, res) => {
                 skip: (Number(page) - 1) * Number(limit),
                 take: Number(limit),
                 select: {
-                    id: true, title: true, company: true, location: true, type: true, createdAt: true,
+                    id: true, title: true, company: true, location: true, type: true, createdAt: true, _count: {select: {applications: true}},
                     tags: {select: { tag: {select: { name: true }} }}
                 }
             }),
@@ -43,7 +43,7 @@ export const getJobs = async(req, res) => {
             jobs,
             pagination: {
             total,
-            page:       Number(page),
+            page: Number(page),
             totalPages: Math.ceil(total / Number(limit)),
       },
         })
