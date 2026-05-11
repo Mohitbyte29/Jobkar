@@ -55,6 +55,7 @@ model Job {
   description String @db.Text
   requirements String @db.Text
   location String @db.VarChar(255)
+  tags Json
   salaryMin Int?
   salaryMax Int?
   remote Boolean @default(false)

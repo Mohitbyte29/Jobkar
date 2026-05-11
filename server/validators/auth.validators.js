@@ -16,15 +16,19 @@ string().
 regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, "Password must contain at least 8 characters, including at least one letter and one number.").
 max(50, "Password length should be less than 50 characters");
 
+const roleSchema = z.enum(["EMPLOYER", "SEEKER"]).default("SEEKER");
+
 export const registerSchema = z.object({
     name: nameSchema,
     email: emailSchema,
     password: passwordSchema,
+    role: roleSchema,
 });
 
 export const loginSchema = z.object({
     email: emailSchema,
     password: passwordSchema,
+    role: roleSchema,
 })
 
 export const verifyEmailSchema = z.object({

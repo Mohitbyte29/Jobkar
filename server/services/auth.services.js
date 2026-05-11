@@ -33,3 +33,15 @@ export const verifyPassword = async (hashedPassword, password) => {
     }
 }
 
+export const getEmployerByEmail = async (email) => {
+    try{
+        const employer = await prisma.employer.findUnique({
+            where: {
+                email
+            }
+        });
+        return employer;
+    }   catch(err){ 
+        console.log(err);
+    }
+}

@@ -1,5 +1,5 @@
 import { companyStatus, PrismaClient } from "@prisma/client"
-import { authenticateAdmin } from "../middlewares/middleware";
+import { authenticateAdmin } from "../middlewares/middleware.js";
 const prisma = new PrismaClient();
 
 export const getAllUsers = async(req, res) => {

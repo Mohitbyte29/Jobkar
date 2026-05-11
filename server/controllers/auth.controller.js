@@ -4,7 +4,7 @@ import { getUserByEmail, hashedPassword, verifyPassword } from "../services/auth
 const prisma = new PrismaClient();
 import { loginSchema, registerSchema } from "../validators/auth.validators.js";
 import jwt from "jsonwebtoken";
-import { authenticateUser } from "../middlewares/auth.middleware.js";
+import { isAuthenticated } from "../middlewares/middleware.js";
 
 export const registerUser = async (req, res, next) => {
     try {
@@ -18,7 +18,7 @@ export const registerUser = async (req, res, next) => {
             return res.status(400).json({success: false, message: "Validation failed", errors});
         }
         
-        const {name, email, password} = result.data;
+        const {name, email, password, role} = result.data;
         
         const existingUser = await getUserByEmail(email);
         
@@ -32,6 +32,7 @@ export const registerUser = async (req, res, next) => {
                 name,
                 email,
                 password: hashPassword,
+                role
             }
         });
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
@@ -62,9 +63,9 @@ export const loginUser = async (req, res, next) => {
             return res.status(400).json({success: false, message: "Email or Password is Incorrect"});
         }
         
-        const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
-        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email}, token});
-        await authenticateUser(req, res, next);
+        const token = jwt.sign({id: user.id, email: user.email, role: user.role}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role}, token});
+        await isAuthenticated(req, res, next);
         next();
     } catch(error) {
         console.error(error);

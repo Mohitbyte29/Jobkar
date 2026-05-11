@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { JobStatus, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
@@ -11,9 +11,8 @@ export const getJobs = async(req, res) => {
             page = 1,
             limit = 10,
         } = req.query;
-
         const where = {
-            status: "ACTIVE",
+            status: JobStatus.ACTIVE,
             ...(type && { type }),
             ...(location && { location: {contains: location, mode: "insensitive"}}),
             ...(search && {
@@ -44,6 +43,7 @@ export const getJobs = async(req, res) => {
             pagination: {
             total,
             page: Number(page),
+            limit: Number(limit),
             totalPages: Math.ceil(total / Number(limit)),
       },
         })
@@ -63,7 +63,7 @@ export const getJobById = async(req, res) => {
                 _count: {select: {applications: true}},
             }
         })
-        if(!job || job.status === "DRAFT"){
+        if(!job || job.status === JobStatus.DRAFT){
             return res.status(404).json({error: "Job not found"});
         }
         res.json(job);
@@ -75,8 +75,8 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { role, description, location, type, minSalary, maxSalary, tags } = req.body;
-        const data = {...req.body, employerId: req.user.id,};
+        const { title, description, location, type, minSalary, maxSalary, requirements, tags, remote, companyId, employerId, status, } = req.body;
+        const data = {...req.body, company: { connect: { id: req.user.companyId } }, employerId: req.user.id,};
         const job = await prisma.job.create({
             data,
             include: { company: true }
@@ -121,6 +121,5 @@ export const deleteJob = async(req, res) => {
         res.status(500).json({error: "Failed to delete job"});
     }
 }
-
 
 

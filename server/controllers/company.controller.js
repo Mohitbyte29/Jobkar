@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { authenticateAdmin } from "../middlewares/middleware";
+import { authenticateAdmin } from "../middlewares/middleware.js";
 const prisma = new PrismaClient();
 
 export const getCompanies = async(req, res) => {
@@ -26,6 +26,9 @@ export const getCompanyById = async(req, res) => {
                 jobs: {select: {id: true, title: true, location: true, type: true, createdAt: true}}
             }
         })
+        if (!company) {
+            return res.status(404).json({ error: "Company not found" });
+        }
         res.json({company});
     } catch(err){
         console.log(err);
@@ -38,7 +41,10 @@ export const deleteCompany = async(req, res) => {
         const company = await prisma.company.findUnique({
             where: {id: Number(req.params.id)}
         })
-        await prisma.company.delete(company.id);
+        if (!company) {
+            return res.status(404).json({ error: "Company not found" });
+        }
+        await prisma.company.delete({ where: { id: company.id } });
         res.json({message: "Company deleted successfully"});
     } catch(err){
         console.log(err);
@@ -48,15 +54,16 @@ export const deleteCompany = async(req, res) => {
 
 export const createCompany = async(req, res) => {
     try{
-        const {id, name, description, logoUrl, website, location} = req.body;
+        const {name, description, logo, website, location, userId} = req.body;
+        
         const company = await prisma.company.create({
             data: {
-                id,
                 name,
                 description,
-                logoUrl,
+                logo,
                 website,
-                location
+                location,
+                user: { connect: { id: req.user.id } }
             }
         });
         res.json({company});
@@ -72,6 +79,9 @@ export const updateCompany = async(req, res) => {
         const company = await prisma.company.findUnique({
             where: {id: Number(req.params.id)}
         })
+        if (!company) {
+            return res.status(404).json({ error: "Company not found" });
+        }
         const updatedCompany = await prisma.company.update({
             where: {id: company.id},
             data: {
