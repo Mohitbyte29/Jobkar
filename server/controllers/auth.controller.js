@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 import { loginSchema, registerSchema } from "../validators/auth.validators.js";
 import jwt from "jsonwebtoken";
 import { isAuthenticated } from "../middlewares/middleware.js";
+import { includes } from "zod";
 
 export const registerUser = async (req, res, next) => {
     try {

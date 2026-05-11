@@ -6,10 +6,10 @@ export const getCompanies = async(req, res) => {
     try{
         const companies = await prisma.company.findMany({
             where: {companyStatus: "ACTIVE"},
-            select: {id: true, name: true, description: true, website: true, logoUrl: true, createdAt: true}, _count: {select: {jobs: true}}
+            select: {id: true, name: true, description: true, website: true, logo: true, createdAt: true}
         })
         
-        res.json({companies});
+        res.json({companies, count: companies.length});
         
     } catch(error){ 
         console.log(error);
@@ -22,7 +22,7 @@ export const getCompanyById = async(req, res) => {
         const company = await prisma.company.findUnique({
             where: {id: Number(req.params.id)},
             select: {
-                id: true, name: true, description: true, website: true, logoUrl: true, createdAt: true,
+                id: true, name: true, description: true, website: true, logo: true, createdAt: true,
                 jobs: {select: {id: true, title: true, location: true, type: true, createdAt: true}}
             }
         })

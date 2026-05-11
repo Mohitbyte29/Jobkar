@@ -58,8 +58,8 @@ export const getJobById = async(req, res) => {
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)},
             include: {
-                tags: {select: { tag: {select: { name: true }} } },
-                employer: {select: {name: true, email: true, phone: true}},
+                // tags: {select: { tag: {select: { name: true }} } },
+                employer: {select: {name: true, email: true}},
                 _count: {select: {applications: true}},
             }
         })
@@ -75,10 +75,29 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, minSalary, maxSalary, requirements, tags, remote, companyId, employerId, status, } = req.body;
-        const data = {...req.body, company: { connect: { id: req.user.companyId } }, employerId: req.user.id,};
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, companyId } = req.body;
+        const company = await prisma.company.findFirst({
+            where: {id: parseInt(companyId),
+                UserId: req.user.id}
+            })
+            if(!company){
+                return res.status(404).json({error: "Company not found for the employer"});
+            }
+            
         const job = await prisma.job.create({
-            data,
+            data: {
+                title,
+                description,
+                location,
+                type,
+                salaryMin,
+                salaryMax,
+                requirements,
+                tags,
+                remote,
+                company: { connect: { id: parseInt(companyId) } },
+                employer: { connect: {id: req.user.id}},
+            },
             include: { company: true }
         });
         res.status(201).json(job);
