@@ -1,6 +1,23 @@
 import { JobStatus, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+const jobs = [
+    { id: 1, title: "App Developer", category: "Engineering" },
+  { id: 2, title: "App Tester", category: "QA" },
+  { id: 3, title: "Frontend Developer", category: "Engineering" },
+]
+export const jobSearch = async(req, res) => {
+    try{
+        const q = (req.query.q || "").toLowerCase();
+        if(!q) return res.json([]);
+        const results = jobs.filter(job => job.title.toLowerCase().includes(q) || job.category.toLowerCase().includes(q));
+        res.json(results.slice(0, 10));
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({error: "Failed to search jobs"});
+    }
+}
 
 export const getJobs = async(req, res) => {
     try{
@@ -75,7 +92,14 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, companyId } = req.body;
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status } = req.body;
+        const companyId = req.user.companyId;
+        const userId = req.user.id;
+        
+        if(!companyId) {
+            return res.status(400).json({error: "Company ID not found. User must be associated with a company"});
+        }
+        
         const company = await prisma.company.findFirst({
             where: {id: parseInt(companyId),
                 UserId: req.user.id}
@@ -86,24 +110,16 @@ export const createJob = async(req, res) => {
             
         const job = await prisma.job.create({
             data: {
-                title,
-                description,
-                location,
-                type,
-                salaryMin,
-                salaryMax,
-                requirements,
-                tags,
-                remote,
-                company: { connect: { id: parseInt(companyId) } },
-                employer: { connect: {id: req.user.id}},
+                ...req.body,
+                company: { connect: { id: companyId } },
+                employer: { connect: {id: userId}},
             },
-            include: { company: true }
+            include: { company: true },
         });
         res.status(201).json(job);
     }
     catch(error){
-        res.status(400).json({ message: error.message});
+        res.status(400).json({ message: error.message });
     }
 }
 

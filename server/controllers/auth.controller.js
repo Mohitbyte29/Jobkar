@@ -4,7 +4,6 @@ import { getUserByEmail, hashedPassword, verifyPassword } from "../services/auth
 const prisma = new PrismaClient();
 import { loginSchema, registerSchema } from "../validators/auth.validators.js";
 import jwt from "jsonwebtoken";
-import { isAuthenticated } from "../middlewares/middleware.js";
 import { includes } from "zod";
 
 export const registerUser = async (req, res, next) => {
@@ -37,7 +36,6 @@ export const registerUser = async (req, res, next) => {
             }
         });
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
-        next();
     } catch(error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error during registration"});
@@ -64,10 +62,19 @@ export const loginUser = async (req, res, next) => {
             return res.status(400).json({success: false, message: "Email or Password is Incorrect"});
         }
         
-        const token = jwt.sign({id: user.id, email: user.email, role: user.role}, process.env.JWT_SECRET, {expiresIn: "1h"});
-        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role}, token});
-        await isAuthenticated(req, res, next);
-        next();
+        let tokenPayload = {id: user.id, email: user.email, role: user.role};
+        
+        if(user.role === "EMPLOYER") {
+            const company = await prisma.company.findFirst({
+                where: {UserId: user.id}
+            });
+            if(company) {
+                tokenPayload.companyId = company.id;
+            }
+        }
+        
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
+        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, token});
     } catch(error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error during login"});

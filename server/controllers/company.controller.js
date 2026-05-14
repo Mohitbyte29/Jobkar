@@ -54,7 +54,7 @@ export const deleteCompany = async(req, res) => {
 
 export const createCompany = async(req, res) => {
     try{
-        const {name, description, logo, website, location, userId} = req.body;
+        const {name, description, logo, website, location} = req.body;
         
         const company = await prisma.company.create({
             data: {
