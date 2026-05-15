@@ -1,13 +1,16 @@
 import Footer from "@/components/Footer";
 import Navbar from "../components/Navbar";
 import bgVideo from "../assets/videos/video.mp4";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
+import { MapPin, Search } from "lucide-react";
+import axios from 'axios';
 
 interface Job{
   id: number;
   title: string;
   category: string;
+  location: string;
 }
 
 export default function Home() {
@@ -19,6 +22,8 @@ export default function Home() {
   
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<Job[]>([]);
+  const [locationResults, setLocationResults] = useState<Job[]>([]);
+  const [location, setLocation] = useState<string>("");
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -28,11 +33,31 @@ export default function Home() {
       return;
     }
 
-    const res = await fetch(`/api/jobs/search?q=${encodeURIComponent(val)}`);
-    const data: Job[] = await res.json();
-    setResults(data);
+    try {
+      const res = await axios.get(`/api/jobs/search?q=${encodeURIComponent(val)}`);
+      setResults(res.data);
+    } catch (err) {
+      console.error("Search failed:", err); 
+      setResults([]);
+    }
   };
 
+  const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const locationVal = e.target.value;
+    setLocation(locationVal);
+    if (!locationVal.trim()) {
+      setLocationResults([]);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`/api/jobs/search?locations=${encodeURIComponent(locationVal)}`);
+      setLocationResults(res.data);
+    } catch (err) {
+      console.error("Search failed:", err); 
+      setLocationResults([]);
+    }
+  };
 
   useEffect(() => {
     let ctx: ReturnType<typeof import("gsap")["default"]["context"]> | null = null;
@@ -235,16 +260,44 @@ export default function Home() {
             </p>
             {/* Search Interface */}
             <div className="hero-search flex-1 flex items-center gap-3 px-4 py-2 w-full" style={{ color: "white"}}>
-              <span className="material-symbols-outlined text-outline" data-icon="search" >search</span>
-              <input className="w-full bg-white p-2 rounded-xl border-none focus:ring-0 font-body-md text-xl placeholder:text-outline text-gray-900" placeholder="Job title or keyword" type="text" value={query}
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
+              <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Job title or keyword" type="text" value={query}
         onChange={handleChange}/>
-      
+              <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
+              <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Location" type="text" value={location}
+        onChange={handleLocationChange}/>
+            <Link to={`/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`} className="w-full md:w-auto px-8 py-3 bg-primary-container text-white rounded-lg font-label-strong active:scale-95 transition-all" onClick={() => {
+              setResults([]);
+              setLocationResults([]);
+            }}>
+                        Search Jobs
+                    </Link >
       </div>
+            
         {results.length > 0 && (
-        <ul className="dropdown" style={{ color: "white" }}>
+        <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
           {results.map((job: Job) => (
-            <li key={job.id} onClick={() => setQuery(job.title)}>
+            <li key={job.id} onClick={() => {
+              setQuery(job.title)
+              setResults([]);
+            }}>
+              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
               <strong>{job.title}</strong> — {job.category}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+        {locationResults.length > 0 && (
+        <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
+          {locationResults.map((job: Job) => (
+            <li key={job.id} onClick={() => {
+              setLocation(job.location)
+              setLocationResults([]);
+            }}>
+              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+              <strong>{job.location}</strong>
+              </div>
             </li>
           ))}
         </ul>

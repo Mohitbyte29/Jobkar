@@ -8,6 +8,7 @@ import Companies from './pages/Companies';
 import Internships from './pages/Internships';
 import Resources from './pages/Resources';
 import { Jobs } from './pages/Jobs';
+import { JobsCategory } from './pages/JobsCategory';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path='/internships' element={<Internships />} />
         <Route path='/resources' element={<Resources />} />
         <Route path='/jobs' element={<Jobs />} />
+        <Route path='/jobs/search' element={<JobsCategory />} />
       </Routes>
     </div>
   )
