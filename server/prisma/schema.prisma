@@ -53,6 +53,7 @@ model Job {
   id Int @id @default(autoincrement())
   title String @db.VarChar(255)
   description String @db.Text
+  category String @db.VarChar(255)
   requirements String @db.Text
   location String @db.VarChar(255)
   tags Json
@@ -117,4 +118,15 @@ enum APPLICATION_STATUS {
 enum companyStatus {
   ACTIVE
   INACTIVE
+}
+
+enum category {
+  TECHNOLOGY_SOFTWARE
+  CREATIVE_MEDIA
+  MARKETING
+  HEALTHCARE
+  FINANCE
+  EDUCATION_GOVERNMENT
+  BUSINESS_OPERATIONS
+  OTHER
 }

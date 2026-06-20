@@ -1,42 +1,38 @@
+import axios from "axios";
 import { useState, useEffect } from "react"
-import { useSearchParams } from 'react-router-dom';
 
-
-export function Jobs(){
-  const [searchParams] = useSearchParams();
-  interface Job{
+interface Job{
     id: number;
     title: string;
-    company: string;
+    company: {name: string};
     location: string;
-    category: string;
+    // category: string;
   }
-  const [userData, setUserData] = useState<Job[]>([]);
-    const jobs: Job[] = [
-      { id: 1, title: "App Developer", category: "Engineering", company: "TechCorp", location: "Delhi" },
-  { id: 2, title: "App Tester", category: "QA", company: "Microsoft", location: "Mumbai" },
-  { id: 3, title: "Frontend Developer", category: "Engineering", company: "Amazon", location: "Bangalore" },
-  { id: 4, title: "Backend Developer", category: "Engineering", company: "Flipkart", location: "Hyderabad" },
-  { id: 5, title: "UI/UX Designer", category: "Design", company: "Uber", location: "Pune" },
-  { id: 6, title: "DevOps Engineer", category: "Engineering", company: "Zomato", location: "Chennai" },
-  { id: 7, title: "Software Tester", category: "QA", company: "Swiggy", location: "Noida" },
-  { id: 8, title: "Data Analyst", category: "Analytics", company: "Magicpin", location: "Gurgaon" },
-  { id: 9, title: "Project Manager", category: "Management", company: "Netflix", location: "Kolkata" },
-  { id: 10, title: "Mobile App Designer", category: "Design", company: "Oracle", location: "Ahmedabad" },
-  { id: 11, title: "Cloud Engineer", category: "Engineering", company: "Snapdeal", location: "Bangalore" },
-  { id: 12, title: "Cyber Security Analyst", category: "Security", company: "Lucas", location: "Lucknow" },
-  { id: 13, title: "Machine Learning Engineer", category: "AI/ML", company: "Nokia", location: "Indore" },
-  { id: 14, title: "HR Executive", category: "Human Resources", company: "Dell", location: "Bhopal" },
-  { id: 15, title: "Database Administrator", category: "Database", company: "Windows", location: "Chandigarh" }
-    ]
+export function Jobs(){
   
-    
-    const jobCount = jobs.length;
+  const [userData, setUserData] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
+  const [total, setTotal]     = useState(0);
 
-    useEffect(() => {
-      setUserData(jobs);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const { data } = await axios.get("/api/jobs"); // ✅ fetches all active jobs
+        setUserData(data.jobs);
+        setTotal(data.pagination.total);
+      } catch (err) {
+        setError("Failed to load jobs");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    },[]);
+    fetchJobs();
+  }, []); // ✅ runs once on mount
+
     return (
         <>
             <main className="grow max-w-7xl mx-auto w-full px-6 py-12">
@@ -120,7 +116,7 @@ export function Jobs(){
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
-          Showing <strong>{jobCount}</strong> jobs
+          Showing <strong>{total}</strong> jobs
         </span>
         <div className="flex items-center gap-2">
           <span className="font-label-strong text-label-strong text-on-surface-variant">
@@ -153,7 +149,7 @@ export function Jobs(){
                   {job.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {job.company} • {job.location}
+                  {job.company.name} • {job.location} 
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors">

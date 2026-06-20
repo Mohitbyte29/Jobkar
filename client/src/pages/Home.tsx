@@ -24,6 +24,8 @@ export default function Home() {
   const [results, setResults] = useState<Job[]>([]);
   const [locationResults, setLocationResults] = useState<Job[]>([]);
   const [location, setLocation] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [categoryResults, setCategoryResults] = useState<Job[]>([]);
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -58,6 +60,22 @@ export default function Home() {
       setLocationResults([]);
     }
   };
+
+  const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
+    const categoryVal = e.target.value;
+    setCategory(categoryVal);
+    if(!categoryVal.trim()){
+      setCategoryResults([]);
+      return;
+    }
+    try {
+      const res = await axios.get(`/api/jobs/search?category=${encodeURIComponent(categoryVal)}`);
+      setCategoryResults(res.data);
+    } catch (err) {
+      console.error("Search failed:", err); 
+      setCategoryResults([]);
+    }
+  }
 
   useEffect(() => {
     let ctx: ReturnType<typeof import("gsap")["default"]["context"]> | null = null;
@@ -262,27 +280,50 @@ export default function Home() {
             <div className="hero-search flex-1 flex items-center gap-3 px-4 py-2 w-full" style={{ color: "white"}}>
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Job title or keyword" type="text" value={query}
-        onChange={handleChange}/>
+        onChange={handleChange} onClick={() => setLocationResults([])}/>
               <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Location" type="text" value={location}
-        onChange={handleLocationChange}/>
-            <Link to={`/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`} className="w-full md:w-auto px-8 py-3 bg-primary-container text-white rounded-lg font-label-strong active:scale-95 transition-all" onClick={() => {
-              setResults([]);
-              setLocationResults([]);
+        onChange={handleLocationChange} onClick={() => setResults([])}/>
+          
+            <button
+            className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+              query.trim() || location.trim()
+                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
+                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+            }`}
+            onClick={() => {
+              if(query.trim() && location.trim()){
+                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&locations=${encodeURIComponent(location)}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+              else if (query.trim()) {
+                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+              else if(location.trim()){
+                window.location.href = `/jobs/search?locations=${encodeURIComponent(location)}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+               else {
+                alert('Please enter either job title or location');
+              }
             }}>
-                        Search Jobs
-                    </Link >
+                        Search 
+                    </button>
       </div>
             
         {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {results.map((job: Job) => (
-            <li key={job.id} onClick={() => {
-              setQuery(job.title)
+          {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
+            <li key={title} onClick={() => {
+              setQuery(title)
               setResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
-              <strong>{job.title}</strong> — {job.category}
+              <strong>{title}</strong>
               </div>
             </li>
           ))}
@@ -290,13 +331,13 @@ export default function Home() {
       )}
         {locationResults.length > 0 && (
         <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
-          {locationResults.map((job: Job) => (
-            <li key={job.id} onClick={() => {
-              setLocation(job.location)
+          {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
+            <li key={location} onClick={() => {
+              setLocation(location)
               setLocationResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
-              <strong>{job.location}</strong>
+              <strong>{location}</strong>
               </div>
             </li>
           ))}
@@ -306,13 +347,13 @@ export default function Home() {
       {/* </div> */}
             <div className="hero-tags mt-6 flex flex-wrap gap-3 items-center">
               <span className="text-body-sm text-white/60">Popular:</span>
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10">
+              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Product Designer")}>
                 Product Design
-              </span>
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10">
+              </span> 
+              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Software Engineer")}>
                 Software Engineer
               </span>
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10">
+              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Marketing")}>
                 Marketing
               </span>
             </div>
@@ -370,7 +411,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Tech */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("TECHNOLOGY_SOFTWARE")}`} onChange={handleCategoryChange}>
               <div className="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-primary-container"
@@ -388,7 +429,7 @@ export default function Home() {
               </span>
             </div>
             {/* Design */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("CREATIVE_MEDIA")}`} onChange={handleCategoryChange} >
               <div className="w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary-fixed group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-secondary-container"
@@ -406,7 +447,7 @@ export default function Home() {
               </span>
             </div>
             {/* Marketing */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("MARKETING")}`} onChange={handleCategoryChange} >
               <div className="w-12 h-12 bg-tertiary-fixed rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-tertiary-fixed-variant"
@@ -424,7 +465,7 @@ export default function Home() {
               </span>
             </div>
             {/* Finance */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("FINANCE")}`} onChange={handleCategoryChange} >
               <div className="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-surface"

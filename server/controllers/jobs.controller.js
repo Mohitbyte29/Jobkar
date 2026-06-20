@@ -1,36 +1,62 @@
 import { JobStatus, PrismaClient } from "@prisma/client";
+import { map } from "zod";
 const prisma = new PrismaClient();
 
-const jobs = [
-    { id: 1, title: "App Developer", category: "Engineering", location: "Delhi" },
-  { id: 2, title: "App Tester", category: "QA", location: "Mumbai" },
-  { id: 3, title: "Frontend Developer", category: "Engineering", location: "Bangalore" },
-  { id: 4, title: "Backend Developer", category: "Engineering", location: "Hyderabad" },
-  { id: 5, title: "UI/UX Designer", category: "Design", location: "Pune" },
-  { id: 6, title: "DevOps Engineer", category: "Engineering", location: "Chennai" },
-  { id: 7, title: "Software Tester", category: "QA", location: "Noida" },
-  { id: 8, title: "Data Analyst", category: "Analytics", location: "Gurgaon" },
-  { id: 9, title: "Project Manager", category: "Management", location: "Kolkata" },
-  { id: 10, title: "Mobile App Designer", category: "Design", location: "Ahmedabad" },
-  { id: 11, title: "Cloud Engineer", category: "Engineering", location: "Jaipur" },
-  { id: 12, title: "Cyber Security Analyst", category: "Security", location: "Lucknow" },
-  { id: 13, title: "Machine Learning Engineer", category: "AI/ML", location: "Indore" },
-  { id: 14, title: "HR Executive", category: "Human Resources", location: "Bhopal" },
-  { id: 15, title: "Database Administrator", category: "Database", location: "Chandigarh" }
-]
+// const jobs = [
+//     { id: 1, title: "App Developer", category: "Engineering", location: "Delhi" },
+//   { id: 2, title: "App Tester", category: "QA", location: "Mumbai" },
+//   { id: 3, title: "Frontend Developer", category: "Engineering", location: "Bangalore" },
+//   { id: 4, title: "Backend Developer", category: "Engineering", location: "Hyderabad" },
+//   { id: 5, title: "UI/UX Designer", category: "Design", location: "Pune" },
+//   { id: 6, title: "DevOps Engineer", category: "Engineering", location: "Chennai" },
+//   { id: 7, title: "Software Tester", category: "QA", location: "Noida" },
+//   { id: 8, title: "Data Analyst", category: "Analytics", location: "Gurgaon" },
+//   { id: 9, title: "Project Manager", category: "Management", location: "Kolkata" },
+//   { id: 10, title: "Mobile App Designer", category: "Design", location: "Ahmedabad" },
+//   { id: 11, title: "Cloud Engineer", category: "Engineering", location: "Jaipur" },
+//   { id: 12, title: "Cyber Security Analyst", category: "Security", location: "Lucknow" },
+//   { id: 13, title: "Machine Learning Engineer", category: "AI/ML", location: "Indore" },
+//   { id: 14, title: "HR Executive", category: "Human Resources", location: "Bhopal" },
+//   { id: 15, title: "Database Administrator", category: "Database", location: "Chandigarh" }
+// ]
+
 export const jobSearch = async(req, res) => {
     try{
         const q = (req.query.q || "").toLowerCase();
         const location = (req.query.locations || "").toLowerCase();
-        if(!q && !location) return res.json([]);
+        const category = (req.query.category || "").toLowerCase();
+        if(!q && !location && !category) return res.json([]);
+         const jobs = await prisma.job.findMany({
+      where: {
+        AND: [
+          q ? {
+            OR: [
+              { title: { contains: q } }
+            ],
+          } : {},
+          location
+            ? { location: { contains: location } }
+            : {},
+            category
+             ? { category: { contains: category } } 
+             : {},
+        ],
+      },
+      take: 15,
+    });
         let results = jobs;
         if(q){
-            results = results.filter(job => job.title.toLowerCase().includes(q) || job.category.toLowerCase().includes(q));
-        }
+            results = results.filter(job => (job.title?.toLowerCase().includes(q) || job.category?.toLowerCase().includes(q)));
+        }   
         if(location){
-            results = results.filter(job => job.location.toLowerCase().includes(location));
+            results = results.filter(job => job.location?.toLowerCase().includes(location));
         }
-        res.json(results.slice(0, 10));
+        if(category){
+            results = results.filter(job => job.category?.toLowerCase().includes(category));
+        }
+        const uniqueResults = Array.from(new Map(results.map(j => [j.id, j])).values());
+        
+        res.json(uniqueResults);
     }
     catch(err){
         console.log(err);
@@ -46,18 +72,18 @@ export const getJobs = async(req, res) => {
             type,
             location,
             page = 1,
-            limit = 10,
+            limit = 15,
         } = req.query;
         const where = {
             status: JobStatus.ACTIVE,
             ...(type && { type }),
-            ...(location && { location: {contains: location, mode: "insensitive"}}),
+            ...(location && { location: {contains: location}}),
             ...(search && {
                 OR: [
-                    { title: { contains: search, mode: "insensitive" } },
-                    { location: { contains: search, mode: "insensitive" } },
-                    { description: { contains: search, mode: "insensitive" } },
-                    { company: { contains: search, mode: "insensitive" } },
+                    { title: { contains: search } },
+                    { location: { contains: search } },
+                    { description: { contains: search } },
+                    { company: { contains: search } },
                 ]
             })
         };
@@ -68,7 +94,7 @@ export const getJobs = async(req, res) => {
                 skip: (Number(page) - 1) * Number(limit),
                 take: Number(limit),
                 select: {
-                    id: true, title: true, company: true, location: true, type: true, createdAt: true, _count: {select: {applications: true}},
+                    id: true, title: true, company: {select: {name: true}}, location: true, type: true, createdAt: true, _count: {select: {applications: true}},
                     tags: {select: { tag: {select: { name: true }} }}
                 }
             }),
@@ -95,7 +121,6 @@ export const getJobById = async(req, res) => {
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)},
             include: {
-                // tags: {select: { tag: {select: { name: true }} } },
                 employer: {select: {name: true, email: true}},
                 _count: {select: {applications: true}},
             }
@@ -112,7 +137,7 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status } = req.body;
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category } = req.body;
         const companyId = req.user.companyId;
         const userId = req.user.id;
         
@@ -149,15 +174,16 @@ export const updateJob = async(req, res) => {
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)}
         })
-        prisma.job.update({
-            where: job.id,
+        const updated = await prisma.job.update({
+            where: {id: job.id},
             data: {
                 ...req.body,
                 status: req.body.status || job.status,
                 minSalary: req.body.minSalary || job.minSalary,
                 maxSalary: req.body.maxSalary || job.maxSalary,
             },
-        })
+        });
+        res.json(updated);
     } catch (error){
         console.log(error);
         res.status(500).json({error: "Failed to update job"});
@@ -169,7 +195,7 @@ export const deleteJob = async(req, res) => {
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)}
         })
-        await prisma.job.delete(job.id);
+        await prisma.job.delete({where: {id: job.id}});
         res.json({message: "Job deleted successfully"});
     } catch (error){
         console.log(error);

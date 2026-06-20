@@ -1,50 +1,54 @@
-import { useState, useEffect } from "react"
+import { wishListContext } from "@/context/WishlistContext";
+import axios from "axios";
+import { useState, useEffect, useContext } from "react"
 import { useSearchParams } from 'react-router-dom';
 
 
+interface Job{
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+  category: string;
+}
+
 export function JobsCategory(){
   const [searchParams] = useSearchParams();
-  interface Job{
-    id: number;
-    title: string;
-    company: string;
-    location: string;
-    category: string;
-  }
-  const [userData, setUserData] = useState<Job[]>([]);
-    const jobs: Job[] = [
-      { id: 1, title: "App Developer", category: "Engineering", company: "TechCorp", location: "Delhi" },
-  { id: 2, title: "App Tester", category: "QA", company: "Microsoft", location: "Mumbai" },
-  { id: 3, title: "Frontend Developer", category: "Engineering", company: "Amazon", location: "Bangalore" },
-  { id: 4, title: "Backend Developer", category: "Engineering", company: "Flipkart", location: "Hyderabad" },
-  { id: 5, title: "UI/UX Designer", category: "Design", company: "Uber", location: "Pune" },
-  { id: 6, title: "DevOps Engineer", category: "Engineering", company: "Zomato", location: "Chennai" },
-  { id: 7, title: "Software Tester", category: "QA", company: "Swiggy", location: "Noida" },
-  { id: 8, title: "Data Analyst", category: "Analytics", company: "Magicpin", location: "Gurgaon" },
-  { id: 9, title: "Project Manager", category: "Management", company: "Netflix", location: "Kolkata" },
-  { id: 10, title: "Mobile App Designer", category: "Design", company: "Oracle", location: "Ahmedabad" },
-  { id: 11, title: "Cloud Engineer", category: "Engineering", company: "Snapdeal", location: "Bangalore" },
-  { id: 12, title: "Cyber Security Analyst", category: "Security", company: "Lucas", location: "Lucknow" },
-  { id: 13, title: "Machine Learning Engineer", category: "AI/ML", company: "Nokia", location: "Indore" },
-  { id: 14, title: "HR Executive", category: "Human Resources", company: "Dell", location: "Bhopal" },
-  { id: 15, title: "Database Administrator", category: "Database", company: "Windows", location: "Chandigarh" }
-    ]
-    
-    const searchTitle = searchParams.get("q") || "";
-    const searchLocation = searchParams.get("location") || "";
-    const filteredJobs = jobs.filter((job) => {
-  return (
-    job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-    job.location.toLowerCase() === searchLocation.toLowerCase()
-  );
-});
-    
-    const jobCount = filteredJobs.length;
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [wishList, setwishList] = useState<Job[]>([]);
 
-    useEffect(() => {
-      setUserData(jobs);
+  const searchTitle = searchParams.get("q") || "";
+  const searchLocation = searchParams.get("location") || "";
+  const searchCategory = searchParams.get("category") || "";
 
-    },[]);
+  const { addToWishList } = useContext(wishListContext);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/jobs/search?q=' + searchTitle + '&location=' + searchLocation + '&category=' + searchCategory);
+        setJobs(response.data);
+      } catch (error) {
+        console.error("Failed to fetch jobs:", error);
+        setJobs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchJobs();
+  }, [searchTitle, searchLocation, searchCategory]);
+    
+  const filteredJobs = jobs.filter((job) => {
+    return (
+      job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+      job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
+      job.category.toLowerCase().includes(searchCategory.toLowerCase())
+    );
+  });
+    
+  const jobCount = filteredJobs.length;
     return (
         <>
             <main className="grow max-w-7xl mx-auto w-full px-6 py-12">
@@ -140,6 +144,7 @@ export function JobsCategory(){
           </select>
         </div>
       </div>
+
       {/* Job Card 1 */}
       {filteredJobs.length > 0 && (
         filteredJobs.map((job : Job) => (
@@ -164,7 +169,7 @@ export function JobsCategory(){
                   {job.company} • {job.location}
                 </p>
               </div>
-              <button className="text-outline hover:text-error transition-colors">
+              <button className="text-outline hover:text-error transition-colors" onClick={() => addToWishList(job)}>
                 <span
                   className="material-symbols-outlined"
                   data-icon="bookmark"
@@ -210,7 +215,7 @@ export function JobsCategory(){
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
+                <button className="px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95" onClick={() => addToWishList(job)}>
                   Save Job
                 </button>
                 <button className="px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">

@@ -5,13 +5,13 @@ export default function Navbar() {
   <nav className="fixed top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
     <div className="flex justify-between items-center h-16 px-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-8">
-        <span className="text-xl font-extrabold tracking-tighter text-slate-900 dark:text-white">
+        <Link to='/' className="text-xl font-extrabold tracking-tighter text-slate-900 dark:text-white">
           JobKar
-        </span>
+        </Link>
         <div className="hidden md:flex items-center gap-6">
           <Link
             className="font-h3 text-sm text-slate-900 dark:text-white border-b-2 border-teal-500 pb-1 hover:text-teal-600 transition-colors duration-200"
-            to="/"
+            to="/jobs"
           >
             Find Jobs
           </Link>

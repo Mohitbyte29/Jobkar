@@ -65,7 +65,7 @@ export const getCompaniesForAdmin = async(req, res) => {
 
         const where = {
             ...status && { companyStatus: status },
-            ...search && { name: { contains: search, mode: "insensitive" } }
+            ...search && { name: { contains: search } }
         };
 
         const [companies, total] = await Promise.all([

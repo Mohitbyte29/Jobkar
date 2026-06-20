@@ -9,6 +9,7 @@ import Internships from './pages/Internships';
 import Resources from './pages/Resources';
 import { Jobs } from './pages/Jobs';
 import { JobsCategory } from './pages/JobsCategory';
+import WishList from './pages/WishList';
 
 const App = () => {
   return (
@@ -23,9 +24,11 @@ const App = () => {
         <Route path='/resources' element={<Resources />} />
         <Route path='/jobs' element={<Jobs />} />
         <Route path='/jobs/search' element={<JobsCategory />} />
+        <Route path='/jobs/category/:category' element={<JobsCategory />} />
+        <Route path='/wishlist' element={<WishList />} />
       </Routes>
     </div>
   )
 }
-
+  
 export default App
