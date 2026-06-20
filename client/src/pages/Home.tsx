@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
 import { MapPin, Search } from "lucide-react";
 import axios from 'axios';
+import { useJobs } from "@/context/JobsContext";
 
 interface Job{
   id: number;
@@ -19,6 +20,9 @@ export default function Home() {
   const jobsRef = useRef<HTMLElement>(null);
   const employerRef = useRef<HTMLElement>(null);
   const testimonialsRef = useRef<HTMLElement>(null);
+  
+  // Get jobs from context
+  const { jobsList } = useJobs();
   
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<Job[]>([]);

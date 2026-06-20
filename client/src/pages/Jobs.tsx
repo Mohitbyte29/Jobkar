@@ -1,12 +1,17 @@
 import axios from "axios";
+import { IndianRupee } from "lucide-react";
 import { useState, useEffect } from "react"
 
 interface Job{
     id: number;
     title: string;
     company: {name: string};
+    category: string;
     location: string;
-    // category: string;
+    salaryMin: number;
+    salaryMax: number;
+    updatedAt: string;
+    type: string;
   }
 export function Jobs(){
   
@@ -32,6 +37,31 @@ export function Jobs(){
 
     fetchJobs();
   }, []); // ✅ runs once on mount
+  const toTitleCase = (str: string) => {
+    return str.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
+  function timeAgo(dateString: string) {
+    const now : number = new Date().getTime();
+    const created = new Date(dateString).getTime();
+    const diffMs = now - created;
+
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+    const diffMonths = Math.floor(diffDays / 30);
+    const diffYears = Math.floor(diffDays / 365);
+
+    if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
+    if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
+    if (diffMonths < 12) return `${diffMonths} months ago`;
+    return `${diffYears} years ago`;
+  }
 
     return (
         <>
@@ -128,7 +158,6 @@ export function Jobs(){
           </select>
         </div>
       </div>
-      {/* Job Card 1 */}
       {userData.length > 0 && (
         userData.map((job : Job) => (
             <div key={job.id}>
@@ -163,10 +192,10 @@ export function Jobs(){
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
               <span className="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps rounded-full">
-                Full-time
+                {toTitleCase(job.type)}
               </span>
               <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
-                Design
+                {toTitleCase(job.category)}
               </span>
               <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
                 Senior Level
@@ -181,8 +210,9 @@ export function Jobs(){
                   >
                     payments
                   </span>
-                  <span className="font-label-strong text-on-surface">
-                    $140k - $180k
+                  <span className="font-label-strong text-on-surface flex items-center">
+                    <IndianRupee width={15} />
+                    <span>{job.salaryMin/1000}k - {job.salaryMax/1000}k</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -193,7 +223,7 @@ export function Jobs(){
                     schedule
                   </span>
                   <span className="font-body-sm text-on-surface-variant">
-                    2 hours ago
+                    {timeAgo(job.updatedAt)}
                   </span>
                 </div>
               </div>

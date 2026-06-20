@@ -1,5 +1,6 @@
 import { wishListContext } from "@/context/WishlistContext";
 import axios from "axios";
+import { IndianRupee } from "lucide-react";
 import { useState, useEffect, useContext } from "react"
 import { useSearchParams } from 'react-router-dom';
 
@@ -10,6 +11,8 @@ interface Job{
   company: string;
   location: string;
   category: string;
+  salaryMin: GLfloat;
+  salaryMax: GLfloat;
 }
 
 export function JobsCategory(){
@@ -44,7 +47,8 @@ export function JobsCategory(){
     return (
       job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
       job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
-      job.category.toLowerCase().includes(searchCategory.toLowerCase())
+      job.category.toLowerCase().includes(searchCategory.toLowerCase()) &&
+      job.salaryMin !== null && job.salaryMax !== null
     );
   });
     
@@ -198,8 +202,9 @@ export function JobsCategory(){
                   >
                     payments
                   </span>
-                  <span className="font-label-strong text-on-surface">
-                    $140k - $180k
+                  <span className="font-label-strong text-on-surface flex items-center">
+                    <IndianRupee width={15} />
+                    <span>{job.salaryMin/1000}k - {job.salaryMax/1000}k</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

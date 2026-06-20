@@ -94,7 +94,17 @@ export const getJobs = async(req, res) => {
                 skip: (Number(page) - 1) * Number(limit),
                 take: Number(limit),
                 select: {
-                    id: true, title: true, company: {select: {name: true}}, location: true, type: true, createdAt: true, _count: {select: {applications: true}},
+                    id: true, 
+                    title: true, 
+                    company: {select: {name: true}}, 
+                    location: true, 
+                    type: true, 
+                    salaryMin: true,
+                    salaryMax: true,
+                    createdAt: true,
+                    updatedAt: true, 
+                    category: true,
+                    _count: {select: {applications: true}},
                     tags: {select: { tag: {select: { name: true }} }}
                 }
             }),
@@ -137,8 +147,8 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category } = req.body;
         const companyId = req.user.companyId;
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId: company_Id } = req.body;
         const userId = req.user.id;
         
         if(!companyId) {
