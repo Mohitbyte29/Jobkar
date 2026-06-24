@@ -1,6 +1,8 @@
 import axios from "axios";
 import { IndianRupee } from "lucide-react";
 import { useState, useEffect } from "react"
+import {useJobs} from "../context/JobsContext.tsx";
+import timeAgo from '../../utils/timeAgo';
 
 interface Job{
     id: number;
@@ -13,54 +15,24 @@ interface Job{
     updatedAt: string;
     type: string;
   }
+
 export function Jobs(){
+  const { userData, setUserData, error, setError, loading, setLoading, total, setTotal } = useJobs();
+  const [sortBy, setSortBy]   = useState<string>("recent");
+  // const { jobsList, setJobsList } = useContext(JobsContext);
+
   
-  const [userData, setUserData] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
-  const [total, setTotal]     = useState(0);
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const { data } = await axios.get("/api/jobs"); // ✅ fetches all active jobs
-        setUserData(data.jobs);
-        setTotal(data.pagination.total);
-      } catch (err) {
-        setError("Failed to load jobs");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchJobs();
-  }, []); // ✅ runs once on mount
+  const getSortedJobs = () => {
+    const jobs = [...userData];
+    if (sortBy === "recent") {
+      return jobs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    } else if (sortBy === "salary") {
+      return jobs.sort((a, b) => b.salaryMax - a.salaryMax);
+    }
+    return jobs;
+  };
   const toTitleCase = (str: string) => {
     return str.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  }
-
-  function timeAgo(dateString: string) {
-    const now : number = new Date().getTime();
-    const created = new Date(dateString).getTime();
-    const diffMs = now - created;
-
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-    const diffWeeks = Math.floor(diffDays / 7);
-    const diffMonths = Math.floor(diffDays / 30);
-    const diffYears = Math.floor(diffDays / 365);
-
-    if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
-    if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
-    if (diffMonths < 12) return `${diffMonths} months ago`;
-    return `${diffYears} years ago`;
   }
 
     return (
@@ -152,14 +124,17 @@ export function Jobs(){
           <span className="font-label-strong text-label-strong text-on-surface-variant">
             Sort by:
           </span>
-          <select className="bg-transparent border-none font-label-strong text-secondary focus:ring-0 cursor-pointer">
-            <option>Most Recent</option>
-            <option>Highest Salary</option>
+          <select 
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-transparent border-none font-label-strong text-secondary focus:ring-0 cursor-pointer">
+            <option value="recent">Most Recent</option>
+            <option value="salary">Highest Salary</option>
           </select>
         </div>
       </div>
       {userData.length > 0 && (
-        userData.map((job : Job) => (
+        getSortedJobs().map((job : Job) => (
             <div key={job.id}>
               <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">

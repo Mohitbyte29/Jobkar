@@ -3,18 +3,21 @@ import Navbar from "../components/Navbar";
 import bgVideo from "../assets/videos/video.mp4";
 import { Link } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
-import { MapPin, Search } from "lucide-react";
+import { IndianRupee, MapPin, Search } from "lucide-react";
 import axios from 'axios';
 import { useJobs } from "@/context/JobsContext";
+import timeAgo from "../../utils/timeAgo";
 
 interface Job{
   id: number;
   title: string;
   category: string;
   location: string;
+  updatedAt: string;
 }
 
 export default function Home() {
+  const { userData } = useJobs();
   const heroRef = useRef<HTMLElement>(null);
   const categoriesRef = useRef<HTMLElement>(null);
   const jobsRef = useRef<HTMLElement>(null);
@@ -22,7 +25,6 @@ export default function Home() {
   const testimonialsRef = useRef<HTMLElement>(null);
   
   // Get jobs from context
-  const { jobsList } = useJobs();
   
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<Job[]>([]);
@@ -499,155 +501,66 @@ export default function Home() {
           </p>
         </div>
         <div className="space-y-4">
-          {/* Job Card 1 */}
-          <div className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-              <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
-                <img
-                  alt="Stripe logo"
-                  className="w-full h-full object-contain"
-                  data-alt="Minimalist technology company logo on a clean background"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo60z3zhhRIeuYbud3hBFmWgWfol3zkaundoJxbICOoOJwFdiDPWS-r7kRHhYEd-SbSHiuy3XVfyUMUK9x3guBP2OSkX8hPoyceWm_7aJIIpQD9VzLKCu1pUE-DZmEPOGOBoTuwv2_VBA3dB-x8ztRMjWn6Skj4AIu45xPYerGYkKhw5XhdkT3DRuDeTXfOttoRfT-wbXbU2vMWOUfYU1cYU8l1MgGshaMJem30dKScl32gVBg9NzrFkBCOjtpeqRGhGnsdIXypOw"
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="font-h3 text-h3">Senior UX Designer</h3>
-                  <span className="px-2 py-0.5 bg-error-container text-on-error-container text-[10px] font-label-caps rounded">
-                    URGENT
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <span className="text-body-sm font-label-strong text-slate-900">
-                    Stripe
-                  </span>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
+          {userData && userData.length > 0 ? (
+            userData.slice(0, 3).map((job: any) => (
+              <div key={job.id} className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                  <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
                     <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="location_on"
+                      className="material-symbols-outlined text-3xl text-primary"
+                      data-icon="token"
                     >
-                      location_on
+                      token
                     </span>
-                    Remote, US
                   </div>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
-                    <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="schedule"
-                    >
-                      schedule
-                    </span>
-                    Full-time
+                  
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="font-h3 text-h3">{job.title}</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <span className="text-body-sm font-label-strong text-slate-900">
+                        {job.company?.name || 'Unknown Company'}
+                      </span>
+                      <div className="flex items-center gap-1 text-outline text-body-sm">
+                        <span
+                          className="material-symbols-outlined text-sm"
+                          data-icon="location_on"
+                        >
+                          location_on
+                        </span>
+                        {job.location}
+                      </div>
+                      <div className="flex items-center gap-1 text-outline text-body-sm">
+                        <span
+                          className="material-symbols-outlined text-sm"
+                          data-icon="schedule"
+                        >
+                          schedule
+                        </span>
+                        {timeAgo(job.updatedAt)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col lg:items-end gap-3">
+                    {job.salaryMin && job.salaryMax && (
+                      <p className="font-h3 text-secondary flex items-center gap-1">
+                        <IndianRupee width={16} height={16} />
+                        {(job.salaryMin / 100000).toFixed(1)}L - ${(job.salaryMax / 100000).toFixed(1)}L
+                      </p>
+                    )}
+                    <button className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
+                      Apply Now
+                    </button>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col lg:items-end gap-3">
-                <p className="font-h3 text-secondary">$140k - $190k</p>
-                <button className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
-                  Apply Now
-                </button>
-              </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-on-surface-variant">No jobs available at the moment</p>
             </div>
-          </div>
-          {/* Job Card 2 */}
-          <div className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-              <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
-                <img
-                  alt="Vercel logo"
-                  className="w-full h-full object-contain"
-                  data-alt="Clean corporate logo for a modern cloud platform company"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLQeclaSZgrgxqyZlimw6wJp86ohfLcZIn9XsN7MXR7zzPedoqKkSX5iHW5p-YOnsoXzuUBXfGefj32RalQ_eKcHuAI7jaizZUrMpMgjk_gG80xZhcKylIhCqA6rqe0d43afQLkOGsfA9hn-AM8n5T9CHLBno2RIQa_sIEgAk0uqnGCziY030XKgyg90gdzpfHQiW7hRenvmCe3SUUI5n9VSeEvAD9XadOMg4RQRVGkbfZRfylKcIHh-AfhjhwOzktgM37Y5EjPds"
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="font-h3 text-h3">
-                    Frontend Engineer (Next.js)
-                  </h3>
-                  <span className="px-2 py-0.5 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-label-caps rounded">
-                    NEW
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <span className="text-body-sm font-label-strong text-slate-900">
-                    Vercel
-                  </span>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
-                    <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="location_on"
-                    >
-                      location_on
-                    </span>
-                    San Francisco, CA
-                  </div>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
-                    <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="schedule"
-                    >
-                      schedule
-                    </span>
-                    Full-time
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col lg:items-end gap-3">
-                <p className="font-h3 text-secondary">$160k - $220k</p>
-                <button className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
-                  Apply Now
-                </button>
-              </div>
-            </div>
-          </div>
-          {/* Job Card 3 */}
-          <div className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-              <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
-                <img
-                  alt="Airbnb logo"
-                  className="w-full h-full object-contain"
-                  data-alt="Well-known hospitality brand logo on soft background"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB13K92n5YYMsI8ayGSMo8qyUhKam1ZUeNmwnFurzRF88ooTo0JFA3qAwfKYcg0uL9Bwoq_UmgmTtcBhgDoxM7rDIQIPtjeK5fwff4pPnSuay7v_VOiQqeRz1jQhkG5hN-7FWvpTuF2ke1FARFbNeI6rm9J-3DIkQhMYOo_bt3KDdV45ZuW4LCPHegRiFOa3bhbxhxLehual_8sVjPa24qD962kggHjqXexz2ukcESS6PFHMjIYxK8AMZfq_4MBuUuxCAwJ1D5qiDw"
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="font-h3 text-h3">Marketing Manager</h3>
-                </div>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <span className="text-body-sm font-label-strong text-slate-900">
-                    Airbnb
-                  </span>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
-                    <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="location_on"
-                    >
-                      location_on
-                    </span>
-                    New York, NY
-                  </div>
-                  <div className="flex items-center gap-1 text-outline text-body-sm">
-                    <span
-                      className="material-symbols-outlined text-sm"
-                      data-icon="schedule"
-                    >
-                      schedule
-                    </span>
-                    Contract
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col lg:items-end gap-3">
-                <p className="font-h3 text-secondary">$90k - $130k</p>
-                <button className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
-                  Apply Now
-                </button>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
         <div className="jobs-cta mt-12 text-center">
           <Link

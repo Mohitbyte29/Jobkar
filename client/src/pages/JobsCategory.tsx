@@ -1,5 +1,5 @@
 import { wishListContext } from "@/context/WishlistContext";
-import axios from "axios";
+import axios, { create } from "axios";
 import { IndianRupee } from "lucide-react";
 import { useState, useEffect, useContext } from "react"
 import { useSearchParams } from 'react-router-dom';
@@ -51,6 +51,28 @@ export function JobsCategory(){
       job.salaryMin !== null && job.salaryMax !== null
     );
   });
+
+  function timeAgo(datestring: string){
+    const now : number = new Date().getTime();
+    const created = new Date().getTime();
+    const diffMs = now - created;
+    
+    const diffSeconds = Math.floor(diffMs/1000);
+    const diffMinutes = Math.floor(diffSeconds/60);
+    const diffHours = Math.floor(diffMinutes/60);
+    const diffDays = Math.floor(diffHours/24);
+    const diffWeeks = Math.floor(diffDays/7);
+    const diffMonths = Math.floor(diffDays/30);
+    const diffYears = Math.floor(diffMonths/12);
+
+    if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
+    if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
+    if (diffMonths < 12) return `${diffMonths} months ago`;
+    return `${diffYears} years ago`;
+  }
     
   const jobCount = filteredJobs.length;
     return (
