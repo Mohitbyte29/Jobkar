@@ -59,7 +59,7 @@ export default function Home() {
     }
 
     try {
-      const res = await axios.get(`/api/jobs/search?locations=${encodeURIComponent(locationVal)}`);
+      const res = await axios.get(`/api/jobs/search?location=${encodeURIComponent(locationVal)}`);
       setLocationResults(res.data);
     } catch (err) {
       console.error("Search failed:", err); 
@@ -299,7 +299,7 @@ export default function Home() {
             }`}
             onClick={() => {
               if(query.trim() && location.trim()){
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&locations=${encodeURIComponent(location)}`;
+                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
                 setResults([]);
                 setLocationResults([]);
               }
@@ -309,7 +309,7 @@ export default function Home() {
                 setLocationResults([]);
               }
               else if(location.trim()){
-                window.location.href = `/jobs/search?locations=${encodeURIComponent(location)}`;
+                window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
                 setResults([]);
                 setLocationResults([]);
               }

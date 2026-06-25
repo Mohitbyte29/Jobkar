@@ -4,13 +4,14 @@ import { createContext, useState, useContext, useEffect } from 'react';
 interface Job {
   id: number;
   title: string;
-  company: { name: string };
+  company: { name: string, description: string, location: string, website: string, companyStatus: string };
   category: string;
   location: string;
   salaryMin: number;
   salaryMax: number;
   updatedAt: string;
   type: string;
+  tags: string;
 }
 
 interface JobsContextType {

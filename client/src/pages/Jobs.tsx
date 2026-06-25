@@ -1,8 +1,10 @@
-import axios from "axios";
 import { IndianRupee } from "lucide-react";
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {useJobs} from "../context/JobsContext.tsx";
 import timeAgo from '../../utils/timeAgo';
+import Navbar from "@/components/Navbar.tsx";
+import { useNavigate } from "react-router-dom";
+import toTitleCase from '../../utils/titleCase';
 
 interface Job{
     id: number;
@@ -14,12 +16,13 @@ interface Job{
     salaryMax: number;
     updatedAt: string;
     type: string;
+    tags: string;
   }
-
-export function Jobs(){
-  const { userData, setUserData, error, setError, loading, setLoading, total, setTotal } = useJobs();
-  const [sortBy, setSortBy]   = useState<string>("recent");
-  // const { jobsList, setJobsList } = useContext(JobsContext);
+  
+  export function Jobs(){
+    const { userData, setUserData, error, setError, loading, setLoading, total, setTotal } = useJobs();
+    const [sortBy, setSortBy]   = useState<string>("recent");
+    const navigate = useNavigate();
 
   
   const getSortedJobs = () => {
@@ -31,13 +34,12 @@ export function Jobs(){
     }
     return jobs;
   };
-  const toTitleCase = (str: string) => {
-    return str.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  }
+  
 
     return (
         <>
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12">
+            <Navbar/>
+            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
   <section className="mb-12">
     <h1 className="font-bold text-[48px] text-on-surface mb-8">
       Find your next career move
@@ -135,7 +137,7 @@ export function Jobs(){
       </div>
       {userData.length > 0 && (
         getSortedJobs().map((job : Job) => (
-            <div key={job.id}>
+            <div key={job.id} onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer">
               <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">

@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 
   export default function Footer() {
   return (
@@ -32,7 +33,7 @@
         </h4>
         <ul className="space-y-3 font-['Manrope'] text-sm text-slate-500 dark:text-slate-400">
           <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
-            Browse Jobs
+            <Link to="/jobs">Browse Jobs</Link>
           </li>
           <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
             Career Advice

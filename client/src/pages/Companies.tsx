@@ -1,6 +1,11 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
+interface Company{
+  name: string;
+  logo: string;
+  
+} 
 export default function Companies() {
   return (
     <>
@@ -335,153 +340,7 @@ export default function Companies() {
                   </div>
                 </div>
                 {/* Vercel Card */}
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
-                  <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
-                      <img
-                        alt="Vercel"
-                        className="w-full h-full object-contain"
-                        data-alt="Vercel minimalist company logo geometric triangle on white background"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ7EoMmtXQvSouzac3_YJGEzy8fVC__nALvCv-_5BMSeO_0U9KVcIl0wsToeNGGCK2JUjhb_Nr1w7SulmUGXmGSktQcD5m3Nh-iWlgBsga6N-jRGkIPXC6PTu7uHIuoBLrjwKk1G4IpsgQvYciUcIiilXUOSyaBeS87tO_gRap8Eezfi3CeeMWGc8ScC9SHY8R0fZe_yrRuSkZEEvgNNBa0GHbYUJLw7h5IiVYCh3h8zcIwnmW6RYyF35hQwzwW21fXOhU0zteauA"
-                      />
-                    </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      DevTools
-                    </span>
-                  </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">Vercel</h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                    The platform for frontend developers, providing the speed
-                    and reliability needed to create at the moment of
-                    inspiration.
-                  </p>
-                  <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
-                    <span className="font-label-strong text-label-strong text-secondary">
-                      18 Open Roles
-                    </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-                {/* Figma Card */}
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
-                  <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
-                      <img
-                        alt="Figma"
-                        className="w-full h-full object-contain"
-                        data-alt="Figma company logo vibrant stylized F icon on white"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBXQOxdMe5c8vpaZbSQHEk__RRSNwm3McwwnoL7UeVAua9YKc9MJmE3fCghvXI6dS0hHVQYqrhpr-AExN8ZaGuUD-408SBTlxUO70Hfzlozk-f_hxJ-XQhoSQl-6ZZBMCXHlnjP5syjCeKuVhmmKE554we1k5tSdE5dInCJNwbRu6bzAjLacE3vcNCxF56S53z3gjjtJGxLc4XbV-7NA4GEeX1oxmUFSu_XTB3y_F5Kg_DVIwfa9r7ZfKJQcs5AbOEZjM-rzSy7U4"
-                      />
-                    </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      Design
-                    </span>
-                  </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">Figma</h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                    Building tools that help teams create, share, test, and ship
-                    better designs from start to finish.
-                  </p>
-                  <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
-                    <span className="font-label-strong text-label-strong text-secondary">
-                      25 Open Roles
-                    </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-                {/* Airbnb Card */}
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
-                  <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
-                      <img
-                        alt="Airbnb"
-                        className="w-full h-full object-contain"
-                        data-alt="Airbnb company logo symbol on clean minimalist white background"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfyJ9WVaLvkKsfii7yRvjdSKoLoXSQdihwirs2sfVCiY_iO6NkO6DChxwdASnCRP1CPQ6HvXGTETvJttpO32QkUnog9Pcs2z_raG1lmS10RClz3ZDC2-x3C8OP8SXDWBS3Mv5_voOX9ScEKdG1UzJ_FtyObNjUXtmZzT4CNocfFkwNy8nc98nfrSVqII9J1GKrNKfY65MtCklVlA2gTQ-r9dirUIAI2iEYg2vLyqzEJiDmVQB7Sa3qZlwz-V8JXQ4TNBAtcikGD3A"
-                      />
-                    </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      Travel
-                    </span>
-                  </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">Airbnb</h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                    Creating a world where anyone can belong anywhere through
-                    unique stays and experiences.
-                  </p>
-                  <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
-                    <span className="font-label-strong text-label-strong text-secondary">
-                      12 Open Roles
-                    </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-                {/* Notion Card */}
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
-                  <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
-                      <img
-                        alt="Notion"
-                        className="w-full h-full object-contain"
-                        data-alt="Notion company N logo minimalist black and white on white card"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnGPaeP65s7g4-BkWIikANLpePqHouFQllj6HuItaK3Zjt7X1UbhhEYbhO_iRgmrMVuyiDTXGvMinYf-hsduWvvksTqDcsiS06WTLnRISPzrp1dQNvOPI7OjZ7W9SyGwvT3umadVeLnt0FLF6jpL3Bb9AkebnRJfxh-c3_E72PtOyOUJxLzWHEat0n1ZkzK95Tya8QuUlDoqn_0tFs70tVKhZiMHJYhdGLTJkwNjwj2GZewvvK-rAygrAHCIX6UjNiTkNQqfU0lC4"
-                      />
-                    </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      Productivity
-                    </span>
-                  </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">Notion</h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                    The all-in-one workspace for your notes, tasks, wikis, and
-                    databases.
-                  </p>
-                  <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
-                    <span className="font-label-strong text-label-strong text-secondary">
-                      31 Open Roles
-                    </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-                {/* Datadog Card */}
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
-                  <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
-                      <img
-                        alt="Datadog"
-                        className="w-full h-full object-contain"
-                        data-alt="Datadog company logo monitoring software brand on white background"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL390zibYEkWI8pxEAothFzXnw5j3K3Fk5cWx3SbrgropIOQvNTYExflecWanehNc7Fh6TvwgIPZ5H9EGJAG7v1DjkoAciIfCo1HSgG1RQUTLvWhg6nzP9XyCBtVm8SldLpKUwbXCm5G07NN2WlTIww_eZj-rRUDFrViDeYBg_6RdcVpwmWI2CHrZdyUYYiVUWUVcSR35OZ9c8wvL--CuoGqXJv7mh4pXRHfh2mi9ztdd56aNuyjKCbGyEmwOeairX-yNws8rKNCQ"
-                      />
-                    </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      Cloud
-                    </span>
-                  </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">
-                    Datadog
-                  </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                    Monitoring and security platform for cloud applications,
-                    combining traces, metrics and logs.
-                  </p>
-                  <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
-                    <span className="font-label-strong text-label-strong text-secondary">
-                      54 Open Roles
-                    </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
+               
               </div>
               {/* Pagination */}
               <div className="mt-lg flex items-center justify-center gap-2">

@@ -10,6 +10,8 @@ import Resources from './pages/Resources';
 import { Jobs } from './pages/Jobs';
 import { JobsCategory } from './pages/JobsCategory';
 import WishList from './pages/WishList';
+import { PostJob } from './pages/PostJob';
+import JobPage from './pages/JobPage';
 
 const App = () => {
   return (
@@ -24,8 +26,10 @@ const App = () => {
         <Route path='/resources' element={<Resources />} />
         <Route path='/jobs' element={<Jobs />} />
         <Route path='/jobs/search' element={<JobsCategory />} />
-        <Route path='/jobs/category/:category' element={<JobsCategory />} />
+        <Route path='/jobs/search/:category' element={<JobPage />} />
         <Route path='/wishlist' element={<WishList />} />
+        <Route path='/postJob' element={<PostJob />} />
+        {/* <Route path='' */}
       </Routes>
     </div>
   )

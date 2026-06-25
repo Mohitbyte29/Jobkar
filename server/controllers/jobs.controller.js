@@ -23,7 +23,7 @@ const prisma = new PrismaClient();
 export const jobSearch = async(req, res) => {
     try{
         const q = (req.query.q || "").toLowerCase();
-        const location = (req.query.locations || "").toLowerCase();
+        const location = (req.query.location || "").toLowerCase();
         const category = (req.query.category || "").toLowerCase();
         if(!q && !location && !category) return res.json([]);
          const jobs = await prisma.job.findMany({

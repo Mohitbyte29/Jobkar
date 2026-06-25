@@ -40,9 +40,9 @@ export default function Navbar() {
         <Link to="/register" className="px-4 py-2 text-sm font-label-strong text-slate-900 dark:text-slate-50 hover:text-teal-600 transition-colors">
           Sign In
         </Link>
-        <button className="px-4 py-2 text-sm font-label-strong bg-primary-container text-white rounded-lg active:scale-95 transitLion-all">
+        <Link className="px-4 py-2 text-sm font-label-strong bg-primary-container text-white rounded-lg active:scale-95 transitLion-all" to="/postJob">
           Post a Job
-        </button>
+        </Link>
       </div>
     </div>
   </nav>
