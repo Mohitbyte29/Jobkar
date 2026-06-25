@@ -1,12 +1,16 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { useCompany } from "@/context/CompanyContext";
+import { Link } from "react-router-dom";
 
 interface Company{
   name: string;
   logo: string;
-  
+  description: string;
 } 
+
 export default function Companies() {
+  const { companyData, total } = useCompany();
   return (
     <>
       <Navbar />
@@ -311,21 +315,23 @@ export default function Companies() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Stripe Card */}
+                    {companyData.map((company) => (
                 <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
                   <div className="flex items-start justify-between mb-sm">
-                    <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
+
+                      <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
                       <img
-                        alt="Stripe"
+                        alt={company.name}
                         className="w-full h-full object-contain"
                         data-alt="Stripe minimalist company logo on a clean white background"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqG9SSaIwg4PQufV02_50TGkYoc4qHF-KSzcGZYQZIw1lEHjQ1wL4GEJiq459L--87aYqkCbolh8rb9JuVJlHEXrsisd338NAR5vuX3b0jBXmVIn9O5hxXPITblehfN0T9a9YgSTwkFd5qwmWTJc-P4P-DxqTmJO2rGQDnQufsjjXqPcCfNBDaO2Xv8_f_GMBpS9JQzkldlP-82EbvoF9RsFOXMBweHAsL56dyiMJY3TLllCYEmxHA4uI1pW8wAgPvsLP9JwcCj-4"
+                        src={company.logo}
                       />
                     </div>
                     <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
                       Fintech
                     </span>
                   </div>
-                  <h3 className="font-h3 text-h3 text-primary mb-xs">Stripe</h3>
+                  <h3 className="font-h3 text-h3 text-primary mb-xs">{company.name}</h3>
                   <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
                     Financial infrastructure for the internet. Millions of
                     businesses of all sizes use Stripe's software and APIs.
@@ -334,11 +340,12 @@ export default function Companies() {
                     <span className="font-label-strong text-label-strong text-secondary">
                       42 Open Roles
                     </span>
-                    <button className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
+                    <Link to={`/company/${company.name}`} className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
                       View Profile
-                    </button>
+                    </Link>
                   </div>
                 </div>
+                    ))}
                 {/* Vercel Card */}
                
               </div>

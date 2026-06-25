@@ -20,7 +20,7 @@ interface Job{
   }
   
   export function Jobs(){
-    const { userData, setUserData, error, setError, loading, setLoading, total, setTotal } = useJobs();
+    const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
 
