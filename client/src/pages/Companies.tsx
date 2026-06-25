@@ -2,15 +2,23 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { useCompany } from "@/context/CompanyContext";
 import { Link } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
-interface Company{
+interface Company {
   name: string;
-  logo: string;
-  description: string;
-} 
+    logo: string;
+    description: string;
+    website: string;
+    location: string;
+    createdAt: string;
+    updatedAt: string;
+    companyStatus: string;
+    jobs: { title: string};
+}
 
 export default function Companies() {
   const { companyData, total } = useCompany();
+  const navigate = useNavigate();
   return (
     <>
       <Navbar />
@@ -300,7 +308,7 @@ export default function Companies() {
             <div className="flex-1">
               <div className="flex justify-between items-center mb-md">
                 <p className="font-body-sm text-body-sm text-on-surface-variant">
-                  Showing <strong>24</strong> companies
+                  Showing <strong>{total}</strong> companies
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="font-label-strong text-label-strong text-on-surface-variant">
@@ -315,8 +323,9 @@ export default function Companies() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Stripe Card */}
-                    {companyData.map((company) => (
-                <div className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
+                    {companyData.map((company : Company) => (
+                      <div key={company.name} className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
+                  {company.name}
                   <div className="flex items-start justify-between mb-sm">
 
                       <div className="w-16 h-16 rounded-lg bg-slate-50 flex items-center justify-center p-2 border border-slate-100">
@@ -340,9 +349,9 @@ export default function Companies() {
                     <span className="font-label-strong text-label-strong text-secondary">
                       42 Open Roles
                     </span>
-                    <Link to={`/company/${company.name}`} className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
+                    <div  onClick={() => navigate(`/company/${company.name}`, { state : company })} className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
                       View Profile
-                    </Link>
+                    </div>
                   </div>
                 </div>
                     ))}

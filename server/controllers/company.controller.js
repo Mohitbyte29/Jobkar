@@ -6,7 +6,7 @@ export const getCompanies = async(req, res) => {
     try{
         const companies = await prisma.company.findMany({
             where: {companyStatus: "ACTIVE"},
-            select: {id: true, name: true, description: true, website: true, logo: true, createdAt: true}
+            select: {id: true, name: true, description: true, website: true, logo: true, location: true, createdAt: true, _count: {select: {jobs: true}}}
         })
         
         res.json({companies, count: companies.length});

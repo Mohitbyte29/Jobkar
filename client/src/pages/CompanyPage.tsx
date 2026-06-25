@@ -1,23 +1,17 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
+import { useLocation } from "react-router-dom";
 
 const CompanyPage = () => {
+    const address = useLocation();
+    const company = address.state;
   return (
-    <div>
+    <>
+      <div>
         <Navbar />
-      <main className="max-w-max_width mx-auto px-margin py-md">
+      <main className="max-w-max_width mx-auto px-margin py-md my-15">
   {/* Breadcrumbs */}
-  <nav className="flex items-center gap-xs text-body-sm text-on-surface-variant mb-md">
-    <a className="hover:text-primary" href="#">
-      Home
-    </a>
-    <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-    <a className="hover:text-primary" href="#">
-      Companies
-    </a>
-    <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-    <span className="text-primary font-semibold">Google</span>
-  </nav>
+  
   {/* Hero Header */}
   <header className="relative mb-lg">
     <div className="h-64 md:h-80 w-full rounded-xl overflow-hidden relative">
@@ -39,8 +33,8 @@ const CompanyPage = () => {
         </div>
         <div className="mb-2">
           <div className="flex items-center gap-xs">
-            <h1 className="font-display text-h1 text-white md:text-on-surface">
-              Google
+            <h1 className="font-display text-[2rem] text-white md:text-on-surface font-bold">
+              {company?.name}
             </h1>
             <span
               className="material-symbols-outlined text-[#4285F4]"
@@ -57,7 +51,7 @@ const CompanyPage = () => {
               <span className="material-symbols-outlined text-[18px]">
                 location_on
               </span>{" "}
-              Bangalore, Karnataka, India
+              {company?.location}
             </span>
             <span className="flex items-center gap-base text-white md:text-on-surface-variant text-body-sm">
               <span
@@ -126,7 +120,7 @@ const CompanyPage = () => {
       <div>
         <p className="text-body-sm text-on-surface-variant">Headquarters</p>
         <p className="font-h3 text-h3 text-body-md leading-tight">
-          California, USA
+          {company?.location}
         </p>
       </div>
     </div>
@@ -136,12 +130,9 @@ const CompanyPage = () => {
     <div className="lg:col-span-4 space-y-lg">
       {/* About Section */}
       <section className="bg-surface-container-lowest p-md rounded-xl card-shadow">
-        <h2 className="font-h2 text-h2 mb-md">About Google</h2>
+        <h2 className="font-h2 text-h2 mb-md">About {company?.name}</h2>
         <p className="text-body-md text-on-surface-variant leading-relaxed">
-          Google is a technology company that focuses on search engine
-          technology, online advertising, cloud computing, computer software,
-          quantum computing, e-commerce, consumer electronics, and artificial
-          intelligence.
+          {company?.description}
         </p>
         <button className="mt-md text-secondary font-label-strong flex items-center gap-xs hover:underline">
           Show more{" "}
@@ -690,6 +681,7 @@ const CompanyPage = () => {
 </main>
     <Footer />
     </div>
+    </>
   )
 }
 

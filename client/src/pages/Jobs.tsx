@@ -23,7 +23,6 @@ interface Job{
     const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
-
   
   const getSortedJobs = () => {
     const jobs = [...userData];

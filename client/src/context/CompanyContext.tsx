@@ -39,7 +39,8 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
             try{
                 const { data } = await axios.get("/api/companies");
                 setCompanyData(data.companies);
-                setTotal(data.pagination.total);
+                setTotal(data.count);
+                console.log(data.companies);
             } catch(err){
                 setError("Failed to load companies");
             } finally {
