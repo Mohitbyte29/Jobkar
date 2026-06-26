@@ -9,7 +9,7 @@ import toTitleCase from '../../utils/titleCase';
 interface Job{
     id: number;
     title: string;
-    company: {name: string};
+    company: {name: string, description: string, location: string, website: string, companyStatus: string, logo: string};
     category: string;
     location: string;
     salaryMin: number;
@@ -43,38 +43,37 @@ interface Job{
     <h1 className="font-bold text-[48px] text-on-surface mb-8">
       Find your next career move
     </h1>
-    <div className="bg-white p-2 rounded-xl job-card-shadow flex flex-col md:flex-row items-center gap-2 border border-slate-100">
-      <div className="grow flex items-center px-4 w-full">
-        <span
-          className="material-symbols-outlined text-outline"
-          data-icon="search"
-        >
-          search
-        </span>
-        <input
-          className="w-full border-none focus:ring-0 font-body-md text-on-surface placeholder:text-outline-variant"
-          placeholder="Job title, keywords..."
-          type="text"
-        />
-      </div>
-      <div className="hidden md:block w-[1px] h-8 bg-slate-200" />
-      <div className="grow flex items-center px-4 w-full">
-        <span
-          className="material-symbols-outlined text-outline"
-          data-icon="location_on"
-        >
-          location_on
-        </span>
-        <input
-          className="w-full border-none focus:ring-0 font-body-md text-on-surface placeholder:text-outline-variant"
-          placeholder="City, state, or remote"
-          type="text"
-        />
-      </div>
-      <button className="w-full md:w-auto px-8 py-3 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
-        Search Jobs
-      </button>
-    </div>
+    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
+            <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
+              <span
+                className="material-symbols-outlined text-outline mr-2"
+                data-icon="search"
+              >
+                search
+              </span>
+              <input
+                className="w-full border-none focus:ring-0 font-body-md bg-transparent"
+                placeholder="Job Title or Keywords..."
+                type="text"
+              />
+            </div>
+            <div className="flex items-center px-4 py-2 flex-1 w-full">
+              <span
+                className="material-symbols-outlined text-outline mr-2"
+                data-icon="location_on"
+              >
+                location_on
+              </span>
+              <input
+                className="w-full border-none focus:ring-0 font-body-md bg-transparent"
+                placeholder="City or remote"
+                type="text"
+              />
+            </div>
+            <button className="bg-secondary text-white px-xl py-3 rounded-lg font-label-strong hover:opacity-90 transition-all w-full md:w-auto">
+              Search
+            </button>
+          </div>
   </section>
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
@@ -136,7 +135,7 @@ interface Job{
       </div>
       {userData.length > 0 && (
         getSortedJobs().map((job : Job) => (
-            <div key={job.id} onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer">
+            <div key={job.id}>
               <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
@@ -173,9 +172,6 @@ interface Job{
               <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
                 {toTitleCase(job.category)}
               </span>
-              <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
-                Senior Level
-              </span>
             </div>
             <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 pt-6 border-t border-slate-50 gap-4">
               <div className="flex items-center gap-6">
@@ -204,10 +200,10 @@ interface Job{
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
+                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
                   Save Job
                 </button>
-                <button className="px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>

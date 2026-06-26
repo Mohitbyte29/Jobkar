@@ -4,7 +4,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 interface Job {
   id: number;
   title: string;
-  company: { name: string, description: string, location: string, website: string, companyStatus: string };
+  company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
   salaryMin: number;

@@ -1,13 +1,13 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { useLocation } from "react-router-dom";
-import timeAgo from "../../utils/timeAgo";
+import { Link, useLocation } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../utils/titleCase";
 
 const JobPage = () => {
     const location = useLocation();
     const user = location.state;
+    console.log(user.company.website);
   return (
       <div>
         <Navbar/>
@@ -27,7 +27,7 @@ const JobPage = () => {
                 alt="Insight AI Logo"
                 className="w-full h-full object-cover"
                 data-alt="A minimalist and high-tech corporate logo for an artificial intelligence company called Insight AI. The logo features abstract geometric patterns suggesting neural networks or data flow, set against a clean white background. The aesthetic is modern, professional, and sophisticated, reflecting institutional stability and cutting-edge technology in a bright, light-mode environment."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsTILGxdtMfigaP3H81-_BCItZx894u9vDU77oT4qep4bsOGDpCDShuvbgRxpRqh7rVlHe2yZb9qtbB78m2QeQvk494mVeTOw3MJ0Rq_54rAbMiUoDKgmCZRGXyRjCV5EIWq_pUqtns1JIes-PnxEVNR_GfMP11oxl16wbRT3kbiIfMytqBE1RV_xEug1z80wOkhdTb1BPDYqh7H8Mdabd6OA_I6Q8-apCkSzZSSJDLMnya2Z0Yd6KoJknpb-uM09Wb2_ct7A9HCY"
+                src={user.company.logo}
               />
             </div>
             <div>
@@ -69,16 +69,21 @@ const JobPage = () => {
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags}</span>
+            <span className="font-label-strong text-label-strong">{user.tags[0]}</span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
-              equalizer
+              terminal
             </span>
-            <span className="font-label-strong text-label-strong">
-              Statistics
-            </span>
+            <span className="font-label-strong text-label-strong">{user.tags[1]}</span>
           </div>
+          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
+            <span className="material-symbols-outlined text-[16px]">
+              terminal
+            </span>
+            <span className="font-label-strong text-label-strong">{user.tags[2]}</span>
+          </div>
+          
         </div>
         {/* Job Description Teaser */}
         <div className="border-t border-outline-variant pt-lg mb-lg">
@@ -257,20 +262,26 @@ const JobPage = () => {
     <div className="bg-surface-container-lowest p-md rounded-xl border border-surface-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
       <div className="flex justify-between items-start mb-md">
         <div>
+          <img
+            src={user.company.logo}
+            alt={user.company.name}
+            className="w-16 h-16 rounded-lg object-cover"
+          />
           <h4 className="font-h2 text-h2 text-primary">Insight AI</h4>
           <p className="text-secondary font-label-strong text-label-strong">
             Artificial Intelligence
           </p>
         </div>
-        <a
-          href="#"
+        <Link
+          to={user.company.website}
+          target="_blank"
           className="text-secondary hover:underline flex items-center gap-xs font-label-strong text-label-strong"
         >
           Visit Website
           <span className="material-symbols-outlined text-[18px]">
             open_in_new
           </span>
-        </a>
+        </Link>
       </div>
       <div className="space-y-sm mb-md">
         <div className="flex items-center gap-xs text-on-surface-variant">

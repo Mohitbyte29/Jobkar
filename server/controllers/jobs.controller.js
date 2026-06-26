@@ -96,7 +96,7 @@ export const getJobs = async(req, res) => {
                 select: {
                     id: true, 
                     title: true, 
-                    company: {select: {name: true}}, 
+                    company: {select: {name: true, description: true, location: true, website: true, companyStatus: true, logo: true}}, 
                     location: true, 
                     type: true, 
                     salaryMin: true,

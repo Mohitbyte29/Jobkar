@@ -13,6 +13,7 @@ import WishList from './pages/WishList';
 import { PostJob } from './pages/PostJob';
 import JobPage from './pages/JobPage';
 import CompanyPage from './pages/CompanyPage';
+import SavedJob from './pages/SavedJob';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />
+        <Route path='/savedJobs' element={<SavedJob/>} />
         {/* <Route path='' */}
       </Routes>
     </div>

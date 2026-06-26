@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const CompanyPage = () => {
     const address = useLocation();
@@ -28,7 +28,7 @@ const CompanyPage = () => {
           <img
             className="w-3/4 h-3/4 object-contain"
             data-alt="The official Google 'G' logo, rendered in its iconic four-color palette of blue, red, yellow, and green. The logo is set against a clean, brilliant white background within a rounded square container. The lighting is flat and graphic, emphasizing the bold primary colors and professional branding of a world-leading technology firm."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD60MGTpdEarxguDOqg3UAp-Lgyxvn-dvasF-66oyROhpE1TcBaqKD26jjIbIlwUM4wXFFYeXvq8RjpgL1QVIAIWVmEI_k1NgmcRM6KF-THnGfkrCb4XRv7OrVb9mL-SVHuyCniWcAybzqn4tohSvUkeVsxptNinBdlTKDTDSSvAoHmYT1WtHY2wGRcTlw4KMuXLLW2oS7sYY3dCPssQ9qRXvsc3AtXXBO-xDf_M8fTkNMKfR5crQD8Io6TllNJU3fEPoj3DwLctik"
+            src={company?.logo}
           />
         </div>
         <div className="mb-2">
@@ -66,15 +66,13 @@ const CompanyPage = () => {
         </div>
       </div>
       <div className="flex items-center gap-sm mb-2">
-        <button className="bg-[#4285F4] text-white px-lg py-3 rounded-xl font-label-strong flex items-center gap-xs hover:shadow-lg transition-all active:scale-95">
-          <span className="material-symbols-outlined">add</span> Follow Company
-        </button>
-        <button className="bg-surface-container-lowest border border-outline-variant text-on-surface px-lg py-3 rounded-xl font-label-strong flex items-center gap-xs hover:bg-surface-container-low transition-all">
+
+        <Link to={company?.website} target="_blank" className="bg-surface-container-lowest border border-outline-variant text-on-surface px-lg py-3 rounded-xl font-label-strong flex items-center gap-xs hover:bg-surface-container-low transition-all">
           Visit Website{" "}
           <span className="material-symbols-outlined text-[18px]">
             open_in_new
           </span>
-        </button>
+        </Link>
       </div>
     </div>
   </header>
@@ -414,7 +412,7 @@ const CompanyPage = () => {
       </section>
       {/* Life at Google */}
       <section className="bg-surface-container-lowest p-md rounded-xl card-shadow">
-        <h2 className="font-h2 text-h2 mb-md">Life at Google</h2>
+        <h2 className="font-h2 text-h2 mb-md">Life at {company?.name}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
           <div className="group">
             <div className="aspect-video rounded-lg overflow-hidden mb-sm">

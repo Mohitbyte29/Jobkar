@@ -349,7 +349,7 @@ export default function Companies() {
                     <span className="font-label-strong text-label-strong text-secondary">
                       42 Open Roles
                     </span>
-                    <div  onClick={() => navigate(`/company/${company.name}`, { state : company })} className="text-primary font-label-strong text-label-strong border border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
+                    <div onClick={() => navigate(`/company/${company.name}`, { state : company })} className="text-primary font-label-strong text-label-strong border cursor-pointer border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
                       View Profile
                     </div>
                   </div>
