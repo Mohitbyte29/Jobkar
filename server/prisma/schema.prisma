@@ -26,7 +26,7 @@ model User {
 
   jobs Job[]
   companies Company[]
-
+  internships Internship[]
   @@map("users")
   applications Application[]
 }
@@ -43,6 +43,7 @@ model Company{
   companyStatus companyStatus @default(ACTIVE)
 
   jobs Job[]
+  internships Internship[]
   UserId Int
   user User @relation(fields: [UserId], references: [id])
   
@@ -73,10 +74,35 @@ model Job {
   @@map("jobs")
 }
 
+model Internship {
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(255)
+  description String @db.Text
+  category String @db.VarChar(255)
+  requirements String @db.Text
+  location String @db.VarChar(255)
+  tags Json
+  salaryMin Int?
+  salaryMax Int?
+  remote Boolean @default(false)
+  type InternshipType 
+  status JobStatus @default(ACTIVE)
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  CompanyId Int
+  company Company @relation(fields: [CompanyId], references: [id])
+  employerId Int
+  employer User @relation(fields: [employerId], references: [id])
+  applications Application[]
+
+  @@map("Internship")
+}
+
 model Application {
   id Int @id @default(autoincrement())
   userId Int
   jobId Int
+  internshipId Int
   resume String?
   coverletter String
   status APPLICATION_STATUS @default(PENDING)
@@ -85,6 +111,7 @@ model Application {
   
   user User @relation(fields: [userId], references: [id])
   job Job @relation(fields: [jobId], references: [id])
+  internship Internship @relation(fields: [internshipId], references: [id])
 
   @@map("applications")
 }
@@ -129,4 +156,9 @@ enum category {
   EDUCATION_GOVERNMENT
   BUSINESS_OPERATIONS
   OTHER
+}
+
+enum InternshipType {
+  REMOTE
+  OFFLINE
 }

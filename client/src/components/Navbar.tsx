@@ -10,26 +10,26 @@ export default function Navbar() {
         </Link>
         <div className="hidden md:flex items-center gap-6">
           <Link
-            className="font-h3 text-sm text-slate-900 dark:text-white border-b-2 border-teal-500 pb-1 hover:text-teal-600 transition-colors duration-200"
+            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             to="/jobs"
           >
             Find Jobs
           </Link>
           <Link
-            className="font-h3 text-sm text-slate-900 dark:text-white border-b-2 border-teal-500 pb-1 hover:text-teal-600 transition-colors duration-200"
+            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             to="/internships"
           >
             Find Internships
           </Link>
           <Link
-            className="font-h3 text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
+            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             to="/companies"
           >
             Companies
           </Link>
           
           <Link
-            className="font-h3 text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
+            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             to="/resources"
           >
             Resources
