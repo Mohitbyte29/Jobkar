@@ -86,7 +86,8 @@ model Internship {
   salaryMax Int?
   remote Boolean @default(false)
   type InternshipType 
-  status JobStatus @default(ACTIVE)
+  workType InternshipWorkType
+  internshipStatus InternshipStatus @default(ACTIVE)
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
   CompanyId Int
@@ -159,6 +160,18 @@ enum category {
 }
 
 enum InternshipType {
+  Paid
+  Unpaid
+}
+
+enum InternshipStatus {
+  ACTIVE
+  DRAFT
+  CLOSED
+}
+
+enum InternshipWorkType {
   REMOTE
-  OFFLINE
+  ONSITE
+  HYBRID
 }
