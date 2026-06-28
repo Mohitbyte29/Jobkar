@@ -1,14 +1,15 @@
 import { Router } from "express";
-import { createInternship, deleteInternship, getInternshipById, getInternships, searchInternships, updateInternship } from "../controllers/internships.controller";
-import { authenticateEmployer, isAuthenticated } from "../middlewares/middleware";
+import { createInternship, deleteInternship, getInternshipById, getInternships, searchInternships, updateInternship } from "../controllers/internships.controller.js";
+import { authenticateEmployer, isAuthenticated } from "../middlewares/middleware.js";
 
 const router = new Router();
 
-router.get('api/internships', getInternships);
-router.get('api/interships/search', searchInternships);
-router.get('api/internships/:id', getInternshipById);
-router.post('api/internships', isAuthenticated, authenticateEmployer, createInternship);
-router.update('api/internships/:id', updateInternship);
-router.delete('api/internships/:id', deleteInternship);
+router.get('/api/internships', getInternships);
+router.get('/api/interships/search', searchInternships);
+router.get('/api/internships/:id', getInternshipById);
+router.post('/api/internships', isAuthenticated, authenticateEmployer, createInternship);
+router.patch('/api/internships/:id', updateInternship);
+router.delete('/api/internships/:id', deleteInternship);
 
-export const internshipsRouter = router();
+export const internshipsRoutes = router;
+

@@ -56,7 +56,7 @@ export const getInternships = async(req, res) => {
             limit = 15,
         } = req.query;
         const where = {
-            status: InternshipStatus.ACTIVE,
+            internshipStatus: InternshipStatus.ACTIVE,
             ...(type && {type}),
             ...(location && {location : {contains: search}}),
             ...(search && {
@@ -67,14 +67,32 @@ export const getInternships = async(req, res) => {
                     {company: { contains: search}},
                 ]
             })
-        },
+        };
 
-        const [Internships, total] = await Promise.all([
-            prisma.internship.findMany(), prisma.internship.count({ where })
+        const [internships, total] = await Promise.all([
+             prisma.internship.findMany({
+        where,
+        select: {
+                    id: true, 
+                    title: true, 
+                    company: {select: {name: true, description: true, location: true, website: true, companyStatus: true, logo: true}}, 
+                    location: true, 
+                    type: true, 
+                    salaryMin: true,
+                    salaryMax: true,
+                    createdAt: true,
+                    updatedAt: true, 
+                    category: true,
+                    _count: {select: {applications: true}},
+                    tags: {select: { tag: {select: { name: true }} }}
+                }
+    }), prisma.internship.count({ 
+        where
+     })
         ])
 
         res.json({
-            Internships, total
+            internships, total
         })
     }
     catch(err){
@@ -128,7 +146,7 @@ export const createInternship = async(req, res) => {
             },
             include: { company: true },
         });
-        res.status(201).json(job);
+        res.status(201).json(internship);
     }
     catch(error){
         res.status(400).json({ message: error.message });

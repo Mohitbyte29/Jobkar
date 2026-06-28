@@ -5,7 +5,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Categories from './pages/Category';
 import Companies from './pages/Companies';
-import Internships from './pages/Internships';
+import { Internships } from './pages/Internships';
 import Resources from './pages/Resources';
 import { Jobs } from './pages/Jobs';
 import { JobsCategory } from './pages/JobsCategory';
@@ -33,7 +33,6 @@ const App = () => {
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />
         <Route path='/savedJobs' element={<SavedJob/>} />
-        {/* <Route path='' */}
       </Routes>
     </div>
   )

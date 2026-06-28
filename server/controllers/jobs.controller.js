@@ -2,24 +2,6 @@ import { JobStatus, PrismaClient } from "@prisma/client";
 import { map } from "zod";
 const prisma = new PrismaClient();
 
-// const jobs = [
-//     { id: 1, title: "App Developer", category: "Engineering", location: "Delhi" },
-//   { id: 2, title: "App Tester", category: "QA", location: "Mumbai" },
-//   { id: 3, title: "Frontend Developer", category: "Engineering", location: "Bangalore" },
-//   { id: 4, title: "Backend Developer", category: "Engineering", location: "Hyderabad" },
-//   { id: 5, title: "UI/UX Designer", category: "Design", location: "Pune" },
-//   { id: 6, title: "DevOps Engineer", category: "Engineering", location: "Chennai" },
-//   { id: 7, title: "Software Tester", category: "QA", location: "Noida" },
-//   { id: 8, title: "Data Analyst", category: "Analytics", location: "Gurgaon" },
-//   { id: 9, title: "Project Manager", category: "Management", location: "Kolkata" },
-//   { id: 10, title: "Mobile App Designer", category: "Design", location: "Ahmedabad" },
-//   { id: 11, title: "Cloud Engineer", category: "Engineering", location: "Jaipur" },
-//   { id: 12, title: "Cyber Security Analyst", category: "Security", location: "Lucknow" },
-//   { id: 13, title: "Machine Learning Engineer", category: "AI/ML", location: "Indore" },
-//   { id: 14, title: "HR Executive", category: "Human Resources", location: "Bhopal" },
-//   { id: 15, title: "Database Administrator", category: "Database", location: "Chandigarh" }
-// ]
-
 export const jobSearch = async(req, res) => {
     try{
         const q = (req.query.q || "").toLowerCase();

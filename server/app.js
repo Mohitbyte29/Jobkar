@@ -9,6 +9,7 @@ import { jobsRoutes } from "./routes/jobs.routes.js";
 import { companyRoutes } from "./routes/company.routes.js";
 import { applicationRoutes } from "./routes/applications.routes.js";
 import { adminRoutes } from "./routes/admin.routes.js";
+import { internshipsRoutes } from "./routes/internships.routes.js";
 
 dotenv.config()
 
@@ -24,8 +25,9 @@ app.use(
 // ! saveUninitialized : false ---> if my session is empty then don't save the session
 
 app.use(authRoutes);
-app.use(jobsRoutes);
+app.use(internshipsRoutes);
 app.use(companyRoutes);
+app.use(jobsRoutes);
 app.use(applicationRoutes);
 app.use(adminRoutes);
 
