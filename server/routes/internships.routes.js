@@ -5,7 +5,7 @@ import { authenticateEmployer, isAuthenticated } from "../middlewares/middleware
 const router = new Router();
 
 router.get('/api/internships', getInternships);
-router.get('/api/interships/search', searchInternships);
+router.get('/api/internships/search', searchInternships);
 router.get('/api/internships/:id', getInternshipById);
 router.post('/api/internships', isAuthenticated, authenticateEmployer, createInternship);
 router.patch('/api/internships/:id', updateInternship);

@@ -1,9 +1,9 @@
 import { IndianRupee } from "lucide-react";
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import {useInternships} from "../context/InternshipsContext.tsx";
 import timeAgo from '../../utils/timeAgo';
 import Navbar from "@/components/Navbar.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toTitleCase from '../../utils/titleCase';
 import axios from "axios";
 
@@ -20,16 +20,29 @@ interface Internship{
   tags: string;
   }
   
-  export function Internships(){
+  export function InternshipsCategory(){
+    const [searchParams] = useSearchParams();
     const { userData, total } = useInternships();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
+
+    const searchTitle = searchParams.get("q") || "";
+    const searchLocation = searchParams.get("location") || "";
+    const searchCategory = searchParams.get("category") || "";
+
     const [query, setQuery] = useState<string>("");
           const [results, setResults] = useState<Internship[]>([]);
           const [locationResults, setLocationResults] = useState<Internship[]>([]);
           const [location, setLocation] = useState<string>("");
           const [category, setCategory] = useState<string>("");
           const [categoryResults, setCategoryResults] = useState<Internship[]>([]);
+          
+          const filteredInternships = userData.filter((internship) => {
+            return (
+              internship.title?.toLowerCase().includes(searchTitle.toLowerCase()) && internship.location?.toLowerCase().includes(searchLocation.toLowerCase()) && internship.category?.toLowerCase().includes(searchCategory.toLowerCase()) && internship.salaryMin !== null && internship.salaryMax !== null
+            );
+          })
+          const count = filteredInternships.length;
         
     const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -81,17 +94,6 @@ interface Internship{
         }
       }
 
-  const getSortedInternships = () => {
-    const internships = [...userData];
-    if (sortBy === "recent") {
-      return internships.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-    } else if (sortBy === "salary") {
-      return internships.sort((a, b) => b.salaryMax - a.salaryMax);
-    }
-    return internships;
-  };
-  
-
     return (
         <>
             <Navbar/>
@@ -110,7 +112,7 @@ interface Internship{
               </span>
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="internship Title or Keywords..." value={query} onChange={handleChange} onClick={() => setLocationResults([])}
+                placeholder="internship Title or Keywords..."
                 type="text"
               />
             </div>
@@ -123,7 +125,7 @@ interface Internship{
               </span>
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="City or remote" value={location} onChange={handleLocationChange} onClick={() => setResults([])}
+                placeholder="City or remote"
                 type="text"
               />
             </div>
@@ -150,13 +152,12 @@ interface Internship{
                 setLocationResults([]);
               }
                else {
-                alert('Please enter either internship title or location');
+                alert('Please enter either job title or location');
               }
             }}>
                         Search 
                     </button>
           </div>
-
           {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
           {Array.from(new Set(results.map((internship: Internship) => internship.title))).map((title: string) => (
@@ -195,7 +196,7 @@ interface Internship{
         <div className="space-y-4">
           <div>
             <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
-              internship Type
+              Internship Type
             </span>
             <div className="space-y-2">
               <label className="flex items-center gap-3 cursor-pointer">
@@ -229,7 +230,7 @@ interface Internship{
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
-          Showing <strong>{total}</strong> internships
+          Showing <strong>{count}</strong> internships
         </span>
         <div className="flex items-center gap-2">
           <span className="font-label-strong text-label-strong text-on-surface-variant">
@@ -244,8 +245,8 @@ interface Internship{
           </select>
         </div>
       </div>
-      {userData.length > 0 && (
-        getSortedInternships().map((internship : Internship) => (
+      {filteredInternships.length > 0 && (
+        filteredInternships.map((internship : Internship) => (
             <div key={internship.id}>
               <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">

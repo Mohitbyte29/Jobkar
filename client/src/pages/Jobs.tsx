@@ -1,10 +1,11 @@
 import { IndianRupee } from "lucide-react";
-import { useState } from "react"
+import { useState, type ChangeEvent } from "react"
 import {useJobs} from "../context/JobsContext.tsx";
 import timeAgo from '../../utils/timeAgo';
 import Navbar from "@/components/Navbar.tsx";
 import { useNavigate } from "react-router-dom";
 import toTitleCase from '../../utils/titleCase';
+import axios from "axios";
 
 interface Job{
     id: number;
@@ -23,6 +24,63 @@ interface Job{
     const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
+    const [query, setQuery] = useState<string>("");
+      const [results, setResults] = useState<Job[]>([]);
+      const [locationResults, setLocationResults] = useState<Job[]>([]);
+      const [location, setLocation] = useState<string>("");
+      const [category, setCategory] = useState<string>("");
+      const [categoryResults, setCategoryResults] = useState<Job[]>([]);
+    
+      const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setQuery(val);
+        if (!val.trim()) {
+          setResults([]);
+          return;
+        }
+    
+        try {
+          const res = await axios.get(`/api/jobs/search?q=${encodeURIComponent(val)}`);
+          setResults(res.data);
+        } catch (err) {
+          console.error("Search failed:", err); 
+          setResults([]);
+        }
+      };
+    
+      const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const locationVal = e.target.value;
+        setLocation(locationVal);
+        if (!locationVal.trim()) {
+          setLocationResults([]);
+          return;
+        }
+    
+        try {
+          const res = await axios.get(`/api/jobs/search?location=${encodeURIComponent(locationVal)}`);
+          setLocationResults(res.data);
+        } catch (err) {
+          console.error("Search failed:", err); 
+          setLocationResults([]);
+        }
+      };
+    
+      const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
+        const categoryVal = e.target.value;
+        setCategory(categoryVal);
+        if(!categoryVal.trim()){
+          setCategoryResults([]);
+          return;
+        }
+        try {
+          const res = await axios.get(`/api/jobs/search?category=${encodeURIComponent(categoryVal)}`);
+          setCategoryResults(res.data);
+        } catch (err) {
+          console.error("Search failed:", err); 
+          setCategoryResults([]);
+        }
+      }
+    
   
   const getSortedJobs = () => {
     const jobs = [...userData];
@@ -54,7 +112,7 @@ interface Job{
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
                 placeholder="Job Title or Keywords..."
-                type="text"
+                type="text" value={query} onChange={handleChange} onClick={() => setLocationResults([])}
               />
             </div>
             <div className="flex items-center px-4 py-2 flex-1 w-full">
@@ -66,14 +124,68 @@ interface Job{
               </span>
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="City or remote"
+                placeholder="City or remote" value={location} onChange={handleLocationChange} onClick={() => setResults([])}
                 type="text"
               />
             </div>
-            <button className="bg-secondary text-white px-xl py-3 rounded-lg font-label-strong hover:opacity-90 transition-all w-full md:w-auto">
-              Search
-            </button>
+            <button
+            className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+              query.trim() || location.trim()
+                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
+                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+            }`}
+            onClick={() => {
+              if(query.trim() && location.trim()){
+                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+              else if (query.trim()) {
+                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+              else if(location.trim()){
+                window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                setResults([]);
+                setLocationResults([]);
+              }
+               else {
+                alert('Please enter either job title or location');
+              }
+            }}>
+                        Search 
+                    </button>
           </div>
+
+          {results.length > 0 && (
+        <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
+          {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
+            <li key={title} onClick={() => {
+              setQuery(title)
+              setResults([]);
+            }}>
+              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+              <strong>{title}</strong>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+        {locationResults.length > 0 && (
+        <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
+          {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
+            <li key={location} onClick={() => {
+              setLocation(location)
+              setLocationResults([]);
+            }}>
+              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+              <strong>{location}</strong>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
   </section>
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">

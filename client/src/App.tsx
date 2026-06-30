@@ -14,6 +14,8 @@ import { PostJob } from './pages/PostJob';
 import JobPage from './pages/JobPage';
 import CompanyPage from './pages/CompanyPage';
 import SavedJob from './pages/SavedJob';
+import { InternshipsCategory } from './pages/InternshipsCategory';
+import InternshipPage from './pages/InternshipPage';
 
 const App = () => {
   return (
@@ -25,10 +27,12 @@ const App = () => {
         <Route path='/categories' element={<Categories />} />
         <Route path='/companies' element={<Companies />} />
         <Route path='/internships' element={<Internships />} />
+        <Route path='/internships/search' element={<InternshipsCategory />} />
         <Route path='/resources' element={<Resources />} />
         <Route path='/jobs' element={<Jobs />} />
         <Route path='/jobs/search' element={<JobsCategory />} />
         <Route path='/jobs/search/:category' element={<JobPage />} />
+        <Route path='/internships/search/:category' element={<InternshipPage />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />

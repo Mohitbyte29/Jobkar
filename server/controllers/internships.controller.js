@@ -110,11 +110,13 @@ export const getInternshipById = async(req, res) => {
                 }
             })
             if(!internship || internship.status === InternshipStatus.DRAFT){
-                return res.status(404).json({error: "Job not found"});
-            }
-            res.json(job);
+                return res.status(404).json({error: "Internship not found"});
+            }            
+            res.json(internship);
         } catch(error){
             console.log(error);
+            console.log(req.params);
+            console.log(req.params.id);
             res.status(500).json({ error: "Failed to fetch job" });
         }
 }
