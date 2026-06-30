@@ -31,9 +31,21 @@ app.use(jobsRoutes);
 app.use(applicationRoutes);
 app.use(adminRoutes);
 
-app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to the API" })
-})
+// app.get("/api/job", async(req, res) => {
+//   const { what, where, page = 1 } = req.query;
+//   const url = new URL(`https://api.adzuna.com/v1/api/jobs/in/search/${page}`);
+//   url.searchParams.set('app_id', process.env.ADZUNA_APP_ID);
+//   url.searchParams.set('app_key', process.env.ADZUNA_APP_KEY);
+//   url.searchParams.set('results_per_page', 20);
+//   url.searchParams.set('content-type', 'application/json');
+//   if (what) url.searchParams.set('what', what);
+//   if (where) url.searchParams.set('where', where);
+
+//   const response = await fetch(url);
+//   const data = await response.json();
+//   console.log(data);
+//   res.json(data);
+// })
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

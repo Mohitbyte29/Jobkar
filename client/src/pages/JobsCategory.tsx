@@ -14,8 +14,8 @@ interface Job{
   company: string;
   location: string;
   category: string;
-  salaryMin: GLfloat;
-  salaryMax: GLfloat;
+  salaryMin: number;
+  salaryMax: number;
   updatedAt: string;
 }
 
@@ -77,7 +77,7 @@ export function JobsCategory(){
           } catch (err) {
             console.error("Search failed:", err); 
             setResults([]);
-          }
+          } 
         };
       
         const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {

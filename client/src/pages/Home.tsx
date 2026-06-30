@@ -1,14 +1,15 @@
 import Footer from "@/components/Footer";
 import Navbar from "../components/Navbar";
 import bgVideo from "../assets/videos/video.mp4";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
 import { IndianRupee, MapPin, Search } from "lucide-react";
-import axios from 'axios';
+import axios from "axios";
 import { useJobs } from "@/context/JobsContext";
 import timeAgo from "../../utils/timeAgo";
 
-interface Job{
+  
+interface Job {
   id: number;
   title: string;
   category: string;
@@ -17,35 +18,40 @@ interface Job{
 }
 
 export default function Home() {
-  const { userData } = useJobs();
+  const navigate = useNavigate();
+  const { userData, total } = useJobs();
   const heroRef = useRef<HTMLElement>(null);
   const categoriesRef = useRef<HTMLElement>(null);
   const jobsRef = useRef<HTMLElement>(null);
   const employerRef = useRef<HTMLElement>(null);
   const testimonialsRef = useRef<HTMLElement>(null);
-  
   // Get jobs from context
-  
+
   const [query, setQuery] = useState<string>("");
+  const [selectedJob, setSelectedJob] = useState<string | null>("");
+  const [selectedLocation, setSelectedLocation] = useState<string | null>("");
   const [results, setResults] = useState<Job[]>([]);
   const [locationResults, setLocationResults] = useState<Job[]>([]);
   const [location, setLocation] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [categoryResults, setCategoryResults] = useState<Job[]>([]);
+  const canSearch = selectedJob !== null || selectedLocation !== null;
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setQuery(val);
+    setSelectedJob(null);
     if (!val.trim()) {
       setResults([]);
       return;
     }
-
     try {
-      const res = await axios.get(`/api/jobs/search?q=${encodeURIComponent(val)}`);
+      const res = await axios.get(
+        `/api/jobs/search?q=${encodeURIComponent(val)}`,
+      );
       setResults(res.data);
     } catch (err) {
-      console.error("Search failed:", err); 
+      console.error("Search failed:", err);
       setResults([]);
     }
   };
@@ -53,200 +59,264 @@ export default function Home() {
   const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const locationVal = e.target.value;
     setLocation(locationVal);
+    setSelectedLocation(null);
     if (!locationVal.trim()) {
       setLocationResults([]);
       return;
     }
 
     try {
-      const res = await axios.get(`/api/jobs/search?location=${encodeURIComponent(locationVal)}`);
+      const res = await axios.get(
+        `/api/jobs/search?location=${encodeURIComponent(locationVal)}`,
+      );
       setLocationResults(res.data);
     } catch (err) {
-      console.error("Search failed:", err); 
+      console.error("Search failed:", err);
       setLocationResults([]);
     }
   };
 
-  const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
+  const handleCategoryChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const categoryVal = e.target.value;
     setCategory(categoryVal);
-    if(!categoryVal.trim()){
+    if (!categoryVal.trim()) {
       setCategoryResults([]);
       return;
     }
     try {
-      const res = await axios.get(`/api/jobs/search?category=${encodeURIComponent(categoryVal)}`);
+      const res = await axios.get(
+        `/api/jobs/search?category=${encodeURIComponent(categoryVal)}`,
+      );
       setCategoryResults(res.data);
     } catch (err) {
-      console.error("Search failed:", err); 
+      console.error("Search failed:", err);
       setCategoryResults([]);
     }
-  }
+  };
 
   useEffect(() => {
-    let ctx: ReturnType<typeof import("gsap")["default"]["context"]> | null = null;
+    let ctx: ReturnType<(typeof import("gsap"))["default"]["context"]> | null =
+      null;
     let cancelled = false;
 
     // Lazy-load GSAP + ScrollTrigger only when component mounts
-    Promise.all([
-      import("gsap"),
-      import("gsap/ScrollTrigger"),
-    ]).then(([gsapModule, scrollTriggerModule]) => {
-      if (cancelled) return;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([gsapModule, scrollTriggerModule]) => {
+        if (cancelled) return;
 
-      const gsap = gsapModule.default;
-      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
-      gsap.registerPlugin(ScrollTrigger);
+        const gsap = gsapModule.default;
+        const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+        gsap.registerPlugin(ScrollTrigger);
 
-      ctx = gsap.context(() => {
-        // ─── Hero Section Animations (fast & snappy) ───
-        const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        ctx = gsap.context(() => {
+          // ─── Hero Section Animations (fast & snappy) ───
+          const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-        heroTl.from(
-          ".hero-video-wrapper",
-          { scale: 1.1, opacity: 0, duration: 0.8 },
-          0
-        );
-
-        heroTl
-          .from(".hero-badge", { y: 15, opacity: 0, duration: 0.5 }, 0.15)
-          .from(".hero-title", { y: 30, opacity: 0, duration: 0.65 }, 0.25)
-          .from(".hero-subtitle", { y: 20, opacity: 0, duration: 0.55 }, 0.38)
-          .from(
-            ".hero-search",
-            { y: 25, opacity: 0, scale: 0.97, duration: 0.55 },
-            0.45
-          )
-          .from(
-            ".hero-tags span",
-            { y: 10, opacity: 0, stagger: 0.07, duration: 0.4 },
-            0.8
-          )
-          .from(
-            ".hero-floating-card",
-            { y: 20, opacity: 0, scale: 0.9, duration: 0.55, ease: "back.out(1.2  )" },
-            0.58
+          heroTl.from(
+            ".hero-video-wrapper",
+            { scale: 1.1, opacity: 0, duration: 0.8 },
+            0,
           );
 
-        // Floating animation for the stats card
-        gsap.to(".hero-floating-card", {
-          y: -8,
-          duration: 2.5,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-        });
+          heroTl
+            .from(".hero-badge", { y: 15, opacity: 0, duration: 0.5 }, 0.15)
+            .from(".hero-title", { y: 30, opacity: 0, duration: 0.65 }, 0.25)
+            .from(".hero-subtitle", { y: 20, opacity: 0, duration: 0.55 }, 0.38)
+            .from(
+              ".hero-search",
+              { y: 25, opacity: 0, scale: 0.97, duration: 0.55 },
+              0.45,
+            )
+            .from(
+              ".hero-tags span",
+              { y: 10, opacity: 0, stagger: 0.07, duration: 0.4 },
+              0.8,
+            )
+            .from(
+              ".hero-floating-card",
+              {
+                y: 20,
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.55,
+                ease: "back.out(1.2  )",
+              },
+              0.58,
+            );
 
-        // ─── Scroll-triggered sections (lazy — only animate when visible) ───
+          // Floating animation for the stats card
+          gsap.to(".hero-floating-card", {
+            y: -8,
+            duration: 2.5,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+          });
 
-        // Categories
-        ScrollTrigger.batch(".categories-heading", {
-          start: "top 80%",
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 25, opacity: 0, duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          // ─── Scroll-triggered sections (lazy — only animate when visible) ───
 
-        ScrollTrigger.batch(".category-card", {
-          start: "top 88%",
-          interval: 0.08,
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 30, opacity: 0, duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          // Categories
+          ScrollTrigger.batch(".categories-heading", {
+            start: "top 80%",
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 25,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        // Latest Jobs
-        ScrollTrigger.batch(".jobs-heading", {
-          start: "top 80%",
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 20, opacity: 0, duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          ScrollTrigger.batch(".category-card", {
+            start: "top 88%",
+            interval: 0.08,
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 30,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        ScrollTrigger.batch(".job-card", {
-          start: "top 80%",
-          interval: 0.1,
-          onEnter: (batch) =>
-            gsap.from(batch, { x: -30, opacity: 0,  duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          // Latest Jobs
+          ScrollTrigger.batch(".jobs-heading", {
+            start: "top 80%",
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 20,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        ScrollTrigger.batch(".jobs-cta", {
-          start: "top 92%",
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 15, opacity: 0, duration: 2.0, ease: "power3.out" }),
-          once: true,
-        });
+          ScrollTrigger.batch(".job-card", {
+            start: "top 80%",
+            interval: 0.1,
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                x: -30,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        // Employer Section
-        ScrollTrigger.batch(".employer-text", {
-          start: "top 78%",
-          onEnter: (batch) =>
-            gsap.from(batch, { x: -40, opacity: 0, duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          ScrollTrigger.batch(".jobs-cta", {
+            start: "top 92%",
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 15,
+                opacity: 0,
+                duration: 2.0,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        ScrollTrigger.batch(".employer-stat", {
-          start: "top 88%",
-          interval: 0.08,
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 25, opacity: 0, scale: 0.95, stagger: 0.13, duration: 0.75, ease: "back.out(1.2)" }),
-          once: true,
-        });
+          // Employer Section
+          ScrollTrigger.batch(".employer-text", {
+            start: "top 78%",
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                x: -40,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        // Testimonials
-        ScrollTrigger.batch(".testimonials-heading", {
-          start: "top 88%",
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 20, opacity: 0, duration: 0.75, ease: "power3.out" }),
-          once: true,
-        });
+          ScrollTrigger.batch(".employer-stat", {
+            start: "top 88%",
+            interval: 0.08,
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 25,
+                opacity: 0,
+                scale: 0.95,
+                stagger: 0.13,
+                duration: 0.75,
+                ease: "back.out(1.2)",
+              }),
+            once: true,
+          });
 
-        ScrollTrigger.batch(".testimonial-card", {
-          start: "top 90%",
-          interval: 0.1,
-          onEnter: (batch) =>
-            gsap.from(batch, { y: 30, opacity: 0,  duration: 0.7, ease: "power3.out" }),
-          once: true,
-        });
+          // Testimonials
+          ScrollTrigger.batch(".testimonials-heading", {
+            start: "top 88%",
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 20,
+                opacity: 0,
+                duration: 0.75,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        // ─── Smooth parallax on employer bg blobs ───
-        gsap.to(".blob-teal", {
-          scrollTrigger: {
-            trigger: employerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 2.5,
-          },
-          y: -40,
-          x: 20,
-          ease: "none",
-        });
+          ScrollTrigger.batch(".testimonial-card", {
+            start: "top 90%",
+            interval: 0.1,
+            onEnter: (batch) =>
+              gsap.from(batch, {
+                y: 30,
+                opacity: 0,
+                duration: 0.7,
+                ease: "power3.out",
+              }),
+            once: true,
+          });
 
-        gsap.to(".blob-indigo", {
-          scrollTrigger: {
-            trigger: employerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 2.5,
-          },
-          y: 40,
-          x: -20,
-          ease: "none",
+          // ─── Smooth parallax on employer bg blobs ───
+          gsap.to(".blob-teal", {
+            scrollTrigger: {
+              trigger: employerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 2.5,
+            },
+            y: -40,
+            x: 20,
+            ease: "none",
+          });
+
+          gsap.to(".blob-indigo", {
+            scrollTrigger: {
+              trigger: employerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 2.5,
+            },
+            y: 40,
+            x: -20,
+            ease: "none",
+          });
         });
-      });
-    });
+      },
+    );
 
     return () => {
       cancelled = true;
       ctx?.revert();
     };
   }, []);
-
+  const techCount = userData.filter((job) => job.category === "TECHNOLOGY_SOFTWARE").length;
+  const designCount = userData.filter((job) => job.category === "CREATIVE_MEDIA").length;
+  const marketingCount = userData.filter((job) => job.category === "MARKETING").length;
+  const financeCount = userData.filter((job) => job.category === "FINANCE").length;
   return (
     <>
       <Navbar />
-      <header ref={heroRef} className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <header
+        ref={heroRef}
+        className="relative min-h-[90vh] flex items-center overflow-hidden"
+      >
         {/* Full-width background video */}
         <div className="hero-video-wrapper absolute inset-0 z-0">
           <video
@@ -257,10 +327,7 @@ export default function Home() {
             className="w-full h-full object-cover"
             poster="https://lh3.googleusercontent.com/aida-public/AB6AXuC9feLsxOZM1tSK99nku01xpkVb9FEyct9edJpLuZKOoUJyIRKme88HnamJ454pIeC6zyuwNN6EnnJ8TIZIlckU-_hN1UHz75moYKDXNbSh3yUS1EA2yJM8-BtoZmG6Crj_eM2ETxGZOy86d-2eKHous0t54tCh5_Twk55sdt5sAuIB7c_2Jfbj5rfM7wgnOexII0z_40bHwBcqKi0cj8sCCD5tXe5mhsfkroTImr6omCVk4QUmVEKN6p87Zui9mWhITYuO-F6Znt4"
           >
-            <source
-              src={bgVideo}
-              type="video/mp4"
-            />
+            <source src={bgVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -283,83 +350,133 @@ export default function Home() {
               JobKar is the premier destination for ambitious professionals.
             </p>
             {/* Search Interface */}
-            <div className="hero-search flex-1 flex items-center gap-3 px-4 py-2 w-full" style={{ color: "white"}}>
+            <div
+              className="hero-search flex-1 flex items-center gap-3 px-4 py-2 w-full"
+              style={{ color: "white" }}
+            >
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
-              <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Job title or keyword" type="text" value={query}
-        onChange={handleChange} onClick={() => setLocationResults([])}/>
+              <input
+                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                placeholder="Job title or keyword"
+                type="text"
+                value={query}
+                onChange={handleChange}
+                onClick={() => setLocationResults([])}
+              />
               <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
-              <input className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900" placeholder="Location" type="text" value={location}
-        onChange={handleLocationChange} onClick={() => setResults([])}/>
-          
-            <button
-            className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
-              query.trim() || location.trim()
-                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
-                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
-            }`}
-            onClick={() => {
-              if(query.trim() && location.trim()){
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if (query.trim()) {
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if(location.trim()){
-                window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-               else {
-                alert('Please enter either job title or location');
-              }
-            }}>
-                        Search 
-                    </button>
-      </div>
-            
-        {results.length > 0 && (
-        <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
-            <li key={title} onClick={() => {
-              setQuery(title)
-              setResults([]);
-            }}>
-              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
-              <strong>{title}</strong>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-        {locationResults.length > 0 && (
-        <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
-            <li key={location} onClick={() => {
-              setLocation(location)
-              setLocationResults([]);
-            }}>
-              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
-              <strong>{location}</strong>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-      
-      {/* </div> */}
+              <input
+                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                placeholder="Location"
+                type="text"
+                value={location}
+                onChange={handleLocationChange}
+                onClick={() => setResults([])}
+              />
+
+              <button
+                disabled={!canSearch}
+                className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+                  canSearch
+                    ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
+                    : "bg-gray-400 text-white cursor-not-allowed opacity-50"
+                }`}
+                onClick={() => {
+                  if (!selectedJob && query.trim()) {
+                    alert("Please enter a valid Job");
+                    return;
+                  }
+
+                  if (!selectedLocation && location.trim()) {
+                    alert("Please enter a valid location");
+                    return;
+                  }
+                  if (query.trim() && location.trim()) {
+                    window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                    setResults([]);
+                    setLocationResults([]);
+                  } else if (query.trim()) {
+                    window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
+                    setResults([]);
+                    setLocationResults([]);
+                  } else if (location.trim()) {
+                    window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                    setResults([]);
+                    setLocationResults([]);
+                  } else {
+                    alert("Please enter either job title or location");
+                  }
+                }}
+              >
+                Search
+              </button>
+            </div>
+
+            {results.length > 0 && (
+              <ul
+                className="dropdown"
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                {Array.from(new Set(results.map((job: Job) => job.title))).map(
+                  (title: string) => (
+                    <li
+                      key={title}
+                      onClick={() => {
+                        setQuery(title);
+                        setSelectedJob(title);
+                        setResults([]);
+                      }}
+                    >
+                      <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                        <strong>{title}</strong>
+                      </div>
+                    </li>
+                  ),
+                )}
+              </ul>
+            )}
+            {locationResults.length > 0 && (
+              <ul
+                className="locationdropdown"
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                {Array.from(
+                  new Set(locationResults.map((job: Job) => job.location)),
+                ).map((location: string) => (
+                  <li
+                    key={location}
+                    onClick={() => {
+                      setLocation(location);
+                      setSelectedLocation(location);
+                      setLocationResults([]);
+                    }}
+                  >
+                    <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                      <strong>{location}</strong>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* </div> */}
             <div className="hero-tags mt-6 flex flex-wrap gap-3 items-center">
               <span className="text-body-sm text-white/60">Popular:</span>
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Product Designer")}>
+              <span
+                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                onClick={() => setQuery("Product Designer")}
+              >
                 Product Design
-              </span> 
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Software Engineer")}>
+              </span>
+              <span
+                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                onClick={() => setQuery("Software Engineer")}
+              >
                 Software Engineer
               </span>
-              <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10" onClick={() => setQuery("Marketing")}>
+              <span
+                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                onClick={() => setQuery("Marketing")}
+              >
                 Marketing
               </span>
             </div>
@@ -377,9 +494,7 @@ export default function Home() {
                 </span>
               </div>
               <div>
-                <p className="font-label-strong text-white">
-                  1.2k+ New Jobs
-                </p>
+                <p className="font-label-strong text-white">1.2k+ New Jobs</p>
                 <p className="text-xs text-white/60">Posted this week</p>
               </div>
             </div>
@@ -417,7 +532,13 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Tech */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("TECHNOLOGY_SOFTWARE")}`} onChange={handleCategoryChange}>
+            <div
+              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              onClick={() =>
+                (window.location.href = `/jobs/search?category=${encodeURIComponent("TECHNOLOGY_SOFTWARE")}`)
+              }
+              onChange={handleCategoryChange}
+            >
               <div className="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-primary-container"
@@ -428,14 +549,20 @@ export default function Home() {
               </div>
               <h3 className="font-h3 text-h3 mb-2">Technology</h3>
               <p className="text-body-sm text-outline mb-4">
-                452 Open Positions
+                {techCount} Open Positions
               </p>
               <span className="text-xs font-label-caps text-secondary">
                 Explore Roles
               </span>
             </div>
             {/* Design */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("CREATIVE_MEDIA")}`} onChange={handleCategoryChange} >
+            <div
+              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              onClick={() =>
+                (window.location.href = `/jobs/search?category=${encodeURIComponent("CREATIVE_MEDIA")}`)
+              }
+              onChange={handleCategoryChange}
+            >
               <div className="w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary-fixed group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-secondary-container"
@@ -446,14 +573,20 @@ export default function Home() {
               </div>
               <h3 className="font-h3 text-h3 mb-2">Design</h3>
               <p className="text-body-sm text-outline mb-4">
-                128 Open Positions
+                {designCount} Open Positions
               </p>
               <span className="text-xs font-label-caps text-secondary">
                 Explore Roles
               </span>
             </div>
             {/* Marketing */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("MARKETING")}`} onChange={handleCategoryChange} >
+            <div
+              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              onClick={() =>
+                (window.location.href = `/jobs/search?category=${encodeURIComponent("MARKETING")}`)
+              }
+              onChange={handleCategoryChange}
+            >
               <div className="w-12 h-12 bg-tertiary-fixed rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-tertiary-fixed-variant"
@@ -464,14 +597,20 @@ export default function Home() {
               </div>
               <h3 className="font-h3 text-h3 mb-2">Marketing</h3>
               <p className="text-body-sm text-outline mb-4">
-                310 Open Positions
+                {marketingCount} Open Positions
               </p>
               <span className="text-xs font-label-caps text-secondary">
                 Explore Roles
               </span>
             </div>
             {/* Finance */}
-            <div className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group" onClick={() => window.location.href = `/jobs/search?category=${encodeURIComponent("FINANCE")}`} onChange={handleCategoryChange} >
+            <div
+              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              onClick={() =>
+                (window.location.href = `/jobs/search?category=${encodeURIComponent("FINANCE")}`)
+              }
+              onChange={handleCategoryChange}
+            >
               <div className="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-on-surface"
@@ -482,7 +621,7 @@ export default function Home() {
               </div>
               <h3 className="font-h3 text-h3 mb-2">Finance</h3>
               <p className="text-body-sm text-outline mb-4">
-                185 Open Positions
+                {financeCount} Open Positions
               </p>
               <span className="text-xs font-label-caps text-secondary">
                 Explore Roles
@@ -503,7 +642,10 @@ export default function Home() {
         <div className="space-y-4">
           {userData && userData.length > 0 ? (
             userData.slice(0, 3).map((job: any) => (
-              <div key={job.id} className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group">
+              <div
+                key={job.id}
+                className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group"
+              >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-6">
                   <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
                     <span
@@ -513,14 +655,14 @@ export default function Home() {
                       token
                     </span>
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h3 className="font-h3 text-h3">{job.title}</h3>
                     </div>
                     <div className="flex flex-wrap gap-4 items-center">
                       <span className="text-body-sm font-label-strong text-slate-900">
-                        {job.company?.name || 'Unknown Company'}
+                        {job.company?.name || "Unknown Company"}
                       </span>
                       <div className="flex items-center gap-1 text-outline text-body-sm">
                         <span
@@ -546,10 +688,11 @@ export default function Home() {
                     {job.salaryMin && job.salaryMax && (
                       <p className="font-h3 text-secondary flex items-center gap-1">
                         <IndianRupee width={16} height={16} />
-                        {(job.salaryMin / 100000).toFixed(1)}L - ${(job.salaryMax / 100000).toFixed(1)}L
+                        {(job.salaryMin / 100000).toFixed(1)}L - $
+                        {(job.salaryMax / 100000).toFixed(1)}L
                       </p>
                     )}
-                    <button className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
+                    <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
                       Apply Now
                     </button>
                   </div>
@@ -558,7 +701,9 @@ export default function Home() {
             ))
           ) : (
             <div className="text-center py-12">
-              <p className="text-on-surface-variant">No jobs available at the moment</p>
+              <p className="text-on-surface-variant">
+                No jobs available at the moment
+              </p>
             </div>
           )}
         </div>
@@ -567,7 +712,7 @@ export default function Home() {
             to="/jobs"
             className="px-10 py-4 border-2 border-primary-container text-primary-container font-label-strong rounded-lg hover:bg-primary-container hover:text-white transition-all"
           >
-            Browse All 2,500+ Jobs
+            Browse All {total} Jobs
           </Link>
         </div>
       </section>
@@ -588,9 +733,9 @@ export default function Home() {
                 the most qualified candidates in tech, design, and beyond.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="px-8 py-4 bg-secondary text-white rounded-lg font-label-strong active:scale-95 transition-all">
+                <Link to='/postJob' className="px-8 py-4 bg-secondary text-white rounded-lg font-label-strong active:scale-95 transition-all">
                   Post a Job Now
-                </button>
+                </Link>
                 <button className="px-8 py-4 bg-white/10 text-white rounded-lg font-label-strong backdrop-blur-sm hover:bg-white/20 transition-all">
                   View Pricing
                 </button>
@@ -716,8 +861,8 @@ export default function Home() {
               </div>
               <p className="text-body-md text-on-surface-variant italic">
                 "I always recommend JobKar to my clients. It's the only site
-                where the user experience for the candidate matches the
-                high-end nature of the roles being offered."
+                where the user experience for the candidate matches the high-end
+                nature of the roles being offered."
               </p>
             </div>
             {/* Expert 3 */}
@@ -758,9 +903,9 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-body-md text-on-surface-variant italic">
-                "The matching algorithm is incredibly accurate. We find that
-                the 'Latest Opportunities' section consistently surfaces the
-                exact profiles we are looking for."
+                "The matching algorithm is incredibly accurate. We find that the
+                'Latest Opportunities' section consistently surfaces the exact
+                profiles we are looking for."
               </p>
             </div>
           </div>
