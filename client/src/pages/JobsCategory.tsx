@@ -6,18 +6,23 @@ import { useSearchParams } from 'react-router-dom';
 import timeAgo from '../../utils/timeAgo';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import toast, { Toaster } from "react-hot-toast";
+import { usejobSearch } from "@/hooks/JobSearch";
 
 
 interface Job{
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  category: string;
-  salaryMin: number;
-  salaryMax: number;
-  updatedAt: string;
-}
+    id: number;
+    title: string;
+    company: {name: string, description: string, location: string, website: string, companyStatus: string, logo: string};
+    category: string;
+    location: string;
+    salaryMin: number;
+    salaryMax: number;
+    updatedAt: string;
+    type: string;
+    tags: string;
+  }
+
 
 export function JobsCategory(){
   const [searchParams] = useSearchParams();
@@ -56,66 +61,11 @@ export function JobsCategory(){
   });
     
   const jobCount = filteredJobs.length;
-  const [query, setQuery] = useState<string>("");
-        const [results, setResults] = useState<Job[]>([]);
-        const [locationResults, setLocationResults] = useState<Job[]>([]);
-        const [location, setLocation] = useState<string>("");
-        const [category, setCategory] = useState<string>("");
-        const [categoryResults, setCategoryResults] = useState<Job[]>([]);
+  const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults } = usejobSearch(); 
       
-        const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-          const val = e.target.value;
-          setQuery(val);
-          if (!val.trim()) {
-            setResults([]);
-            return;
-          }
-      
-          try {
-            const res = await axios.get(`/api/jobs/search?q=${encodeURIComponent(val)}`);
-            setResults(res.data);
-          } catch (err) {
-            console.error("Search failed:", err); 
-            setResults([]);
-          } 
-        };
-      
-        const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
-          const locationVal = e.target.value;
-          setLocation(locationVal);
-          if (!locationVal.trim()) {
-            setLocationResults([]);
-            return;
-          }
-      
-          try {
-            const res = await axios.get(`/api/jobs/search?location=${encodeURIComponent(locationVal)}`);
-            setLocationResults(res.data);
-          } catch (err) {
-            console.error("Search failed:", err); 
-            setLocationResults([]);
-          }
-        };
-      
-        const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
-          const categoryVal = e.target.value;
-          setCategory(categoryVal);
-          if(!categoryVal.trim()){
-            setCategoryResults([]);
-            return;
-          }
-          try {
-            const res = await axios.get(`/api/jobs/search?category=${encodeURIComponent(categoryVal)}`);
-            setCategoryResults(res.data);
-          } catch (err) {
-            console.error("Search failed:", err); 
-            setCategoryResults([]);
-          }
-        }
-      
-    
     return (
         <>
+        <Toaster/>
             <Navbar />
             <main className="grow max-w-7xl mx-auto w-full px-6 py-12 mt-4">
   <section className="mb-12">
@@ -173,7 +123,7 @@ export function JobsCategory(){
                 setLocationResults([]);
               }
                else {
-                alert('Please enter either job title or location');
+                toast.error('Please enter either job title or location');
               }
             }}>
                         Search 
@@ -285,7 +235,7 @@ export function JobsCategory(){
                   {job.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {job.company} • {job.location}
+                  {job.company.name} • {job.location}
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors" onClick={() => addToWishList(job)}>

@@ -10,6 +10,7 @@ import { companyRoutes } from "./routes/company.routes.js";
 import { applicationRoutes } from "./routes/applications.routes.js";
 import { adminRoutes } from "./routes/admin.routes.js";
 import { internshipsRoutes } from "./routes/internships.routes.js";
+import flash from "connect-flash";
 
 dotenv.config()
 

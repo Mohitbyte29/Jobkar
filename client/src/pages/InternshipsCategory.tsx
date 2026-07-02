@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toTitleCase from '../../utils/titleCase';
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Internship{
     id: number;
@@ -96,6 +97,7 @@ interface Internship{
 
     return (
         <>
+            <Toaster/>
             <Navbar/>
             <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
   <section className="mb-12">
@@ -152,7 +154,7 @@ interface Internship{
                 setLocationResults([]);
               }
                else {
-                alert('Please enter either job title or location');
+                toast.error('Please enter either job title or location');
               }
             }}>
                         Search 

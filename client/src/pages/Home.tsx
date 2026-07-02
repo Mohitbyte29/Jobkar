@@ -4,11 +4,12 @@ import bgVideo from "../assets/videos/video.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
 import { IndianRupee, MapPin, Search } from "lucide-react";
-import axios from "axios";
 import { useJobs } from "@/context/JobsContext";
 import timeAgo from "../../utils/timeAgo";
+import toast, { Toaster } from "react-hot-toast";
+import { usejobSearch } from "@/hooks/JobSearch";
 
-  
+
 interface Job {
   id: number;
   title: string;
@@ -25,75 +26,8 @@ export default function Home() {
   const jobsRef = useRef<HTMLElement>(null);
   const employerRef = useRef<HTMLElement>(null);
   const testimonialsRef = useRef<HTMLElement>(null);
-  // Get jobs from context
-
-  const [query, setQuery] = useState<string>("");
-  const [selectedJob, setSelectedJob] = useState<string | null>("");
-  const [selectedLocation, setSelectedLocation] = useState<string | null>("");
-  const [results, setResults] = useState<Job[]>([]);
-  const [locationResults, setLocationResults] = useState<Job[]>([]);
-  const [location, setLocation] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [categoryResults, setCategoryResults] = useState<Job[]>([]);
-  const canSearch = selectedJob !== null || selectedLocation !== null;
-
-  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setQuery(val);
-    setSelectedJob(null);
-    if (!val.trim()) {
-      setResults([]);
-      return;
-    }
-    try {
-      const res = await axios.get(
-        `/api/jobs/search?q=${encodeURIComponent(val)}`,
-      );
-      setResults(res.data);
-    } catch (err) {
-      console.error("Search failed:", err);
-      setResults([]);
-    }
-  };
-
-  const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const locationVal = e.target.value;
-    setLocation(locationVal);
-    setSelectedLocation(null);
-    if (!locationVal.trim()) {
-      setLocationResults([]);
-      return;
-    }
-
-    try {
-      const res = await axios.get(
-        `/api/jobs/search?location=${encodeURIComponent(locationVal)}`,
-      );
-      setLocationResults(res.data);
-    } catch (err) {
-      console.error("Search failed:", err);
-      setLocationResults([]);
-    }
-  };
-
-  const handleCategoryChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const categoryVal = e.target.value;
-    setCategory(categoryVal);
-    if (!categoryVal.trim()) {
-      setCategoryResults([]);
-      return;
-    }
-    try {
-      const res = await axios.get(
-        `/api/jobs/search?category=${encodeURIComponent(categoryVal)}`,
-      );
-      setCategoryResults(res.data);
-    } catch (err) {
-      console.error("Search failed:", err);
-      setCategoryResults([]);
-    }
-  };
-
+  const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults } = usejobSearch();
+  
   useEffect(() => {
     let ctx: ReturnType<(typeof import("gsap"))["default"]["context"]> | null =
       null;
@@ -312,6 +246,7 @@ export default function Home() {
   const financeCount = userData.filter((job) => job.category === "FINANCE").length;
   return (
     <>
+      <Toaster position="top-center"/>
       <Navbar />
       <header
         ref={heroRef}
@@ -373,42 +308,42 @@ export default function Home() {
                 onClick={() => setResults([])}
               />
 
-              <button
-                disabled={!canSearch}
-                className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
-                  canSearch
-                    ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
-                    : "bg-gray-400 text-white cursor-not-allowed opacity-50"
-                }`}
-                onClick={() => {
-                  if (!selectedJob && query.trim()) {
-                    alert("Please enter a valid Job");
-                    return;
-                  }
+                <button
+                  disabled={!canSearch}
+                  className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+                    canSearch
+                      ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
+                      : "bg-gray-400 text-white cursor-not-allowed opacity-50"
+                  }`}
+                  onClick={() => {
+                    if (!selectedJob && query.trim()) {
+                      toast.error("Please enter a job");
+                      return;
+                    }
 
-                  if (!selectedLocation && location.trim()) {
-                    alert("Please enter a valid location");
-                    return;
-                  }
-                  if (query.trim() && location.trim()) {
-                    window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
-                    setResults([]);
-                    setLocationResults([]);
-                  } else if (query.trim()) {
-                    window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
-                    setResults([]);
-                    setLocationResults([]);
-                  } else if (location.trim()) {
-                    window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
-                    setResults([]);
-                    setLocationResults([]);
-                  } else {
-                    alert("Please enter either job title or location");
-                  }
-                }}
-              >
-                Search
-              </button>
+                    if (!selectedLocation && location.trim()) {
+                      alert("Please enter a valid location");
+                      return;
+                    }
+                    if (query.trim() && location.trim()) {
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (query.trim()) {
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (location.trim()) {
+                      window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else {
+                      toast.error("Please enter either job title or location");
+                    }
+                  }}
+                >
+                  Search
+                </button>
             </div>
 
             {results.length > 0 && (

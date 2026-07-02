@@ -5,7 +5,9 @@ import timeAgo from '../../utils/timeAgo';
 import Navbar from "@/components/Navbar.tsx";
 import { useNavigate } from "react-router-dom";
 import toTitleCase from '../../utils/titleCase';
+import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { usejobSearch } from "@/hooks/JobSearch.tsx";
 
 interface Job{
     id: number;
@@ -24,63 +26,7 @@ interface Job{
     const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
-    const [query, setQuery] = useState<string>("");
-      const [results, setResults] = useState<Job[]>([]);
-      const [locationResults, setLocationResults] = useState<Job[]>([]);
-      const [location, setLocation] = useState<string>("");
-      const [category, setCategory] = useState<string>("");
-      const [categoryResults, setCategoryResults] = useState<Job[]>([]);
-    
-      const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setQuery(val);
-        if (!val.trim()) {
-          setResults([]);
-          return;
-        }
-    
-        try {
-          const res = await axios.get(`/api/jobs/search?q=${encodeURIComponent(val)}`);
-          setResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setResults([]);
-        }
-      };
-    
-      const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const locationVal = e.target.value;
-        setLocation(locationVal);
-        if (!locationVal.trim()) {
-          setLocationResults([]);
-          return;
-        }
-    
-        try {
-          const res = await axios.get(`/api/jobs/search?location=${encodeURIComponent(locationVal)}`);
-          setLocationResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setLocationResults([]);
-        }
-      };
-    
-      const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
-        const categoryVal = e.target.value;
-        setCategory(categoryVal);
-        if(!categoryVal.trim()){
-          setCategoryResults([]);
-          return;
-        }
-        try {
-          const res = await axios.get(`/api/jobs/search?category=${encodeURIComponent(categoryVal)}`);
-          setCategoryResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setCategoryResults([]);
-        }
-      }
-    
+    const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
   
   const getSortedJobs = () => {
     const jobs = [...userData];
@@ -95,6 +41,7 @@ interface Job{
 
     return (
         <>
+            <Toaster/>
             <Navbar/>
             <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
   <section className="mb-12">
@@ -129,33 +76,41 @@ interface Job{
               />
             </div>
             <button
-            className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
-              query.trim() || location.trim()
-                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
-                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
-            }`}
-            onClick={() => {
-              if(query.trim() && location.trim()){
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if (query.trim()) {
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if(location.trim()){
-                window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-               else {
-                alert('Please enter either job title or location');
-              }
-            }}>
-                        Search 
-                    </button>
+                  disabled={!canSearch}
+                  className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+                    canSearch
+                      ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
+                      : "bg-gray-400 text-white cursor-not-allowed opacity-50"
+                  }`}
+                  onClick={() => {
+                    if (!selectedJob && query.trim()) {
+                      toast.error("Please enter a job");
+                      return;
+                    }
+
+                    if (!selectedLocation && location.trim()) {
+                      toast.error("Please enter a valid location");
+                      return;
+                    }
+                    if (query.trim() && location.trim()) {
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (query.trim()) {
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (location.trim()) {
+                      window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else {
+                      toast.error("Please enter either job title or location");
+                    }
+                  }}
+                >
+                  Search
+                </button>
           </div>
 
           {results.length > 0 && (
@@ -163,6 +118,7 @@ interface Job{
           {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
             <li key={title} onClick={() => {
               setQuery(title)
+              setSelectedJob(title);
               setResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
@@ -177,6 +133,7 @@ interface Job{
           {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
             <li key={location} onClick={() => {
               setLocation(location)
+              setSelectedLocation(location);
               setLocationResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
