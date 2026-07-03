@@ -38,7 +38,7 @@ interface Internship{
     return internships;
   };
   
-
+  
     return (
         <>
             <Toaster/>

@@ -8,24 +8,45 @@ export const jobSearch = async(req, res) => {
         const location = (req.query.location || "").toLowerCase();
         const category = (req.query.category || "").toLowerCase();
         if(!q && !location && !category) return res.json([]);
-         const jobs = await prisma.job.findMany({
-      where: {
-        AND: [
-          q ? {
-            OR: [
-              { title: { contains: q } }
-            ],
-          } : {},
-          location
-            ? { location: { contains: location } }
-            : {},
-            category
-             ? { category: { contains: category } } 
-             : {},
-        ],
-      },
-      take: 15,
-    });
+                 const jobs = await prisma.job.findMany({
+            where: {
+                AND: [
+                    q ? {
+                        OR: [
+                            { title: { contains: q } }
+                        ],
+                    } : {},
+                    location
+                        ? { location: { contains: location } }
+                        : {},
+                    category
+                        ? { category: { contains: category } }
+                        : {},
+                ],
+            },
+            take: 15,
+            select: {
+                id: true,
+                title: true,
+                company: {
+                    select: {
+                        name: true,
+                        description: true,
+                        location: true,
+                        website: true,
+                        companyStatus: true,
+                        logo: true,
+                    },
+                },
+                category: true,
+                location: true,
+                salaryMin: true,
+                salaryMax: true,
+                updatedAt: true,
+                type: true,
+                tags: true,
+            },
+        });
         let results = jobs;
         if(q){
             results = results.filter(job => (job.title?.toLowerCase().includes(q) || job.category?.toLowerCase().includes(q)));

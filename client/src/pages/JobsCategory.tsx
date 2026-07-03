@@ -28,7 +28,6 @@ export function JobsCategory(){
   const [searchParams] = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [wishList, setwishList] = useState<Job[]>([]);
 
   const searchTitle = searchParams.get("q") || "";
   const searchLocation = searchParams.get("location") || "";
@@ -51,7 +50,7 @@ export function JobsCategory(){
     
     fetchJobs();
   }, [searchTitle, searchLocation, searchCategory]);
-  const filteredJobs = jobs.filter((job) => {
+  const filteredJobs = jobs.filter((job: Job) => {
     return (
       job.title?.toLowerCase().includes(searchTitle.toLowerCase()) &&
       job.location?.toLowerCase().includes(searchLocation.toLowerCase()) &&
@@ -59,7 +58,7 @@ export function JobsCategory(){
       job.salaryMin !== null && job.salaryMax !== null
     );
   });
-    
+    console.log(filteredJobs.map((job: Job) => job.title))
   const jobCount = filteredJobs.length;
   const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults } = usejobSearch(); 
       
@@ -107,24 +106,30 @@ export function JobsCategory(){
                 : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
             }`}
             onClick={() => {
-              if(query.trim() && location.trim()){
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if (query.trim()) {
-                window.location.href = `/jobs/search?q=${encodeURIComponent(query)}}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if(location.trim()){
-                window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-               else {
-                toast.error('Please enter either job title or location');
-              }
+              if (!selectedJob && query.trim()) {
+                      toast.error("Please enter a job");
+                      return;
+                    }
+
+                    if (!selectedLocation && location.trim()) {
+                      toast.error("Please enter a valid location");
+                      return;
+                    }
+                    if (query.trim() && location.trim()) {
+                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (query.trim()) {
+                      window.location.href = `/jobs/search?c=${encodeURIComponent(query)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (location.trim()) {
+                      window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else {
+                      toast.error("Please enter either job title or location");
+                    }
             }}>
                         Search 
                     </button>
@@ -235,7 +240,7 @@ export function JobsCategory(){
                   {job.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {job.company.name} • {job.location}
+                  {job.company?.name ?? "Unknown company"} • {job.location}
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors" onClick={() => addToWishList(job)}>

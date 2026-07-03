@@ -16,6 +16,7 @@ import CompanyPage from './pages/CompanyPage';
 import SavedJob from './pages/SavedJob';
 import { InternshipsCategory } from './pages/InternshipsCategory';
 import InternshipPage from './pages/InternshipPage';
+import CompanyCategories from './pages/CompanyCategories';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/categories' element={<Categories />} />
         <Route path='/companies' element={<Companies />} />
+        <Route path='/companies/search' element={<CompanyCategories />} />
         <Route path='/internships' element={<Internships />} />
         <Route path='/internships/search' element={<InternshipsCategory />} />
         <Route path='/resources' element={<Resources />} />

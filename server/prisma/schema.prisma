@@ -35,13 +35,13 @@ model Company{
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   logo String?
+  category String? @db.VarChar(255)
   description String @db.Text
   website String @db.VarChar(255)
   location String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   companyStatus companyStatus @default(ACTIVE)
-
   jobs Job[]
   internships Internship[]
   UserId Int
@@ -78,7 +78,7 @@ model Internship {
   id Int @id @default(autoincrement())
   title String @db.VarChar(255)
   description String @db.Text
-  category String @db.VarChar(255)
+  category String? @db.VarChar(255)
   requirements String @db.Text
   location String @db.VarChar(255)
   tags Json
@@ -158,6 +158,7 @@ enum category {
   BUSINESS_OPERATIONS
   OTHER
 }
+
 
 enum InternshipType {
   Paid

@@ -6,7 +6,6 @@ import Navbar from "@/components/Navbar.tsx";
 import { useNavigate } from "react-router-dom";
 import toTitleCase from '../../utils/titleCase';
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
 import { usejobSearch } from "@/hooks/JobSearch.tsx";
 
 interface Job{

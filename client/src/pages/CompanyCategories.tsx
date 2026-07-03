@@ -1,10 +1,11 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { useCompany } from "@/context/CompanyContext";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import { useCompanySearch } from '../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Company {
   name: string;
@@ -19,10 +20,52 @@ interface Company {
     jobs: { title: string};
 }
 
-export default function Companies() {
-  const { companyData, total } = useCompany();
+export default function CompanyCategories() {
+  const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [searchParams] = useSearchParams();
+  
+  const searchName = searchParams.get("c") || "";
+  const searchLocation = searchParams.get("location") || "";
+  const searchCategory = searchParams.get("category") || "";
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams();
+
+        if (searchName) params.set("c", searchName);
+        if (searchLocation) params.set("location", searchLocation);
+        if (searchCategory) params.set("category", searchCategory);
+
+        const response = await axios.get(`/api/companies/search?${params.toString()}`);
+        setCompanies(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error("Failed to fetch companies:", error);
+        setCompanies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCompanies();
+  }, [searchName, searchLocation, searchCategory]);
+  
+  const filteredCompanies = companies.filter((company: Company) => {
+    return (
+      company.name?.toLowerCase().includes(searchName?.toLowerCase() || "") &&
+      company.location?.toLowerCase().includes(searchLocation?.toLowerCase() || "") &&
+      company.category?.toLowerCase().includes(searchCategory?.toLowerCase() || "") &&
+      company.companyStatus === "ACTIVE"
+    )
+  });
+  console.log(filteredCompanies.map((company: Company) => company.name));
+  const companyCount = filteredCompanies.length;
   const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedCompany, setSelectedCompany, selectedLocation, setSelectedLocation, canSearch} = useCompanySearch();
   const navigate = useNavigate();
+  
   return (
     <>
     <Toaster/>
@@ -106,7 +149,7 @@ export default function Companies() {
                 
               {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(results.map((company) => company.name))).map((name) => (
+          {Array.from(new Set(results.map((company: Company) => company.name))).map((name: string) => (
             <li key={name} onClick={() => {
               setQuery(name)
               setSelectedCompany(name);
@@ -121,7 +164,7 @@ export default function Companies() {
       )}
         {locationResults.length > 0 && (
         <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(locationResults.map((company) => company.location))).map((location) => (
+          {Array.from(new Set(locationResults.map((company: Company) => company.location))).map((location: string) => (
             <li key={location} onClick={() => {
               setLocation(location)
               setSelectedLocation(location);
@@ -377,7 +420,7 @@ export default function Companies() {
             <div className="flex-1">
               <div className="flex justify-between items-center mb-md">
                 <p className="font-body-sm text-body-sm text-on-surface-variant">
-                  Showing <strong>{total}</strong> companies
+                  Showing <strong>{companyCount}</strong> companies
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="font-label-strong text-label-strong text-on-surface-variant">
@@ -392,7 +435,7 @@ export default function Companies() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Stripe Card */}
-                    {companyData.map((company : Company) => (
+                    {filteredCompanies.map((company : Company) => (
                       <div key={company.name} className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
                   {company.name}
                   <div className="flex items-start justify-between mb-sm">

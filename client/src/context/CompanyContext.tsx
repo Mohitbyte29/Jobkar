@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 interface Company{
     name: string;
     logo: string;
+    category: string;
     description: string;
     website: string;
     location: string;
