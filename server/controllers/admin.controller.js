@@ -14,6 +14,8 @@ export const getAllUsers = async(req, res) => {
     }
 }
 
+
+
 export const getUserById = async(req, res) => {
     try{
         const user = await prisma.user.findMany({

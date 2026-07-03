@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
-import Navbar from "../components/Navbar";
-import bgVideo from "../assets/videos/video.mp4";
+import Navbar from "@/components/Navbar";
+import bgVideo from "@/assets/videos/video.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
 import { IndianRupee, MapPin, Search } from "lucide-react";

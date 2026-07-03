@@ -1,44 +1,43 @@
 import { IndianRupee } from "lucide-react";
 import { useState, type ChangeEvent } from "react"
-import {useInternships} from "../context/InternshipsContext.tsx";
-import timeAgo from '../../utils/timeAgo';
+import {useJobs} from "../../context/JobsContext.tsx";
+import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
 import { useNavigate } from "react-router-dom";
-import toTitleCase from '../../utils/titleCase';
-import axios from "axios";
+import toTitleCase from '../../../utils/titleCase.tsx';
 import toast, { Toaster } from "react-hot-toast";
-import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
+import { usejobSearch } from "@/hooks/JobSearch.tsx";
 
-interface Internship{
+interface Job{
     id: number;
-  title: string;
-  company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
-  category: string;
-  location: string;
-  salaryMin: number;
-  salaryMax: number;
-  updatedAt: string;
-  type: string;
-  tags: string;
+    title: string;
+    company: {name: string, description: string, location: string, website: string, companyStatus: string, logo: string};
+    category: string;
+    location: string;
+    salaryMin: number;
+    salaryMax: number;
+    updatedAt: string;
+    type: string;
+    tags: string;
   }
   
-  export function Internships(){
-    const { userData, total } = useInternships();
+  export function Jobs(){
+    const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
-    const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedInternship, setSelectedInternship, selectedLocation, setSelectedLocation, canSearch} = useInternshipsearch();
-
-  const getSortedInternships = () => {
-    const internships = [...userData];
+    const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
+  
+  const getSortedJobs = () => {
+    const jobs = [...userData];
     if (sortBy === "recent") {
-      return internships.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      return jobs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     } else if (sortBy === "salary") {
-      return internships.sort((a, b) => b.salaryMax - a.salaryMax);
+      return jobs.sort((a, b) => b.salaryMax - a.salaryMax);
     }
-    return internships;
+    return jobs;
   };
   
-  
+
     return (
         <>
             <Toaster/>
@@ -58,8 +57,8 @@ interface Internship{
               </span>
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="internship Title or Keywords..." value={query} onChange={handleChange} onClick={() => setLocationResults([])}
-                type="text"
+                placeholder="Job Title or Keywords..."
+                type="text" value={query} onChange={handleChange} onClick={() => setLocationResults([])}
               />
             </div>
             <div className="flex items-center px-4 py-2 flex-1 w-full">
@@ -76,14 +75,14 @@ interface Internship{
               />
             </div>
             <button
-            disabled={!canSearch}
+                  disabled={!canSearch}
                   className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
                     canSearch
                       ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
                       : "bg-gray-400 text-white cursor-not-allowed opacity-50"
                   }`}
                   onClick={() => {
-                    if (!selectedInternship && query.trim()) {
+                    if (!selectedJob && query.trim()) {
                       toast.error("Please enter a job");
                       return;
                     }
@@ -93,15 +92,15 @@ interface Internship{
                       return;
                     }
                     if (query.trim() && location.trim()) {
-                      window.location.href = `/internships/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (query.trim()) {
-                      window.location.href = `/internships/search?q=${encodeURIComponent(query)}`;
+                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (location.trim()) {
-                      window.location.href = `/internships/search?location=${encodeURIComponent(location)}`;
+                      window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else {
@@ -110,15 +109,15 @@ interface Internship{
                   }}
                 >
                   Search
-                    </button>
+                </button>
           </div>
 
           {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(results.map((internship: Internship) => internship.title))).map((title: string) => (
+          {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
             <li key={title} onClick={() => {
               setQuery(title)
-              setSelectedInternship(title);
+              setSelectedJob(title);
               setResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
@@ -130,9 +129,9 @@ interface Internship{
       )}
         {locationResults.length > 0 && (
         <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(locationResults.map((internship: Internship) => internship.location))).map((location: string) => (
+          {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
             <li key={location} onClick={() => {
-              setLocation(location);
+              setLocation(location)
               setSelectedLocation(location);
               setLocationResults([]);
             }}>
@@ -153,7 +152,7 @@ interface Internship{
         <div className="space-y-4">
           <div>
             <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
-              internship Type
+              Job Type
             </span>
             <div className="space-y-2">
               <label className="flex items-center gap-3 cursor-pointer">
@@ -183,11 +182,11 @@ interface Internship{
         </div>
       </div>
     </aside>
-    {/* internship Feed */}
+    {/* Job Feed */}
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
-          Showing <strong>{total}</strong> internships
+          Showing <strong>{total}</strong> jobs
         </span>
         <div className="flex items-center gap-2">
           <span className="font-label-strong text-label-strong text-on-surface-variant">
@@ -203,9 +202,9 @@ interface Internship{
         </div>
       </div>
       {userData.length > 0 && (
-        getSortedInternships().map((internship : Internship) => (
-            <div key={internship.id}>
-              <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
+        getSortedJobs().map((job : Job) => (
+            <div key={job.id}>
+              <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
                     <span
@@ -219,10 +218,10 @@ interface Internship{
             <div className="flex justify-between items-start mb-1">
               <div>
                 <h3 className="font-h3 text-h3 text-on-surface group-hover:text-secondary transition-colors">
-                  {internship.title}
+                  {job.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {internship.company.name} • {internship.location} 
+                  {job.company.name} • {job.location} 
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors">
@@ -236,10 +235,10 @@ interface Internship{
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
               <span className="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps rounded-full">
-                {toTitleCase(internship.type)}
+                {toTitleCase(job.type)}
               </span>
               <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
-                {toTitleCase(internship.category)}
+                {toTitleCase(job.category)}
               </span>
             </div>
             <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 pt-6 border-t border-slate-50 gap-4">
@@ -253,7 +252,7 @@ interface Internship{
                   </span>
                   <span className="font-label-strong text-on-surface flex items-center">
                     <IndianRupee width={15} />
-                    <span>{internship.salaryMin/1000}k - {internship.salaryMax/1000}k</span>
+                    <span>{job.salaryMin/1000}k - {job.salaryMax/1000}k</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -264,15 +263,15 @@ interface Internship{
                     schedule
                   </span>
                   <span className="font-body-sm text-on-surface-variant">
-                    {timeAgo(internship.updatedAt)}
+                    {timeAgo(job.updatedAt)}
                   </span>
                 </div>
               </div>
               <div className="flex gap-3">
                 <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
-                  Save internship
+                  Save Job
                 </button>
-                <button onClick={() => navigate(`/internships/search/${internship.title}`, {state: internship})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>
@@ -286,7 +285,16 @@ interface Internship{
           
       
       {/* Pagination */}
-      
+      <div className="flex flex-col items-center justify-center gap-4 pt-12 pb-8">
+        <div className="animate-spin">
+          <span className="material-symbols-outlined text-3xl text-secondary">
+            progress_activity
+          </span>
+        </div>
+        <span className="font-body-sm text-on-surface-variant">
+          Loading more jobs...
+        </span>
+      </div>
     </div>
   </div>
 </main>

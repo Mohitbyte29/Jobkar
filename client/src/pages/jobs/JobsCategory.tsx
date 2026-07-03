@@ -1,12 +1,14 @@
+import { wishListContext } from "@/context/WishlistContext";
+import axios from "axios";
 import { IndianRupee } from "lucide-react";
-import { useState, type ChangeEvent } from "react"
-import {useJobs} from "../context/JobsContext.tsx";
-import timeAgo from '../../utils/timeAgo';
-import Navbar from "@/components/Navbar.tsx";
-import { useNavigate } from "react-router-dom";
-import toTitleCase from '../../utils/titleCase';
+import { useState, useEffect, useContext, type ChangeEvent } from "react"
+import { useSearchParams } from 'react-router-dom';
+import timeAgo from '../../../utils/timeAgo';
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import toast, { Toaster } from "react-hot-toast";
-import { usejobSearch } from "@/hooks/JobSearch.tsx";
+import { usejobSearch } from "@/hooks/JobSearch";
+
 
 interface Job{
     id: number;
@@ -20,69 +22,91 @@ interface Job{
     type: string;
     tags: string;
   }
-  
-  export function Jobs(){
-    const { userData, total } = useJobs();
-    const [sortBy, setSortBy]   = useState<string>("recent");
-    const navigate = useNavigate();
-    const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
-  
-  const getSortedJobs = () => {
-    const jobs = [...userData];
-    if (sortBy === "recent") {
-      return jobs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-    } else if (sortBy === "salary") {
-      return jobs.sort((a, b) => b.salaryMax - a.salaryMax);
-    }
-    return jobs;
-  };
-  
 
+
+export function JobsCategory(){
+  const [searchParams] = useSearchParams();
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const searchTitle = searchParams.get("q") || "";
+  const searchLocation = searchParams.get("location") || "";
+  const searchCategory = searchParams.get("category") || "";
+
+  const { addToWishList } = useContext(wishListContext);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/jobs/search?q=' + searchTitle + '&location=' + searchLocation + '&category=' + searchCategory);
+        setJobs(response.data);
+      } catch (error) {
+        console.error("Failed to fetch jobs:", error);
+        setJobs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchJobs();
+  }, [searchTitle, searchLocation, searchCategory]);
+  const filteredJobs = jobs.filter((job: Job) => {
+    return (
+      job.title?.toLowerCase().includes(searchTitle.toLowerCase()) &&
+      job.location?.toLowerCase().includes(searchLocation.toLowerCase()) &&
+      job.category?.toLowerCase().includes(searchCategory.toLowerCase()) &&
+      job.salaryMin !== null && job.salaryMax !== null
+    );
+  });
+    console.log(filteredJobs.map((job: Job) => job.title))
+  const jobCount = filteredJobs.length;
+  const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults } = usejobSearch(); 
+      
     return (
         <>
-            <Toaster/>
-            <Navbar/>
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
+        <Toaster/>
+            <Navbar />
+            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 mt-4">
   <section className="mb-12">
     <h1 className="font-bold text-[48px] text-on-surface mb-8">
       Find your next career move
     </h1>
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
-            <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
-              <span
-                className="material-symbols-outlined text-outline mr-2"
-                data-icon="search"
-              >
-                search
-              </span>
-              <input
-                className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="Job Title or Keywords..."
-                type="text" value={query} onChange={handleChange} onClick={() => setLocationResults([])}
-              />
-            </div>
-            <div className="flex items-center px-4 py-2 flex-1 w-full">
-              <span
-                className="material-symbols-outlined text-outline mr-2"
-                data-icon="location_on"
-              >
-                location_on
-              </span>
-              <input
-                className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="City or remote" value={location} onChange={handleLocationChange} onClick={() => setResults([])}
-                type="text"
-              />
-            </div>
-            <button
-                  disabled={!canSearch}
-                  className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
-                    canSearch
-                      ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
-                      : "bg-gray-400 text-white cursor-not-allowed opacity-50"
-                  }`}
-                  onClick={() => {
-                    if (!selectedJob && query.trim()) {
+    <div className="bg-white p-2 rounded-xl job-card-shadow flex flex-col md:flex-row items-center gap-2 border border-slate-100">
+      <div className="grow flex items-center px-4 w-full">
+        <span
+          className="material-symbols-outlined text-outline"
+          data-icon="search"
+        >
+          search
+        </span>
+        <input
+          className="w-full border-none focus:ring-0 font-body-md text-on-surface placeholder:text-outline-variant"
+          placeholder="Job title, keywords..." value={query} onChange={handleChange} onClick={() => setLocationResults([])}
+          type="text"
+        />
+      </div>
+      <div className="hidden md:block w-[1px] h-8 bg-slate-200" />
+      <div className="grow flex items-center px-4 w-full">
+        <span
+          className="material-symbols-outlined text-outline"
+          data-icon="location_on"
+        >
+          location_on
+        </span>
+        <input
+          className="w-full border-none focus:ring-0 font-body-md text-on-surface placeholder:text-outline-variant"
+          placeholder="City, state, or remote" value={location} onChange={handleLocationChange} onClick={() => setResults([])}
+          type="text"
+        />
+      </div>
+      <button
+            className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
+              query.trim() || location.trim()
+                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
+                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+            }`}
+            onClick={() => {
+              if (!selectedJob && query.trim()) {
                       toast.error("Please enter a job");
                       return;
                     }
@@ -92,11 +116,11 @@ interface Job{
                       return;
                     }
                     if (query.trim() && location.trim()) {
-                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (query.trim()) {
-                      window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
+                      window.location.href = `/jobs/search?c=${encodeURIComponent(query)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (location.trim()) {
@@ -106,18 +130,15 @@ interface Job{
                     } else {
                       toast.error("Please enter either job title or location");
                     }
-                  }}
-                >
-                  Search
-                </button>
-          </div>
-
-          {results.length > 0 && (
+            }}>
+                        Search 
+                    </button>
+    </div>
+    {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
           {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
             <li key={title} onClick={() => {
               setQuery(title)
-              setSelectedJob(title);
               setResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
@@ -132,7 +153,6 @@ interface Job{
           {Array.from(new Set(locationResults.map((job: Job) => job.location))).map((location: string) => (
             <li key={location} onClick={() => {
               setLocation(location)
-              setSelectedLocation(location);
               setLocationResults([]);
             }}>
               <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
@@ -186,23 +206,22 @@ interface Job{
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
-          Showing <strong>{total}</strong> jobs
+          Showing <strong>{jobCount}</strong> jobs
         </span>
         <div className="flex items-center gap-2">
           <span className="font-label-strong text-label-strong text-on-surface-variant">
             Sort by:
           </span>
-          <select 
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-transparent border-none font-label-strong text-secondary focus:ring-0 cursor-pointer">
-            <option value="recent">Most Recent</option>
-            <option value="salary">Highest Salary</option>
+          <select className="bg-transparent border-none font-label-strong text-secondary focus:ring-0 cursor-pointer">
+            <option>Most Recent</option>
+            <option>Highest Salary</option>
           </select>
         </div>
       </div>
-      {userData.length > 0 && (
-        getSortedJobs().map((job : Job) => (
+
+      {/* Job Card 1 */}
+      {filteredJobs.length > 0 && (
+        filteredJobs.map((job : Job) => (
             <div key={job.id}>
               <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
@@ -221,10 +240,10 @@ interface Job{
                   {job.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {job.company.name} • {job.location} 
+                  {job.company?.name ?? "Unknown company"} • {job.location}
                 </p>
               </div>
-              <button className="text-outline hover:text-error transition-colors">
+              <button className="text-outline hover:text-error transition-colors" onClick={() => addToWishList(job)}>
                 <span
                   className="material-symbols-outlined"
                   data-icon="bookmark"
@@ -235,10 +254,13 @@ interface Job{
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
               <span className="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps rounded-full">
-                {toTitleCase(job.type)}
+                Full-time
               </span>
               <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
-                {toTitleCase(job.category)}
+                Design
+              </span>
+              <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
+                Senior Level
               </span>
             </div>
             <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 pt-6 border-t border-slate-50 gap-4">
@@ -268,10 +290,10 @@ interface Job{
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
+                <button className="px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95" onClick={() => addToWishList(job)}>
                   Save Job
                 </button>
-                <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button className="px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>
@@ -298,6 +320,7 @@ interface Job{
     </div>
   </div>
 </main>
+      <Footer/>
         </>
     )
 }

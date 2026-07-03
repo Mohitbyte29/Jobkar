@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Link, useSearchParams } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
-import { useCompanySearch } from '../hooks/CompSearch';
+import { useCompanySearch } from '../../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import axios from "axios";

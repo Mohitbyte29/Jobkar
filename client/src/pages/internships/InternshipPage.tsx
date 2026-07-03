@@ -2,9 +2,9 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Link, useLocation } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
-import toTitleCase from "../../utils/titleCase";
+import toTitleCase from "../../../utils/titleCase";
 
-const JobPage = () => {
+const InternshipPage = () => {
     const location = useLocation();
     const user = location.state;
     console.log(user.company.website);
@@ -387,4 +387,4 @@ const JobPage = () => {
   )
 }
 
-export default JobPage
+export default InternshipPage

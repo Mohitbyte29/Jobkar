@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { useCompany } from "@/context/CompanyContext";
 import { Link } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
-import { useCompanySearch } from '../hooks/CompSearch';
+import { useCompanySearch } from '../../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
 
 interface Company {

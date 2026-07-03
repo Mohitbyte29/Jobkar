@@ -1,10 +1,10 @@
 import { IndianRupee } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react"
-import {useInternships} from "../context/InternshipsContext.tsx";
-import timeAgo from '../../utils/timeAgo';
+import {useInternships} from "../../context/InternshipsContext.tsx";
+import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import toTitleCase from '../../utils/titleCase';
+import toTitleCase from '../../../utils/titleCase.tsx';
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
