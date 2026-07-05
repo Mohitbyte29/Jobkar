@@ -71,10 +71,16 @@ export const loginUser = async (req, res, next) => {
             if(company) {
                 tokenPayload.companyId = company.id;
             }
+            const employer = await prisma.employer.findFirst({
+                where: {userId: user.id}
+            });
+            if(employer) {
+                tokenPayload.employerId = employer.id;
+            }
         }
         
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
-        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, token});
+        res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, employerId: tokenPayload.employerId, token});
     } catch(error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error during login"});

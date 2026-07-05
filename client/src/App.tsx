@@ -22,6 +22,11 @@ import CompanyManagement from './pages/admin/CompanyManagement';
 import Analytics from './pages/admin/Analytics';
 import Payment from './pages/admin/Payment';
 import UserManagement from './pages/admin/UserManagement';
+import Dashboard from './pages/employer/Dashboard';
+import CompanyProfile from './pages/employer/CompanyProfile';
+import JobPosting from './pages/employer/JobPosting';
+import TeamManagement from './pages/employer/TeamManagement';
+import Applicants from './pages/employer/Applicants';
 
 
 const App = () => {
@@ -50,6 +55,11 @@ const App = () => {
         <Route path='/admin/analytics' element={<Analytics/>} />
         <Route path='/admin/payments' element={<Payment/>} />
         <Route path='/admin/users' element={<UserManagement/>} />
+        <Route path='/employer/dashboard' element={<Dashboard/>} />
+        <Route path='/employer/companies' element={<CompanyProfile/>} />
+        <Route path='/employer/job-postings' element={<JobPosting/>} />
+        <Route path='/employer/team-management' element={<TeamManagement/>} />
+        <Route path='/employer/applicants' element={<Applicants/>} />
       </Routes>
     </div>
   )

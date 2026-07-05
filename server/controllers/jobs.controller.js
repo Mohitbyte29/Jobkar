@@ -151,7 +151,8 @@ export const getJobById = async(req, res) => {
 export const createJob = async(req, res) => {
     try{
         const companyId = req.user.companyId;
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId: company_Id } = req.body;
+        const employerId = req.user.id;
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId: company_Id, employerId: employer_Id } = req.body;
         const userId = req.user.id;
         
         if(!companyId) {

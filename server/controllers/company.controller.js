@@ -70,7 +70,7 @@ export const getCompanies = async (req, res) => {
       select: {
         id: true,
         name: true,
-        category: true,
+        category: true | null,
         description: true,
         website: true,
         logo: true,
@@ -137,7 +137,7 @@ export const deleteCompany = async (req, res) => {
 
 export const createCompany = async (req, res) => {
   try {
-    const { name, description, logo, website, location } = req.body;
+    const { name, description, logo, website, category, location } = req.body;
 
     const company = await prisma.company.create({
       data: {
@@ -146,6 +146,7 @@ export const createCompany = async (req, res) => {
         logo,
         website,
         location,
+        category,
         user: { connect: { id: req.user.id } },
       },
     });

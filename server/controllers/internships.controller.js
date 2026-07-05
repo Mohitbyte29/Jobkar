@@ -1,4 +1,4 @@
-import { InternshipStatus, PrismaClient } from "@prisma/client";
+import { internshipStatus, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -56,7 +56,7 @@ export const getInternships = async(req, res) => {
             limit = 15,
         } = req.query;
         const where = {
-            internshipStatus: InternshipStatus.ACTIVE,
+            internshipStatus: internshipStatus.ACTIVE,
             ...(type && {type}),
             ...(location && {location : {contains: search}}),
             ...(search && {
@@ -109,7 +109,7 @@ export const getInternshipById = async(req, res) => {
                     _count: {select: {applications: true}},
                 }
             })
-            if(!internship || internship.status === InternshipStatus.DRAFT){
+            if(!internship || internship.internshipStatus === internshipStatus.DRAFT){
                 return res.status(404).json({error: "Internship not found"});
             }            
             res.json(internship);
@@ -161,8 +161,8 @@ export const updateInternship = async(req, res) => {
         const internship = await prisma.internship.findUnique({
             where: {id: Number(req.params.id)}
         })
-        const updated = await prisma.job.update({
-            where: {id: job.id},
+        const updated = await prisma.internship.update({
+            where: {id: internship.id},
             data: {
                 ...req.body,
                 status: req.body.status || internship.internshipStatus,
@@ -173,7 +173,7 @@ export const updateInternship = async(req, res) => {
         res.json(updated);
     } catch (error){
         console.log(error);
-        res.status(500).json({error: "Failed to update job"});
+        res.status(500).json({error: "Failed to update internship"});
     }
 }
 
@@ -183,9 +183,9 @@ export const deleteInternship = async(req, res) => {
             where: {id: Number(req.params.id)}
         })
         await prisma.internship.delete({where: {id: job.id}});
-        res.json({message: "Job deleted successfully"});
+        res.json({message: "Internship deleted successfully"});
     } catch (error){
         console.log(error);
-        res.status(500).json({error: "Failed to delete job"});
+        res.status(500).json({error: "Failed to delete internship"});
     }
 }
