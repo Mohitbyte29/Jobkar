@@ -64,7 +64,7 @@ export const getInternships = async(req, res) => {
                     {title: { contains: search}},
                     {location: { contains: search}},
                     {description: { contains: search}},
-                    {company: { contains: search}},
+                    {companies: { name: { contains: search }}},
                 ]
             })
         };
@@ -75,7 +75,7 @@ export const getInternships = async(req, res) => {
         select: {
                     id: true, 
                     title: true, 
-                    company: {select: {name: true, description: true, location: true, website: true, companyStatus: true, logo: true}}, 
+                    companies: {select: {name: true, description: true, location: true, website: true, companyStatus: true, logo: true}}, 
                     location: true, 
                     type: true, 
                     salaryMin: true,
@@ -143,10 +143,10 @@ export const createInternship = async(req, res) => {
         const internship = await prisma.internship.create({
             data: {
                 ...req.body,
-                company: { connect: { id: companyId } },
+                companies: { connect: { id: Number(companyId) } },
                 employer: { connect: {id: userId}},
             },
-            include: { company: true },
+            include: { companies: true },
         });
         res.status(201).json(internship);
     }

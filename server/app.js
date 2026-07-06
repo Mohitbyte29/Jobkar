@@ -11,6 +11,7 @@ import { applicationRoutes } from "./routes/applications.routes.js";
 import { adminRoutes } from "./routes/admin.routes.js";
 import { internshipsRoutes } from "./routes/internships.routes.js";
 import flash from "connect-flash";
+import cookieParser from "cookie-parser";
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ const prisma = new PrismaClient();
 app.use(cors({origin : "http://localhost:5173"}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 app.use(
   session({secret: "secret-code", resave: true, saveUninitialized: false})

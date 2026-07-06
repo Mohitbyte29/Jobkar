@@ -35,6 +35,7 @@ export const registerUser = async (req, res, next) => {
                 role
             }
         });
+        
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
     } catch(error) {
         console.error(error);
@@ -80,10 +81,18 @@ export const loginUser = async (req, res, next) => {
         }
         
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
+
+        res.cookie("token", token, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 3600000});
+
         res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, employerId: tokenPayload.employerId, token});
     } catch(error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error during login"});
     }
 };
+
+export const logOutUser = (req, res) => {
+    res.cookie("token", "", {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 0});
+    res.status(200).json({success: true, message: "Logout successful"});
+}
 
