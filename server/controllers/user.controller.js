@@ -1,46 +1,50 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const getUserProfile = async(req, res) => {
+
+export const getMyProfile = async(req, res) => {
     try{
         const user = await prisma.user.findUnique({
             where: {id: req.user.id},
-            select: {id: true, name: true, email: true, avatarUrl: true, isEmailValid: true, createdAt: true}
+            select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         })
         res.json({user});
     } catch(error){
         console.log(error);
-        res.status(500).json({ error: "Failed to fetch user profile" });
+        res.status(500).json({ error: "Failed to fetch My profile" });
     }
 }   
 
-export const updateUserProfile = async(req, res) => {
+export const updateMyProfile = async(req, res) => {
     try{
-        const {name, avatarUrl} = req.body;
+        const {name, email, password, avatar, resume} = req.body;
         const updatedUser = await prisma.user.update({
             where: {id: req.user.id},
             data: {
                 name,
-                avatarUrl,
+                email,
+                password,
+                avatar,
+                resume
             },
-            select: {id: true, name: true, email: true, avatarUrl: true, isEmailValid: true, createdAt: true}
-        })
+            select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
+        });
         res.json({user: updatedUser});
     } catch(error){
         console.log(error);
-        res.status(500).json({ error: "Failed to update user profile" });
+        res.status(500).json({ error: "Failed to update My profile" });
     }
 }
 
-export const deleteUserProfile = async(req, res) => {
+export const deleteMyProfile = async(req, res) => {
     try{
         const deletedUser = await prisma.user.delete({
             where: {id: req.user.id},
-            select: {id: true, name: true, email: true, avatarUrl: true, isEmailValid: true, createdAt: true}
+            select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         })
         res.json({user: deletedUser});
     } catch(error){
         console.log(error);
-        res.status(500).json({ error: "Failed to delete user profile" });
+        res.status(500).json({ error: "Failed to delete My profile" });
     }
 }

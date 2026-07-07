@@ -23,7 +23,6 @@ interface JobsContextType {
   setLoading: (loading: boolean) => void;
   total: number;
   setTotal: (total: number) => void;
-
 }
 
 export const JobsContext = createContext<JobsContextType | undefined>(undefined);

@@ -14,13 +14,11 @@ export const getAllUsers = async(req, res) => {
     }
 }
 
-
-
 export const getUserById = async(req, res) => {
     try{
         const user = await prisma.user.findMany({
             where: {id: Number(req.params.id)},
-            select: {id: true, name: true, email: true, avatarUrl: true, isEmailValid: true, createdAt: true}
+            select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         })
         await authenticateAdmin(req, res, next);
         next();

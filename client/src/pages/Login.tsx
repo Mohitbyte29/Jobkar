@@ -56,7 +56,9 @@ export default function SignInPage() {
         </div>
         {/* Social Sign-in Buttons */}
         <div className="grid grid-cols-1 gap-sm mb-lg">
-          <button className="flex items-center justify-center gap-xs h-12 bg-surface-container-lowest border border-outline-variant rounded-lg font-label-strong text-on-surface hover:bg-black hover:text-white cursor-pointer transition-all active:scale-[0.98] ">
+          <button onClick={() => {
+            window.open('http://localhost:4000/api/auth/google', 'http://localhost:4000/api/auth/google/callback');
+          }} className="flex items-center justify-center gap-xs h-12  border border-outline-variant rounded-lg font-label-strong hover:bg-surface-container hover:text-black transition-colors active:opacity-80 bg-black text-white cursor-pointer active:scale-[0.98] ">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -75,7 +77,7 @@ export default function SignInPage() {
                 fill="#EA4335"
               />
             </svg>
-            Google
+            Sign in with Google
           </button>
         </div>
         {/* Divider */}

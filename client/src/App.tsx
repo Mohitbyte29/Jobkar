@@ -27,6 +27,7 @@ import CompanyProfile from './pages/employer/CompanyProfile';
 import JobPosting from './pages/employer/JobPosting';
 import TeamManagement from './pages/employer/TeamManagement';
 import Applicants from './pages/employer/Applicants';
+import AuthSuccess from './pages/AuthSuccess';
 
 
 const App = () => {
@@ -60,6 +61,7 @@ const App = () => {
         <Route path='/employer/job-postings' element={<JobPosting/>} />
         <Route path='/employer/team-management' element={<TeamManagement/>} />
         <Route path='/employer/applicants' element={<Applicants/>} />
+        <Route path = '/auth-success' element={<AuthSuccess />} />
       </Routes>
     </div>
   )
