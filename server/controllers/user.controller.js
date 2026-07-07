@@ -8,7 +8,7 @@ export const getMyProfile = async(req, res) => {
             where: {id: req.user.id},
             select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         })
-        res.json({user});
+        return res.json({user, success: true});
     } catch(error){
         console.log(error);
         res.status(500).json({ error: "Failed to fetch My profile" });
@@ -29,7 +29,7 @@ export const updateMyProfile = async(req, res) => {
             },
             select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         });
-        res.json({user: updatedUser});
+        return res.json({user: updatedUser});
     } catch(error){
         console.log(error);
         res.status(500).json({ error: "Failed to update My profile" });
@@ -42,7 +42,7 @@ export const deleteMyProfile = async(req, res) => {
             where: {id: req.user.id},
             select: {id: true, name: true, email: true, avatar: true, createdAt: true, updatedAt: true}
         })
-        res.json({user: deletedUser});
+        return res.json({user: deletedUser});
     } catch(error){
         console.log(error);
         res.status(500).json({ error: "Failed to delete My profile" });

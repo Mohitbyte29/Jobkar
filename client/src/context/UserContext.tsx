@@ -1,12 +1,15 @@
 import axios from "axios";
-import {React, createContext, useEffect, useState} from "react";
+import { createContext, useContext, useEffect, useState} from "react";
 
 interface User{
     id: string;
     name: string;
     email: string;
-    password: string;
     role: string;
+    isLoggedIn: boolean;
+    isVerified: boolean;
+    createdAt: string;
+    updatedAt: string;
     avatar: string;
     resume: string;
 }
@@ -16,9 +19,9 @@ interface UserContextType {
     setUser: (user: User | null) => void;
 };
 
-export const UsersContext = React.createContext<UserContextType | undefined>(undefined);
+export const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UsersProvider = ({children} : {children : React.ReactNode}) => {
+export const UserProvider = ({children} : {children : React.ReactNode}) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -26,26 +29,36 @@ export const UsersProvider = ({children} : {children : React.ReactNode}) => {
             const token = localStorage.getItem('token');
             if(token){
                 try{
-                    const res = await axios.get('/api/')
+                    const res = await axios.get('/api/me', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setUser(res.data.user);
+                } catch(error){
+                    localStorage.removeItem("token");
+                    setUser(null);
                 }
             }
-        }
-    }) 
+        };
+        fetchUser();
+    }, []);
 
     return (
-        <UsersContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser }}>
             {children}
-        </UsersContext.Provider>
+        </UserContext.Provider>
     );
 };
 
-const UserContext = () => {
-
-  return (
-    <div>
-        
-    </div>
-  )
+export const useUser = () => {
+    try{
+        const context = useContext(UserContext);
+        if (!context) {
+            throw new Error('Context must be used within a UserProvider');
+        }
+        return context;
+    } catch(error){
+        throw new Error('useUser must be used within a UserProvider');
+    }
 }
-
-export default UserContext

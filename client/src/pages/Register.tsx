@@ -84,7 +84,9 @@ export default function Register() {
         </div>
         {/* Social Auth */}
         <div className="flex justify-center mb-lg">
-          <button className="flex items-center justify-center gap-xs py-sm px-md border border-outline-variant rounded-lg font-label-strong text-label-strong hover:bg-surface-container hover:text-black transition-colors active:opacity-80 bg-black text-white cursor-pointer w-full">
+          <button onClick={() => {
+            window.open('http://localhost:4000/api/auth/google', 'http://localhost:4000/api/auth/google/callback');
+          }} className="flex items-center justify-center gap-xs py-sm px-md border border-outline-variant rounded-lg font-label-strong text-label-strong hover:bg-surface-container hover:text-black transition-colors active:opacity-80 bg-black text-white cursor-pointer w-full">
             
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

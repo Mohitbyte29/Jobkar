@@ -6,11 +6,13 @@ import WishListProvider from './context/WishlistContext.tsx'
 import { JobsProvider } from './context/JobsContext.tsx'
 import { CompanyProvider } from './context/CompanyContext.tsx'
 import { InternshipsProvider } from './context/InternshipsContext.tsx'
+import { UserProvider } from './context/UserContext.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
   
   <BrowserRouter>
+  <UserProvider>
     <CompanyProvider>
       <InternshipsProvider>
     <JobsProvider>
@@ -18,5 +20,6 @@ createRoot(document.getElementById('root')!).render(
     </JobsProvider>
     </InternshipsProvider>
     </CompanyProvider>
+    </UserProvider>
   </BrowserRouter>
 )

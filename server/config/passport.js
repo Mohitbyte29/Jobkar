@@ -26,6 +26,7 @@ passport.use(new GoogleStrategy({
             email: profile.emails[0].value,
             password: null,
             avatar: profile.photos[0].value,
+            isLoggedIn: true
           }
         });
         return cb(null, newUser);
