@@ -150,6 +150,14 @@ export const createCompany = async (req, res) => {
         user: { connect: { id: req.user.id } },
       },
     });
+    const employer = await prisma.employer.update({
+      data: {
+        companyId: company.id,
+      },
+      where: {
+        userId: req.user.id,
+      },
+    });
     res.json({ company });
   } catch (err) {
     console.log(err);

@@ -1,16 +1,16 @@
 // import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState} from 'react';
 import axios from 'axios'
 
 export default function Register() {
   const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string >("");
+  const [password, setPassword] = useState<string >("");
   const [role, setRole] = useState<string>("seeker"); // Default role is "seeker" 
   const [selectedRole, setSelectedRole] = useState<string>("SEEKER"); // Default role is "seeker" 
-
+  const navigate = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -38,14 +38,17 @@ export default function Register() {
     try{
       const res = await axios.post('http://localhost:4000/api/auth/register', { name, email, password, role: selectedRole });
       console.log('Registration successful:', res.data);
-      // Handle successful registration (e.g., redirect to login page)
     } catch (error) {
       console.log({role: selectedRole})
       if (axios.isAxiosError(error)) {
     console.log(error.response?.data);
   }
-      // Handle registration failure (e.g., display error message)
     }
+     setName("");
+      setEmail("");
+      setPassword("");
+      setRole("seeker");
+      setSelectedRole("SEEKER");
   }
 
     return (
@@ -75,9 +78,9 @@ export default function Register() {
       {/* Right Side: Registration Form */}
       <form className="flex flex-col justify-center py-md px-md" onSubmit={handleSubmit}>
         <div className="mb-md">
-          <h2 className="font-h2 text-h2 text-on-surface mb-xs">
+          <button className="font-h2 text-h2 text-on-surface mb-xs cursor-pointer" type="submit">
             Create your account
-          </h2>
+          </button>
           <p className="font-body-md text-body-md text-on-surface-variant">
             Start your career journey with JobKar today.
           </p>
@@ -259,7 +262,7 @@ export default function Register() {
             </label>
           </div>
           <button
-            className="w-full py-md bg-primary-container text-white rounded-lg font-label-strong text-label-strong hover:bg-slate-800 transition-all active:opacity-90 shadow-md mt-sm"
+            className="flex items-center justify-center gap-xs py-sm px-md border border-outline-variant rounded-lg font-label-strong text-label-strong hover:bg-surface-container hover:text-black transition-colors active:opacity-80 bg-black text-white cursor-pointer w-full"
             type="submit"
           >
             Create Account

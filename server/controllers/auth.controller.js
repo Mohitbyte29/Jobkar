@@ -35,6 +35,14 @@ export const registerUser = async (req, res, next) => {
                 role
             }
         });
+        if(user.role === "EMPLOYER"){
+            await prisma.employer.create({
+                data: {
+                    userId: user.id
+                }
+            });
+        }
+        let tokenPayload = {id: user.id, email: user.email, role: user.role};
         
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
     } catch(error) {
@@ -92,7 +100,6 @@ export const loginUser = async (req, res, next) => {
 };
 
 export const logOutUser = (req, res) => {
-    res.cookie("token", "", {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 0});
-    res.status(200).json({success: true, message: "Logout successful"});
+        res.status(200).json({success: true, message: "Logout successful"});
 }
 

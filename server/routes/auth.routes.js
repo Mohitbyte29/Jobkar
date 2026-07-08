@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, registerUser } from "../controllers/auth.controller.js";
+import { loginUser, logOutUser, registerUser } from "../controllers/auth.controller.js";
 import { isAuthenticated } from "../middlewares/middleware.js";
 import { googleAuth, googleAuthCallback } from "../config/passport.js";
 import passport from "passport";
@@ -8,6 +8,7 @@ const router = new Router();
 
 router.post('/api/auth/register', registerUser);
 router.post('/api/auth/login', loginUser,  isAuthenticated);
+router.post('/api/auth/logout', isAuthenticated, logOutUser);
 
 //! Redirect to Google Login
 router.get('/api/auth/google', googleAuth);

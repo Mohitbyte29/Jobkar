@@ -1,17 +1,19 @@
+import Footer from '@/components/Footer';
 import { SignIn } from '@clerk/react'
 import axios from 'axios';
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function SignInPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const navigate = useNavigate();  
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try{
       const res = await axios.post('http://localhost:4000/api/auth/login', { email, password });
       console.log('Login successful:', res.data);
+      navigate(`/auth-success?token=${res.data.token}`);
     } catch (error) {
       if (axios.isAxiosError(error)) {
     console.log(error.response?.data);
@@ -147,15 +149,15 @@ export default function SignInPage() {
               htmlFor="remember"
             >
               Remember for 30 days
-            </label>
+          </label>
           </div>
           <button
-            className="h-12 bg-primary text-white font-label-strong rounded hover:opacity-90 active:opacity-80 transition-all flex items-center justify-center gap-xs shadow-sm"
             type="submit"
+            className="flex items-center justify-center gap-xs h-12  border border-outline-variant rounded-lg font-label-strong hover:bg-surface-container hover:text-black transition-colors active:opacity-80 bg-black text-white cursor-pointer active:scale-[0.98] mt-2"  
           >
             Sign In
           </button>
-        </form>
+          </form>
         <div className="mt-lg text-center">
           <p className="font-body-md text-on-surface-variant">
             Don't have an account?
@@ -171,50 +173,7 @@ export default function SignInPage() {
     </div>
   </main>
   {/* Footer Component from JSON */}
-  <footer className="bg-slate-50 dark:bg-slate-950 w-full border-t border-slate-200 dark:border-slate-800">
-    <div className="flex flex-col md:flex-row justify-between items-center py-12 w-full max-w-[1280px] mx-auto px-6 gap-4">
-      <div className="flex flex-col items-center md:items-start gap-base">
-        <span className="text-lg font-bold text-slate-900 dark:text-white font-display">
-          JobKar
-        </span>
-        <p className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400">
-          © 2024 JobKar Inc. All rights reserved.
-        </p>
-      </div>
-      <div className="flex flex-wrap justify-center gap-6">
-        <a
-          className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
-          href="#"
-        >
-          About Us
-        </a>
-        <a
-          className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
-          href="#"
-        >
-          Privacy Policy
-        </a>
-        <a
-          className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
-          href="#"
-        >
-          Terms of Service
-        </a>
-        <a
-          className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
-          href="#"
-        >
-          Help Center
-        </a>
-        <a
-          className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
-          href="#"
-        >
-          Contact
-        </a>
-      </div>
-    </div>
-  </footer>
+  <Footer/>
 </>
 
   )
