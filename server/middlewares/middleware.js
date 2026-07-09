@@ -35,24 +35,23 @@ export const authenticateAdmin = (req, res, next) => {
 }
 
 export const authenticateEmployer = (req, res, next) => {
-    try{
-        const authHeader = req.headers.authorization;
-
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({
                 message: "Unauthorized, JWT token is required"
             });
         }
-
+        
+    try{
         const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
-        const role = req.user.role;
-        if(role !== "EMPLOYER"){
+        if(req.user.role !== "EMPLOYER"){
             return res.status(403).json({message: "Access denied. Employers only."});
         }
         next();
-    } catch(error) {
+    } catch(error) {    
         console.log(error);
         return res.status(500).json({message: "Server error during employer authentication"});
     }

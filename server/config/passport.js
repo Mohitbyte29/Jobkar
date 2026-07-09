@@ -2,6 +2,7 @@ import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import passport from 'passport';
 import {PrismaClient} from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { getUserByEmail } from '../services/auth.services.js';
 
 const prisma = new PrismaClient();
 
@@ -16,9 +17,15 @@ passport.use(new GoogleStrategy({
       if(!email){
         return cb(new Error("Email not found in Google profile"), null);
       }
-      const user = await prisma.user.findFirst({
-        where: { email },
-      });
+      const user = await getUserByEmail(email);
+      if(user){
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            isLoggedIn: true
+          }
+        })
+      }
       if (!user) {
         const newUser = await prisma.user.create({
           data: {
@@ -26,7 +33,8 @@ passport.use(new GoogleStrategy({
             email: profile.emails[0].value,
             password: null,
             avatar: profile.photos[0].value,
-            isLoggedIn: true
+            isLoggedIn: true,
+            isOnboarded: false
           }
         });
         return cb(null, newUser);
@@ -58,7 +66,7 @@ export const googleAuth = passport.authenticate("google", { scope: ["profile", "
 
 export const googleAuthCallback = async(req, res) => {
     try {
-      const token = jwt.sign({ id: req.user.id, email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ id: req.user.id, email: req.user.email, role: req.user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
       res.redirect(`${process.env.CLIENT_URL}/auth-success?token=${token}`);
     } catch (error) {
       console.error("Google Login Error:", error);

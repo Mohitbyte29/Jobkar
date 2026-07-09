@@ -1,12 +1,12 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
+import { Link } from "react-router-dom"
 
-const second = () => {
+const Second = () => {
   return (
-    <div>
-        <Navbar/>
-      <main className="flex-grow flex items-center justify-center px-6 py-lg">
-  <div className="w-full max-w-lg">
+    <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+      <main className="grow flex items-center justify-center px-6 py-lg">
+  <div className="w-full max-w-2xl">
     {/* Progress Bar Container */}
     <div className="mb-lg">
       <div className="flex justify-between items-end mb-2">
@@ -104,12 +104,12 @@ const second = () => {
       </div>
       {/* Actions */}
       <div className="mt-lg flex flex-col sm:flex-row gap-sm">
-        <button className="flex-1 order-2 sm:order-1 px-md py-sm rounded-lg border border-outline text-on-surface font-label-strong hover:bg-surface-container-low transition-all">
+        <Link to="/first" className="flex-1 order-2 sm:order-1 px-md py-sm rounded-lg border border-outline text-on-surface font-label-strong hover:bg-surface-container-low transition-all">
           Back
-        </button>
-        <button className="flex-1 order-1 sm:order-2 px-md py-sm rounded-lg bg-primary text-on-primary font-label-strong hover:opacity-90 transition-all">
+        </Link>
+        <Link to="/third" className="flex-1 order-1 sm:order-2 px-md py-sm rounded-lg bg-primary text-on-primary font-label-strong hover:opacity-90 transition-all">
           Continue
-        </button>
+        </Link>
       </div>
     </div>
     {/* Contextual Illustration/Hint */}
@@ -128,9 +128,8 @@ const second = () => {
     </div>
   </div>
 </main>
-    <Footer/>
     </div>
   )
 }
 
-export default second
+export default Second

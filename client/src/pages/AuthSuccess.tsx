@@ -26,7 +26,7 @@ const AuthSuccess = () => {
           if (res.data.success) {
             console.log("Navigating")
             setUser(res.data.user); // save user in context
-            navigate('/');
+            navigate('/first');
           }
         } catch (error) {
           console.log(error)

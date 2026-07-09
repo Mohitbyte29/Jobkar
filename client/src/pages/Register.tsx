@@ -10,8 +10,14 @@ export default function Register() {
   const [password, setPassword] = useState<string >("");
   const [role, setRole] = useState<string>("seeker"); // Default role is "seeker" 
   const [selectedRole, setSelectedRole] = useState<string>("SEEKER"); // Default role is "seeker" 
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [proceed, setProceed] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
+  const handleShowPassword = (e: React.MouseEvent<HTMLInputElement>) => {
+    setShowPassword(!showPassword);
+  }
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
     console.log('Name changed:', e.target.value);
@@ -38,6 +44,7 @@ export default function Register() {
     try{
       const res = await axios.post('http://localhost:4000/api/auth/register', { name, email, password, role: selectedRole });
       console.log('Registration successful:', res.data);
+      navigate(`/auth-success?token=${res.data.token}`);
     } catch (error) {
       console.log({role: selectedRole})
       if (axios.isAxiosError(error)) {
@@ -214,10 +221,10 @@ export default function Register() {
             </div>
             <div className="relative">
               <input
-                className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all font-body-md text-on-surface bg-surface-container-lowest"
+                className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all font-body-md text-on-surface bg-surface-container-lowest" 
                 id="password"
                 placeholder="••••••••"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 onChange={handlePasswordChange}
                 value={password}
               />
@@ -225,8 +232,8 @@ export default function Register() {
                 className="absolute right-sm top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors"
                 type="button"
               >
-                <span className="material-symbols-outlined text-[20px]">
-                  visibility
+                <span className="material-symbols-outlined text-[20px] cursor-pointer" onClick={handleShowPassword}>
+                  {showPassword ? "visibility_off" : "visibility"}
                 </span>
               </button>
             </div>
@@ -236,7 +243,7 @@ export default function Register() {
           </div>
           <div className="flex items-start gap-sm pt-xs">
             <input
-              className="mt-1 w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary"
+              className="mt-1 w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary cursor-pointer"
               id="terms"
               type="checkbox"
             />
@@ -245,19 +252,19 @@ export default function Register() {
               htmlFor="terms"
             >
               I agree to the{" "}
-              <a
+              <Link
                 className="text-secondary font-semibold hover:underline"
-                href="#"
+                to='/terms'
               >
                 Terms of Service
-              </a>{" "}
+              </Link>{" "}
               and{" "}
-              <a
+              <Link
                 className="text-secondary font-semibold hover:underline"
-                href="#"
+                to='/policy'
               >
                 Privacy Policy
-              </a>
+              </Link>
               .
             </label>
           </div>

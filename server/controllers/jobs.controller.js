@@ -1,4 +1,4 @@
-import { JobStatus, PrismaClient } from "@prisma/client";
+import { companyStatus, JobStatus, PrismaClient } from "@prisma/client";
 import { map } from "zod";
 const prisma = new PrismaClient();
 
@@ -150,13 +150,14 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category} = req.body;
         const companyId = req.user.companyId;
-        const employerId = req.user.id;
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId: company_Id, employerId: employer_Id } = req.body;
-        const userId = req.user.id;
-        
+        const employerId = req.user.employerId;
         if(!companyId) {
             return res.status(400).json({error: "Company ID not found. User must be associated with a company"});
+        }
+        if(!employerId) {
+            return res.status(400).json({error: "Employer ID not found. User must be an employer"});
         }
         
         const company = await prisma.company.findFirst({
@@ -171,7 +172,7 @@ export const createJob = async(req, res) => {
             data: {
                 ...req.body,
                 company: { connect: { id: companyId } },
-                employer: { connect: {id: userId}},
+                employer: { connect: {id: employerId}},
             },
             include: { company: true },
         });

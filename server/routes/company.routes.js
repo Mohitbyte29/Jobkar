@@ -7,9 +7,9 @@ const router = new Router();
 router.get('/api/companies', getCompanies);
 router.get('/api/companies/search', searchCompanies);
 router.get('/api/companies/:id', getCompanyById);
-router.post('/api/companies',isAuthenticated, authenticateEmployer, createCompany);
-router.delete('/api/companies/:id', isAuthenticated, authenticateEmployer, deleteCompany);
-router.patch('/api/companies/:id', isAuthenticated, authenticateEmployer, updateCompany);
+router.post('/api/companies', authenticateEmployer, createCompany);
+router.delete('/api/companies/:id', authenticateEmployer, deleteCompany);
+router.patch('/api/companies/:id', authenticateEmployer, updateCompany);
 
 export const companyRoutes = router;
 

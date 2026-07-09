@@ -28,7 +28,12 @@ import JobPosting from './pages/employer/JobPosting';
 import TeamManagement from './pages/employer/TeamManagement';
 import Applicants from './pages/employer/Applicants';
 import AuthSuccess from './pages/AuthSuccess';
-
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import First from './pages/flowPages/first';
+import Third from './pages/flowPages/third';
+import Fourth from './pages/flowPages/fourth';
+import Second from './pages/flowPages/second';
 
 const App = () => {
   return (
@@ -62,6 +67,12 @@ const App = () => {
         <Route path='/employer/team-management' element={<TeamManagement/>} />
         <Route path='/employer/applicants' element={<Applicants/>} />
         <Route path = '/auth-success' element={<AuthSuccess />} />
+        <Route path='/first' element={<First/>} />
+        <Route path='/second' element={<Second/>} />
+        <Route path='/third' element={<Third/>} />
+        <Route path='/fourth' element={<Fourth/>} />
+        <Route path='/terms' element={<Terms/>}/>
+        <Route path='/policy' element={<Privacy/>}/>
       </Routes>
     </div>
   )

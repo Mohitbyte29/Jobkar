@@ -1,5 +1,4 @@
 import Footer from '@/components/Footer';
-import { SignIn } from '@clerk/react'
 import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,6 +7,7 @@ export default function SignInPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();  
+
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try{

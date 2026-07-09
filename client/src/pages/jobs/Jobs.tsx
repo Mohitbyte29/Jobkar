@@ -186,7 +186,10 @@ interface Job{
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
-          Showing <strong>{total}</strong> jobs
+          Showing <strong>{total}</strong> 
+          <span>
+            {total === 1 ? " job" : " jobs"} found
+            </span>
         </span>
         <div className="flex items-center gap-2">
           <span className="font-label-strong text-label-strong text-on-surface-variant">

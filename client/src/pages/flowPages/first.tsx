@@ -1,12 +1,12 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
+import { Link } from 'react-router-dom'
 
-const first = () => {
+const First = () => {
   return (
-    <div>
-        <Navbar/>
-      <main className="flex-grow flex items-center justify-center px-4 py-xl">
-  <div className="w-full max-w-lg">
+    <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+      <main className="grow flex items-center justify-center px-4 py-xl">
+  <div className="w-full max-w-2xl">
     <div className="mb-xs">
       <div className="flex justify-between items-end mb-2">
         <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest">
@@ -67,7 +67,7 @@ const first = () => {
           </div>
         </div>
         <div className="pt-md">
-          <button
+          <Link to='/second'
             className="w-full bg-primary text-on-primary font-label-strong py-4 px-8 rounded-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 group"
             type="submit"
           >
@@ -75,7 +75,7 @@ const first = () => {
             <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
-          </button>
+          </Link>
         </div>
       </form>
       <div className="mt-8 flex items-center justify-center gap-4">
@@ -112,9 +112,8 @@ const first = () => {
     </div>
   </div>
 </main>
-    <Footer/>
-    </div>
+</div>
   )
 }
 
-export default first
+export default First

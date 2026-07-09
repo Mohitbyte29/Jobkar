@@ -1,12 +1,12 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import React from 'react'
+import { Link } from 'react-router-dom'
 
-const fourth = () => {
+const Fourth = () => {
   return (
-    <div>
-        <Navbar/>
-      <main className="flex-grow flex items-center justify-center px-6 pt-24 pb-12">
+    <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+        
+      <main className="grow flex items-center justify-center px-6 pt-24 pb-12">
   <div className="max-w-4xl w-full">
     <div className="mb-lg">
       <div className="flex justify-between items-end mb-2">
@@ -179,7 +179,7 @@ const fourth = () => {
       </div>
       {/* CTA Actions */}
       <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100">
-        <button className="w-full md:w-auto px-8 py-3 font-label-strong text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center gap-2">
+        <Link to="/third" className="w-full md:w-auto px-8 py-3 font-label-strong text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center gap-2">
           <span
             className="material-symbols-outlined text-[18px]"
             data-icon="arrow_back"
@@ -187,8 +187,8 @@ const fourth = () => {
             arrow_back
           </span>
           Back
-        </button>
-        <button className="w-full md:w-auto px-10 py-4 bg-primary text-on-primary rounded-xl font-label-strong hover:bg-slate-800 shadow-lg shadow-slate-900/10 transition-all flex items-center justify-center gap-2 group">
+        </Link>
+        <Link to="/" className="w-full md:w-auto px-10 py-4 bg-primary text-on-primary rounded-xl font-label-strong hover:bg-slate-800 shadow-lg shadow-slate-900/10 transition-all flex items-center justify-center gap-2 group">
           Complete Profile
           <span
             className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform"
@@ -198,63 +198,14 @@ const fourth = () => {
           >
             check_circle
           </span>
-        </button>
+        </Link>
       </div>
     </div>
-    {/* Visual Support Element */}
-    <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div className="bg-white/50 p-6 rounded-xl border border-outline-variant/30 flex items-start gap-4">
-        <span
-          className="material-symbols-outlined text-secondary"
-          data-icon="verified_user"
-        >
-          verified_user
-        </span>
-        <div>
-          <p className="font-label-strong text-primary mb-1">
-            Tailored Recommendations
-          </p>
-          <p className="text-[12px] text-on-surface-variant leading-relaxed">
-            We use your industry selection to show the most relevant job
-            opportunities.
-          </p>
-        </div>
-      </div>
-      <div className="bg-white/50 p-6 rounded-xl border border-outline-variant/30 flex items-start gap-4">
-        <span
-          className="material-symbols-outlined text-secondary"
-          data-icon="trending_up"
-        >
-          trending_up
-        </span>
-        <div>
-          <p className="font-label-strong text-primary mb-1">Market Insights</p>
-          <p className="text-[12px] text-on-surface-variant leading-relaxed">
-            Access salary benchmarks and career growth data specific to your
-            field.
-          </p>
-        </div>
-      </div>
-      <div className="bg-white/50 p-6 rounded-xl border border-outline-variant/30 flex items-start gap-4">
-        <span
-          className="material-symbols-outlined text-secondary"
-          data-icon="diversity_3"
-        >
-          diversity_3
-        </span>
-        <div>
-          <p className="font-label-strong text-primary mb-1">Expert Network</p>
-          <p className="text-[12px] text-on-surface-variant leading-relaxed">
-            Connect with professionals and mentors within your chosen industry.
-          </p>
-        </div>
-      </div>
-    </div>
+    
   </div>
 </main>
-    <Footer/>
     </div>
   )
 }
 
-export default fourth
+export default Fourth

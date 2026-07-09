@@ -420,7 +420,10 @@ export default function CompanyCategories() {
             <div className="flex-1">
               <div className="flex justify-between items-center mb-md">
                 <p className="font-body-sm text-body-sm text-on-surface-variant">
-                  Showing <strong>{companyCount}</strong> companies
+                  Showing <strong>{companyCount}</strong> 
+                  <span>
+                    {companyCount === 1 ? " company" : " companies"} found
+                  </span>
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="font-label-strong text-label-strong text-on-surface-variant">

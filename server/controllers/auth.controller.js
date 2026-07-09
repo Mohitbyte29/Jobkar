@@ -32,8 +32,9 @@ export const registerUser = async (req, res, next) => {
                 name,
                 email,
                 password: hashPassword,
-                role
-            }
+                role,
+                isLoggedIn: true
+            },
         });
         if(user.role === "EMPLOYER"){
             await prisma.employer.create({
@@ -43,8 +44,9 @@ export const registerUser = async (req, res, next) => {
             });
         }
         let tokenPayload = {id: user.id, email: user.email, role: user.role};
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
         
-        res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
+        res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}, token});
     } catch(error) {
         console.error(error);
         res.status(500).json({success: false, message: "Server error during registration"});
@@ -89,9 +91,7 @@ export const loginUser = async (req, res, next) => {
         }
         
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
-
-        res.cookie("token", token, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 3600000});
-
+        
         res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, employerId: tokenPayload.employerId, token});
     } catch(error) {
         console.error(error);
@@ -99,7 +99,15 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-export const logOutUser = (req, res) => {
+export const logOutUser = async (req, res) => {
+    try {
+        await prisma.user.update({
+            where: {id: req.user.id},   
+            data: {isLoggedIn: false}
+        });
         res.status(200).json({success: true, message: "Logout successful"});
-}
-
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({success: false, message: "Server error during logout"});
+    }
+};

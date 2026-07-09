@@ -13,6 +13,7 @@ model User {
   email        String        @unique @db.VarChar(255)
   password     String?        @db.VarChar(255)
   role         Role          @default(SEEKER)
+  isOnboarded   Boolean       @default(false)
   isLoggedIn    Boolean       @default(false) 
   isVerified    Boolean       @default(false)
   avatar       String?       @db.VarChar(255)

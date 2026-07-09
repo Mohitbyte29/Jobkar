@@ -141,15 +141,11 @@ export const createCompany = async (req, res) => {
 
     const company = await prisma.company.create({
       data: {
-        name,
-        description,
-        logo,
-        website,
-        location,
-        category,
+        ...req.body,
         user: { connect: { id: req.user.id } },
       },
     });
+    console.log(req.user);
     const employer = await prisma.employer.update({
       data: {
         companyId: company.id,
