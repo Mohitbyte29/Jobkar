@@ -20,22 +20,22 @@ export default function Register() {
   }
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
-    console.log('Name changed:', e.target.value);
+    // console.log('Name changed:', e.target.value);
   }; 
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    console.log('Email changed:', e.target.value);
+    // console.log('Email changed:', e.target.value);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    console.log('Password changed:', e.target.value);
+    // console.log('Password changed:', e.target.value);
   };
 
   const handleRoleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRole(e.target.value.toUpperCase());
-    console.log('Selected role:', e.target.value);
+    // console.log('Selected role:', e.target.value);
   };
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
@@ -44,6 +44,12 @@ export default function Register() {
     try{
       const res = await axios.post('http://localhost:4000/api/auth/register', { name, email, password, role: selectedRole });
       console.log('Registration successful:', res.data);
+      const onboardingRes = await axios.patch('/api/me/onboarding', {}, {
+        headers: {
+          Authorization: `Bearer ${res.data.token}`,
+        }
+      });
+      console.log(onboardingRes.data);
       navigate(`/auth-success?token=${res.data.token}`);
     } catch (error) {
       console.log({role: selectedRole})

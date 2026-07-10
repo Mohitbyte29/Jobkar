@@ -26,8 +26,8 @@ const AuthSuccess = () => {
           if (res.data.success) {
             console.log("Navigating")
             setUser(res.data.user); // save user in context
-            navigate('/first');
-          }
+            {res.data.user.isOnboarded ? navigate('/first') : navigate('/')}
+          } 
         } catch (error) {
           console.log(error)
           localStorage.removeItem('token');

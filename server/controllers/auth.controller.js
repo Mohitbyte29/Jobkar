@@ -65,6 +65,15 @@ export const loginUser = async (req, res, next) => {
         }
         const {email, password} = result.data;
         const user = await getUserByEmail(email);
+        if(user){
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    isLoggedIn: true,
+                    isOnboarded: false
+                }
+            })
+        }
         if(!user){
             return res.status(404).json({success: false, message: "Email or Password is Incorrect" });
         }

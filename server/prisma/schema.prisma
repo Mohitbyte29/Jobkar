@@ -6,7 +6,6 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(255)
@@ -23,8 +22,60 @@ model User {
   applications Application[]
   companies    Company[]
   employers    Employer?
+  userProfile   UserProfile?
+  education   Education?
+  project     Project?
 
   @@map("users")
+}
+
+model UserProfile{
+  id       Int       @id @default(autoincrement())
+  userId Int      @unique
+  fullName     String @db.VarChar(255)
+  coverImage String? @db.VarChar(255)
+  github   String? @db.VarChar(255)
+  linkedIn String? @db.VarChar(255)
+  bio      String? @db.Text
+  profileViews Int @default(0)
+  yearsOfExperience Int @default(0)
+  skills Json
+  avatar String?
+  achievements Json
+  user User @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project{
+  id       Int       @id @default(autoincrement())
+  userId Int      @unique
+  title     String @db.VarChar(255)
+  techStack Json
+  description String? @db.Text
+  githubUrl String? @db.VarChar(255)
+  projectLink String? @db.VarChar(255)
+  user User @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model Education {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  school String? 
+  intitution String? @db.VarChar(255)
+  degree String @db.VarChar(255)
+  fieldOfStudy String? @db.VarChar(255)
+  startYear Int? 
+  endYaer Int?
+  grade String?
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+
+  @@map("education")
 }
 
 model Employer {

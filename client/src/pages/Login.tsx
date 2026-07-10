@@ -23,12 +23,12 @@ export default function SignInPage() {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    console.log('Email changed:', e.target.value);
+    // console.log('Email changed:', e.target.value);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    console.log('Password changed:', e.target.value);
+    // console.log('Password changed:', e.target.value);
   };
 
   return (
