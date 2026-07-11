@@ -20,7 +20,6 @@ export default function SignInPage() {
   }
     }
   }
-
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     // console.log('Email changed:', e.target.value);

@@ -9,7 +9,7 @@ import { includes } from "zod";
 export const registerUser = async (req, res, next) => {
     try {
         const result = registerSchema.safeParse(req.body);
-        
+    
         if(!result.success){
             const errors = result.error.issues.map(issue => ({
                 field: issue.path.join('.'),
