@@ -35,6 +35,7 @@ import Third from './pages/flowPages/third';
 import Fourth from './pages/flowPages/fourth';
 import Second from './pages/flowPages/second';
 import Profile from './pages/user/Profile';
+import EditProfile from './pages/user/EditProfile';
 
 const App = () => {
   return (
@@ -75,6 +76,7 @@ const App = () => {
         <Route path='/terms' element={<Terms/>}/>
         <Route path='/policy' element={<Privacy/>}/>
         <Route path='/profile' element={<Profile/>}/>
+        <Route path='/edit-profile' element={<EditProfile />}/>
       </Routes>
     </div>
   )

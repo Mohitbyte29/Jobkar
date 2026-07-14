@@ -1,121 +1,79 @@
+import UserNav from "@/components/UserNav"
+import { useUser } from "@/context/UserContext";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
+
+interface User {
+  gmail: string;
+}
+
+interface UserProfile {
+  user: {
+    fullName: string;
+    profession: string;
+    city: string;
+    country: string;
+    industry: string;
+    coverImage: string;
+    github: string;
+    linkedIn: string;
+    portfolio: string;
+    phoneNumber: string;
+    bio: string;
+    profileViews: number;
+    yearsOfExperience: number;
+    skills: string;
+    avatar: string;
+    achievements: string;
+  }
+} 
+
+const defaultProfile: UserProfile = {
+  user: {
+    fullName: '',
+    profession: '',
+    city: '',
+    country: '',
+    industry: '',
+    coverImage: '',
+    github: '',
+    linkedIn: '',
+    portfolio: '',
+    phoneNumber: '',
+    bio: '',
+    profileViews: 0,
+    yearsOfExperience: 0,
+    skills: '',
+    avatar: '',
+    achievements: '',
+  }
+};
+
+const defaultUser: User = { 
+  gmail: ''
+}
 
 const Profile = () => {
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get('http://localhost:4000/api/me/profile', { withCredentials: true });
+        console.log(res.data)
+        setProfile(res.data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
   return (
     <div className="flex min-h-screen">
   {/* BEGIN: Sidebar Navigation */}
-  <aside
-    className="w-64 bg-white border-r border-job-border flex flex-col fixed h-full z-10"
-    data-purpose="sidebar"
-  >
-    <div className="p-6 border-b border-job-border flex items-center space-x-2">
-      <div className="w-8 h-8 bg-job-blue rounded-lg flex items-center justify-center">
-        <i className="fas fa-briefcase text-white text-sm" />
-      </div>
-      <span className="text-xl font-bold text-slate-900">JobBoard</span>
-    </div>
-    <nav className="flex-1 p-4 space-y-1">
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-th-large w-5" />
-        <span className="text-sm font-medium">Dashboard</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-file-alt w-5" />
-        <span className="text-sm font-medium">My Applications</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-heart w-5" />
-        <span className="text-sm font-medium">Saved Jobs</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-calendar-check w-5" />
-        <span className="text-sm font-medium">My Interviews</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-comment-dots w-5" />
-        <span className="text-sm font-medium">Messages</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-job-blue transition-colors"
-        href="#"
-      >
-        <i className="fas fa-user w-5" />
-        <span className="text-sm font-semibold">Profile</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-file-invoice w-5" />
-        <span className="text-sm font-medium">Resume</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors mt-auto"
-        href="#"
-      >
-        <i className="fas fa-cog w-5" />
-        <span className="text-sm font-medium">Settings</span>
-      </a>
-    </nav>
-    {/* Sidebar Promo Card */}
-    <div
-      className="p-4 m-4 bg-slate-50 rounded-2xl border border-job-border text-center"
-      data-purpose="promo-card"
-    >
-      <div className="mb-2">
-        <i className="fas fa-rocket text-job-blue" />
-        <span className="text-xs font-bold ml-1 uppercase">
-          Get Hired Faster
-        </span>
-      </div>
-      <p className="text-[10px] text-slate-500 mb-4 leading-tight">
-        Complete your profile 100% to increase your visibility to recruiters.
-      </p>
-      <div className="relative w-16 h-16 mx-auto mb-4">
-        {/* Circular Progress Simulation */}
-        <svg className="w-full h-full" viewBox="0 0 36 36">
-          <circle
-            className="text-slate-200 stroke-current"
-            cx={18}
-            cy={18}
-            fill="transparent"
-            r={16}
-            strokeWidth={3}
-          />
-          <circle
-            className="text-job-blue stroke-current"
-            cx={18}
-            cy={18}
-            fill="transparent"
-            r={16}
-            strokeDasharray="85, 100"
-            strokeLinecap="round"
-            strokeWidth={3}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-job-blue">85%</span>
-        </div>
-      </div>
-      <button className="w-full py-2 bg-job-blue text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-600 transition-colors">
-        Complete Now
-      </button>
-    </div>
-  </aside>
+    <UserNav />
   {/* END: Sidebar Navigation */}
   {/* BEGIN: Main Content Area */}
   <main className="flex-1 ml-64 p-8">
@@ -159,25 +117,25 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row md:items-end -mt-16 mb-6">
           <div className="relative inline-block">
             <img
-              alt="Mohit Upadhyay"
-              className="w-36 h-36 rounded-full border-4 border-white shadow-lg object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV6-eWSRgUEhwsFt9hOscptSTGdSElm2Ef_9daJFlkqTzJkuSaMaexgjGeTGQqOdyPNrdWmbLu0riuoXZ-ljGLgFXIao_kpJ_0Io7kJHAi5qdgzg7ArEzNDaqlEGdCPRta-WaH6VHr0cqhjlGcIBIIfEJuKVTE1o00lZ-G56zp6Beks0nTDICp1f3vqPpEJZYZnewfA2GimzwA2cf6-T0CbuYr3UJwrfcD78JY4ZQY-lmXNUo03hIb5-BZaR25oXKOvoZLUbqZkGY"
-            />
+              alt={profile.user.fullName || 'User Profile'}
+              className=" w-fit h-36 rounded-full border-4 border-white shadow-lg object-cover"
+              src={profile.user.avatar || 'https://imgs.search.brave.com/NYqJ2WDMfTwFx2ciQ-q3hnJBECcbVOtzjNoJWuPnG7k/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/bWFnbmlmaWMuY29t/L3ByZW1pdW0tdmVj/dG9yL2RlZmF1bHQt/YXZhdGFyLXByb2Zp/bGUtaWNvbi1zb2Np/YWwtbWVkaWEtdXNl/ci1pbWFnZS1ncmF5/LWF2YXRhci1pY29u/LWJsYW5rLXByb2Zp/bGUtc2lsaG91ZXR0/ZS12ZWN0b3ItaWxs/dXN0cmF0aW9uXzU2/MTE1OC0zNDg1Lmpw/Zz9zZW10PWFpc19o/eWJyaWQmdz03NDAm/cT04MA'}
+            />  
             <div className="absolute bottom-4 right-4 w-5 h-5 bg-green-500 border-4 border-white rounded-full" />
           </div>
           <div className="md:ml-6 mb-2 mt-4">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-slate-900">
-                Mohit Upadhyay
+                {profile.user.fullName}
               </h1>
               <i className="fas fa-check-circle text-blue-500 ml-2" />
             </div>
             <p className="text-job-blue font-medium">
-              Full Stack Developer (MERN)
+              {profile.user.profession}
             </p>
             <div className="flex items-center mt-1 text-slate-500 text-sm">
               <i className="fas fa-map-marker-alt mr-2" />
-              <span>Delhi, India</span>
+              <span>{profile.user.city}, {profile.user.country}</span>
               <span className="mx-3 text-slate-300">|</span>
               <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-semibold flex items-center">
                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5" />
@@ -186,32 +144,30 @@ const Profile = () => {
             </div>
           </div>
           <div className="md:ml-auto mb-2">
-            <button className="bg-job-blue text-white px-6 py-2 rounded-xl font-semibold text-sm hover:bg-blue-600 flex items-center transition-all">
-              <i className="fas fa-edit mr-2" /> Edit Profile
-            </button>
-          </div>
+            <button className="bg-primary text-on-primary px-6 py-2 rounded-xl font-semibold text-sm hover:opacity-90 flex items-center transition-all shadow-sm active:scale-95 cursor-pointer" onClick={() => {navigate('/edit-profile')}}><span className="material-symbols-outlined mr-2">edit</span> Edit Profile</button>
+          </div>  
         </div>
         {/* Contact Links */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-6 border-t border-job-border">
           <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
             <i className="fas fa-envelope text-slate-400" />
-            <span className="text-xs truncate">mohit@example.com</span>
+            <span className="text-xs truncate">{user?.email}</span>
           </div>
           <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
             <i className="fas fa-phone text-slate-400" />
-            <span className="text-xs">+91 98765 43210</span>
+            <span className="text-xs">{profile.user.phoneNumber}</span>
           </div>
           <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
             <i className="fas fa-link text-slate-400" />
-            <span className="text-xs">mohit.dev</span>
+            <span className="text-xs">{profile.user.portfolio}</span>
           </div>
           <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
             <i className="fab fa-github text-slate-400" />
-            <span className="text-xs">github.com/mohitupadhyay</span>
+            <span className="text-xs">{profile.user.github}</span>
           </div>
           <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
             <i className="fab fa-linkedin text-slate-400" />
-            <span className="text-xs">linkedin.com/in/mohitupadhyay</span>
+            <span className="text-xs">{profile.user.linkedIn}</span>
           </div>
         </div>
       </div>
@@ -231,10 +187,7 @@ const Profile = () => {
               <h3 className="font-bold text-slate-900">About Me</h3>
             </div>
             <p className="text-sm text-slate-500 leading-relaxed">
-              Passionate Full Stack Developer with expertise in building
-              scalable web applications using MERN stack. I enjoy solving
-              real-world problems, writing clean code, and learning new
-              technologies.
+              {profile.user.bio || 'No bio available.'}
             </p>
           </section>
           {/* END: About Me */}

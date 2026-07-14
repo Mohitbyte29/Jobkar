@@ -10,17 +10,18 @@ const AuthSuccess = () => {
 
   useEffect(() => {
     const handleAuth = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      const accessToken = token ? token : null;
-      console.log("Token: ", accessToken)
-      if (accessToken) {
-        localStorage.setItem('token', accessToken);
+      // const params = new URLSearchParams(window.location.search);
+      // const token = params.get('token');
+      // const accessToken = token ? token : null;
+      // console.log("Token: ", accessToken)
+      // if (accessToken) {
+        //! localStorage.setItem('token', accessToken);
         try {
           const res = await axios.get('/api/me', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+            withCredentials: true,
+            // headers: {
+            //   Authorization: `Bearer ${accessToken}`,
+            // },
           });
           console.log(res.data);
           if (res.data.success) {
@@ -28,14 +29,18 @@ const AuthSuccess = () => {
             setUser(res.data.user); // save user in context
             {res.data.user.isOnboarded ? navigate('/first') : navigate('/')}
           } 
+          else{
+            setUser(null);
+            navigate('/');
+          }
         } catch (error) {
           console.log(error)
-          localStorage.removeItem('token');
+          // localStorage.removeItem('token');
           if (setUser) setUser(null);
         }
-      } else {
-        console.error('No token found in URL parameters.');
-      }
+      // } else {
+      //   console.error('No token found in URL parameters.');
+      // }
     };
 
     handleAuth();

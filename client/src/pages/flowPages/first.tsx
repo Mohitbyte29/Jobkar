@@ -1,6 +1,37 @@
-import { Link } from 'react-router-dom'
+import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 const First = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const navigate = useNavigate();
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+    console.log(firstName);
+  };
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
+    console.log(lastName);
+  }
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    try{
+      const res = await axios.post('/api/me', {
+        fullName: {firstName, lastName}
+      }, { withCredentials: true });
+      console.log(res.data);
+      navigate('/second');
+    }
+    catch(err){
+      console.log(err);
+      if(axios.isAxiosError(err)){
+        console.log(err.response?.data);
+      }
+    }
+  }
+
   return (
     <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
       <main className="grow flex items-center justify-center px-4 py-xl">
@@ -27,7 +58,7 @@ const First = () => {
           How should we address you?
         </p>
       </div>
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-6">
           <div className="space-y-2">
             <label
@@ -43,6 +74,8 @@ const First = () => {
                 name="first_name"
                 placeholder="e.g. Alex"
                 type="text"
+                value={firstName}
+                onChange={handleFirstNameChange}
               />
             </div>
           </div>
@@ -60,20 +93,22 @@ const First = () => {
                 name="last_name"
                 placeholder="e.g. Morgan"
                 type="text"
+                value={lastName}
+                onChange={handleLastNameChange}
               />
             </div>
           </div>
         </div>
         <div className="pt-md">
-          <Link to='/second'
+          <button
             className="w-full bg-primary text-on-primary font-label-strong py-4 px-8 rounded-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 group"
-            type="submit"
+            type="submit" 
           >
             Continue
             <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
-          </Link>
+          </button>
         </div>
       </form>
       <div className="mt-8 flex items-center justify-center gap-4">

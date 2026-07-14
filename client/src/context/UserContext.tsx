@@ -26,21 +26,28 @@ export const UserProvider = ({children} : {children : React.ReactNode}) => {
 
     useEffect(() => {
         const fetchUser = async() => {
-            const token = localStorage.getItem('token');
-            if(token){
+            // const token = localStorage.getItem('token');
+            // if(token){
                 try{
                     const res = await axios.get('/api/me', {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
+                        // headers: {
+                        //     Authorization: `Bearer ${token}`
+                        // }
+                        withCredentials: true,
                     });
-                    setUser(res.data.user);
+                    if(res.data.success){
+                        setUser(res.data.user);
+                    }
+                    else{
+                        setUser(null);
+                    }
+                    // setUser(res.data.user);
                 } catch(error){
-                    localStorage.removeItem("token");
+                    // localStorage.removeItem("token");
                     setUser(null);
                 }
             }
-        };
+        // };
         fetchUser();
     }, []);
 

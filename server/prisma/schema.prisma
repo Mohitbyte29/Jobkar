@@ -33,15 +33,21 @@ model UserProfile{
   id       Int       @id @default(autoincrement())
   userId Int      @unique
   fullName     String @db.VarChar(255)
+  profession String? @db.VarChar(255)
+  phoneNumber String? @db.VarChar(255)
+  city      String? @db.VarChar(255)
+  country   String? @db.VarChar(255)
+  industry   String? @db.VarChar(255)
   coverImage String? @db.VarChar(255)
+  portfolio  String? @db.VarChar(255)
   github   String? @db.VarChar(255)
   linkedIn String? @db.VarChar(255)
   bio      String? @db.Text
-  profileViews Int @default(0)
-  yearsOfExperience Int @default(0)
-  skills Json
+  profileViews Int? @default(0)
+  yearsOfExperience Int? @default(0)
+  skills Json?
   avatar String?
-  achievements Json
+  achievements Json?
   user User @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -51,7 +57,7 @@ model Project{
   id       Int       @id @default(autoincrement())
   userId Int      @unique
   title     String @db.VarChar(255)
-  techStack Json
+  techStack Json?
   description String? @db.Text
   githubUrl String? @db.VarChar(255)
   projectLink String? @db.VarChar(255)
@@ -64,12 +70,12 @@ model Project{
 model Education {
   id Int @id @default(autoincrement())
   userId Int @unique
-  school String? 
-  intitution String? @db.VarChar(255)
+  school String? @db.VarChar(255)
+  institution String? @db.VarChar(255)
   degree String @db.VarChar(255)
   fieldOfStudy String? @db.VarChar(255)
   startYear Int? 
-  endYaer Int?
+  endYear Int?
   grade String?
   user User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())

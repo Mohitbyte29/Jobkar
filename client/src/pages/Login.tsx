@@ -6,14 +6,18 @@ import { Link, useNavigate } from 'react-router-dom'
 export default function SignInPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();  
 
+  const handleShowPassword = (e: React.MouseEvent<HTMLInputElement>) => {
+    setShowPassword(!showPassword);
+  }
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try{
-      const res = await axios.post('http://localhost:4000/api/auth/login', { email, password });
+      const res = await axios.post('http://localhost:4000/api/auth/login', { email, password }, { withCredentials: true });
       console.log('Login successful:', res.data);
-      navigate(`/auth-success?token=${res.data.token}`);
+      navigate(`/auth-success`);
     } catch (error) {
       if (axios.isAxiosError(error)) {
     console.log(error.response?.data);
@@ -125,14 +129,15 @@ export default function SignInPage() {
                 className="w-full h-12 px-sm border border-outline rounded bg-white text-on-background focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all placeholder:text-outline-variant"
                 id="password"
                 placeholder="••••••••"
-                type="password" onChange={handlePasswordChange} value={password}
+                type= {showPassword ? "text" : "password"} 
+                onChange={handlePasswordChange} value={password}
               />
               <button
                 className="absolute right-sm top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant"
                 type="button"
               >
-                <span className="material-symbols-outlined text-xl">
-                  visibility
+                <span className="material-symbols-outlined text-xl cursor-pointer" onClick={handleShowPassword}>
+                  {showPassword ? 'visibility_off' : 'visibility'}
                 </span>
               </button>
             </div>

@@ -32,7 +32,7 @@ export default function Home() {
     let ctx: ReturnType<(typeof import("gsap"))["default"]["context"]> | null =
       null;
     let cancelled = false;
-
+    
     // Lazy-load GSAP + ScrollTrigger only when component mounts
     Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
       ([gsapModule, scrollTriggerModule]) => {

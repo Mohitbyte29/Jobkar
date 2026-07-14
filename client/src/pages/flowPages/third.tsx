@@ -1,8 +1,40 @@
-import Footer from '@/components/Footer'
-import Navbar from '@/components/Navbar'
-import { Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import axios from 'axios';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
 
 const Third = () => {
+  const navigate = useNavigate();
+  const [profession, setProfession] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+  
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try{
+      const res = await axios.patch('http://localhost:4000/api/me/profile', { profession, city, country }, { withCredentials: true });
+      console.log('Profile updated:', res.data);
+      navigate('/fourth');
+    } catch (error) {
+      if(axios.isAxiosError(error)) {
+        console.log(error.response?.data);
+      }
+      console.error('Error updating profile:', error);
+    }
+  }
+
+  const handleProfessionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfession(e.target.value);
+  };
+  
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(e.target.value);
+  };
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountry(e.target.value);
+  };
+
   return (
     <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
       <main className="grow flex items-center justify-center pt-24 pb-12 px-6">
@@ -30,7 +62,7 @@ const Third = () => {
           you with the right opportunities.
         </p>
       </div>
-      <form className="space-y-gutter">
+      <form className="space-y-gutter" onSubmit={handleSubmit}>
         {/* Job Title Field */}
         <div className="space-y-2">
           <label
@@ -50,7 +82,7 @@ const Third = () => {
               className="w-full pl-12 pr-4 py-4 bg-white border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-all placeholder:text-outline/50"
               id="job-title"
               placeholder="e.g. Senior Product Designer"
-              type="text"
+              type="text" onChange={handleProfessionChange}  value={profession}
             />
           </div>
         </div>
@@ -72,6 +104,8 @@ const Third = () => {
                 id="city"
                 placeholder="e.g. San Francisco"
                 type="text"
+                value={city}
+                onChange={handleCityChange}
               />
             </div>
           </div>
@@ -89,7 +123,7 @@ const Third = () => {
               >
                 public
               </span>
-              <select
+              <select value={country} onChange={handleCountryChange}
                 className="w-full pl-12 pr-4 py-4 bg-white border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none appearance-none transition-all"
                 id="country"
               >
@@ -121,9 +155,9 @@ const Third = () => {
             </span>
             Back
           </Link>
-          <Link
+          <Button
             className="w-full md:w-auto px-12 py-4 font-label-strong bg-primary text-on-primary rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-            to="/fourth"
+             type="submit"
           >
             Continue
             <span
@@ -132,7 +166,7 @@ const Third = () => {
             >
               arrow_forward
             </span>
-          </Link>
+          </Button>
         </div>
       </form>
     </div>

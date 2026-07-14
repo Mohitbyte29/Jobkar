@@ -1,5 +1,4 @@
 import { companyStatus, JobStatus, PrismaClient } from "@prisma/client";
-import { map } from "zod";
 const prisma = new PrismaClient();
 
 export const jobSearch = async(req, res) => {
@@ -9,6 +8,7 @@ export const jobSearch = async(req, res) => {
         const category = (req.query.category || "").toLowerCase();
         if(!q && !location && !category) return res.json([]);
                  const jobs = await prisma.job.findMany({
+                    
             where: {
                 AND: [
                     q ? {

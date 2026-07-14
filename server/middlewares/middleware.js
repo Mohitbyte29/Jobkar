@@ -3,18 +3,23 @@ const prisma = new PrismaClient();
 import jwt from "jsonwebtoken";
 
 export const isAuthenticated = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if(!authHeader || !authHeader.startsWith('Bearer ')){
-        return res.status(401).json({success: false, message: 'Unauthorized, JWT token is require'});
+    // const authHeader = req.headers.authorization;
+    // if(!authHeader || !authHeader.startsWith('Bearer ')){
+    //     return res.status(401).json({success: false, message: 'Unauthorized, JWT token is require'});
+    // }
+    console.log(req.cookies);
+    const token = req.cookies.accessToken;
+    console.log("Token: ", token);
+    if(!token){
+        return res.status(401).json({success: false, message: 'Unauthorized, JWT token is required'});
     }
-    const token = authHeader.split(' ')[1];
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch(err){
         console.log(err);
-        return res.status(403).json({message: 'Unauthorized, JWT token is wrong or expired'})
+        return res.status(403).json({success: false, message: 'Unauthorized, JWT token is wrong or expired'})
     }
 }
 

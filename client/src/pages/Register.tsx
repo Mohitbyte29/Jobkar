@@ -42,15 +42,16 @@ export default function Register() {
     e.preventDefault(); // Handle form submission logic here
 
     try{
-      const res = await axios.post('http://localhost:4000/api/auth/register', { name, email, password, role: selectedRole });
+      const res = await axios.post('http://localhost:4000/api/auth/register', { name, email, password, role: selectedRole }, { withCredentials: true });
       console.log('Registration successful:', res.data);
       const onboardingRes = await axios.patch('/api/me/onboarding', {}, {
-        headers: {
-          Authorization: `Bearer ${res.data.token}`,
-        }
+      //   headers: {
+      //     Authorization: `Bearer ${res.data.token}`,
+      //   }
+      withCredentials: true,
       });
-      console.log(onboardingRes.data);
-      navigate(`/auth-success?token=${res.data.token}`);
+      console.log(res.data);
+      navigate(`/auth-success`);
     } catch (error) {
       console.log({role: selectedRole})
       if (axios.isAxiosError(error)) {
@@ -226,7 +227,7 @@ export default function Register() {
               </label>
             </div>
             <div className="relative">
-              <input
+              <input  
                 className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all font-body-md text-on-surface bg-surface-container-lowest" 
                 id="password"
                 placeholder="••••••••"
