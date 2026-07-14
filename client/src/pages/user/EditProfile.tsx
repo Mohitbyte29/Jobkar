@@ -1,11 +1,128 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LocomotiveScroll from "locomotive-scroll";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// interface UserProfile {
+//   fullName: {
+//     firstName: string;
+//     lastName: string;
+//   };
+//   phoneNumber: string;
+//   city: string;
+//   country: string;
+//   industry: string;
+//   bio: string;
+//   profession: string;
+//   linkedIn: string;
+//   github: string;
+//   portfolio: string;
+//   coverImage: string;
+//   avatar: string;
+//   skills: string[];
+//   achievements: string[];
+//   yearsOfExperience: number;
+//   profileViews: number;
+// }
+
+// const : UserProfile = {
+//   fullName: {
+//     firstName: "",
+//     lastName: ""
+//   },
+//   phoneNumber: "",
+//   city: "",
+//   country: "",
+//   industry: "",
+//   bio: "",
+//   profession: "",
+//   linkedIn: "",
+//   github: "",
+//   portfolio: "",
+//   coverImage: "",
+//   avatar: "",
+//   skills: [],
+//   achievements: [],
+//   yearsOfExperience: 0,
+//   profileViews: 0
+// };
+
 const EditProfile = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState({ firstName: "", lastName: "" });
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [profession, setProfession] = useState("");
+  const [bio, setBio] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+  const [linkedin, setLinkedin] = useState<string>("");
+  const [github, setGithub] = useState<string>("");
+  const [portFolio, setPortfolio] = useState<string>("");
+
+  const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try{
+        const res = await axios.patch('/api/me/profile', {
+          fullName: { firstName: name.firstName, lastName: name.lastName },
+          phoneNumber,
+          city,
+          bio,
+          country, 
+          linkedIn: linkedin,
+          github,
+          portfolio: portFolio,
+          profession
+        }, {
+          withCredentials: true,
+        })
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        if(axios.isAxiosError(error)) {
+          console.log(error.response?.data);
+        }
+      }
+  };
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName({ ...name, firstName: e.target.value });
+  };
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName({ ...name, lastName: e.target.value });
+  };
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+    console.log(phoneNumber)
+  };
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // Handle bio change
+    setBio(e.target.value);
+  }
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(e.target.value);
+  };
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountry(e.target.value);
+  };
+  const handleLinkedinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Handle LinkedIn change
+    setLinkedin(e.target.value);
+  };
+  const handleGithubChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Handle GitHub change
+    setGithub(e.target.value);
+  };
+  const handlePortfolioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Handle Portfolio change
+    setPortfolio(e.target.value);
+  };
+  const handleProfessionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfession(e.target.value);
+  };
   const coverRef = useRef<HTMLDivElement | null>(null); // parallax cover image
   const sectionRefs = useRef<HTMLElement[]>([]); // scroll-reveal sections
   sectionRefs.current = [];
@@ -98,7 +215,7 @@ const EditProfile = () => {
         <div className="flex flex-col lg:flex-row gap-gutter">
           {/* Sidebar Navigation */}
           {/* Main Edit Content */}
-          <div className="flex-1 space-y-md w-full">
+          <form onSubmit={handleSaveChanges} className="flex-1 space-y-md w-full">
             {/* Header / Media Section */}
             <section
               ref={addSectionRef}
@@ -168,14 +285,14 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="John"
-                    type="text"
+                    type="text" onChange={handleFirstNameChange} value={name.firstName}
                   />
                 </div>
                 <div className="space-y-xs">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Last Name
                   </label>
-                  <input
+                  <input onChange={handleLastNameChange} value={name.lastName}
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Doe"
                     type="text"
@@ -195,7 +312,7 @@ const EditProfile = () => {
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Phone Number
                   </label>
-                  <input
+                  <input onChange={handlePhoneNumberChange} value={phoneNumber}
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="+1 (555) 000-0000"
                     type="tel"
@@ -209,7 +326,7 @@ const EditProfile = () => {
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
                       location_on
                     </span>
-                    <input
+                    <input onChange={handleCityChange} value={city}
                       className="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="San Francisco"
                       type="text"
@@ -224,24 +341,31 @@ const EditProfile = () => {
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
                       public
                     </span>
-                    <input
-                      className="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
-                      placeholder="United States"
-                      type="text"
-                    />
-                  </div>
+                     <select onChange={handleCountryChange} value={country} className="w-full px-9 py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                    <option value="">Select Country</option>
+                    <option>United States</option>
+                    <option>Canada</option>
+                    <option>United Kingdom</option>
+                    <option>Australia</option>
+                    <option>Germany</option>
+                    <option>India</option>
+                  </select>
+                  </div>  
                 </div>
                 <div className="space-y-xs md:col-span-2">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Industry
                   </label>
-                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                  <select  className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
                     <option value="">Select Industry</option>
-                    <option>Technology</option>
-                    <option>Finance</option>
+                    <option>Technology Software</option>
+                    <option>Creative Media</option>
+                    <option>Marketing</option>
                     <option>Healthcare</option>
-                    <option>Education</option>
-                    <option>Manufacturing</option>
+                    <option>Finance</option>
+                    <option>Education Government</option>
+                    <option>Business Operations</option>
+                    <option>Other</option>
                   </select>
                 </div>
               </div>
@@ -268,7 +392,8 @@ const EditProfile = () => {
                   className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                   placeholder="Experienced Software Engineer with a passion for building scalable web applications..."
                   rows={5}
-                  defaultValue={""}
+                  onChange={handleBioChange}
+                  value={bio}
                 />
               </div>
             </section>
@@ -289,12 +414,12 @@ const EditProfile = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
                 <div className="space-y-xs md:col-span-3">
                   <label className="font-label-strong text-label-strong text-on-surface">
-                    Current Job Title
+                    Profession
                   </label>
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Senior Product Designer"
-                    type="text"
+                    type="text" onChange={handleProfessionChange} value={profession}
                   />
                 </div>
               </div>
@@ -390,7 +515,21 @@ const EditProfile = () => {
                 </div>
               </div>
             </section>
-
+            <section
+              ref={addSectionRef}
+              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+            >
+             <div className="mb-md">
+                <h3 className="font-h3 text-h3 text-primary">Projects</h3>
+                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                  Show Your Projects and Work Samples to Potential Employers.
+                </p>
+              </div>
+              <button className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity active:scale-95 cursor-pointer">
+              Add Project
+            </button>
+            </section>
+            
             {/* Social Links */}
             <section
               ref={addSectionRef}
@@ -415,7 +554,7 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       LinkedIn
                     </label>
-                    <input
+                    <input onChange={handleLinkedinChange} value={linkedin}  
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://linkedin.com/in/username"
                       type="url"
@@ -432,7 +571,7 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       GitHub
                     </label>
-                    <input
+                    <input onChange={handleGithubChange} value={github}
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://github.com/username"
                       type="url"
@@ -449,7 +588,7 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       Portfolio
                     </label>
-                    <input
+                    <input onChange={handlePortfolioChange} value={portFolio}
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://yourportfolio.com"
                       type="url"
@@ -461,20 +600,22 @@ const EditProfile = () => {
 
             {/* Action Footer */}
             <div
-              ref={addSectionRef}
               className="flex items-center justify-end gap-md pt-md border-t border-outline-variant"
             >
-              <button className="px-md py-3 text-on-surface-variant font-label-strong text-label-strong hover:bg-surface-container-high rounded-lg transition-all">
+              <button 
+                className="px-md py-3 text-on-surface-variant font-label-strong text-label-strong hover:bg-surface-container-high rounded-lg transition-all"
+                onClick={() => navigate(-1)}
+              >
                 Cancel
               </button>
-              <button className="px-xl py-3 bg-primary text-on-primary font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
+              <button type="submit" className="px-xl py-3 bg-primary text-on-primary font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">
                   check
                 </span>
                 Save Changes
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </main>
     </>
