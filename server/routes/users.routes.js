@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/middleware.js";
-import { completeOnboarding, createUserProfile, deleteUserData, getUserData, getUserProfile, updateUserData, updateUserProfile } from "../controllers/user.controller.js";
+import { completeOnboarding, createEducation, createUserProfile, deleteUserData, getUserData, getUserProfile, updateUserData, updateUserProfile } from "../controllers/user.controller.js";
 
 const router = new Router();
 
@@ -11,5 +11,6 @@ router.post('/api/me', isAuthenticated, createUserProfile);
 router.patch('/api/me/onboarding', isAuthenticated, completeOnboarding);
 router.patch('/api/me/profile', isAuthenticated, updateUserProfile);
 router.get('/api/me/profile', isAuthenticated, getUserProfile);
+router.patch('/api/me/education', isAuthenticated, createEducation);
 
 export const userRoutes = router;

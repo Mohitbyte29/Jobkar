@@ -149,26 +149,26 @@ const Profile = () => {
         </div>
         {/* Contact Links */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-6 border-t border-job-border">
-          <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
+          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fas fa-envelope text-slate-400" />
             <span className="text-xs truncate">{user?.email}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
+          </button>
+          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fas fa-phone text-slate-400" />
             <span className="text-xs">{profile.user.phoneNumber}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
+          </button>
+          <button className="flex items-center space-x-2 text-slate-100 bg-black  p-2 rounded-xl hover:text-job-blue cursor-pointer">
             <i className="fas fa-link text-slate-400" />
             <span className="text-xs">{profile.user.portfolio}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
+          </button>
+          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fab fa-github text-slate-400" />
             <span className="text-xs">{profile.user.github}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-slate-500 hover:text-job-blue cursor-pointer">
+          </button>
+          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fab fa-linkedin text-slate-400" />
             <span className="text-xs">{profile.user.linkedIn}</span>
-          </div>
+          </button>
         </div>
       </div>
     </section>

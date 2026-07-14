@@ -7,54 +7,13 @@ import axios from "axios";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// interface UserProfile {
-//   fullName: {
-//     firstName: string;
-//     lastName: string;
-//   };
-//   phoneNumber: string;
-//   city: string;
-//   country: string;
-//   industry: string;
-//   bio: string;
-//   profession: string;
-//   linkedIn: string;
-//   github: string;
-//   portfolio: string;
-//   coverImage: string;
-//   avatar: string;
-//   skills: string[];
-//   achievements: string[];
-//   yearsOfExperience: number;
-//   profileViews: number;
-// }
-
-// const : UserProfile = {
-//   fullName: {
-//     firstName: "",
-//     lastName: ""
-//   },
-//   phoneNumber: "",
-//   city: "",
-//   country: "",
-//   industry: "",
-//   bio: "",
-//   profession: "",
-//   linkedIn: "",
-//   github: "",
-//   portfolio: "",
-//   coverImage: "",
-//   avatar: "",
-//   skills: [],
-//   achievements: [],
-//   yearsOfExperience: 0,
-//   profileViews: 0
-// };
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState({ firstName: "", lastName: "" });
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [industry, setIndustry] = useState("");
   const [profession, setProfession] = useState("");
   const [bio, setBio] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -62,12 +21,28 @@ const EditProfile = () => {
   const [linkedin, setLinkedin] = useState<string>("");
   const [github, setGithub] = useState<string>("");
   const [portFolio, setPortfolio] = useState<string>("");
+  const [school, setSchool] = useState<string>("");
+  const [institution, setInstitution] = useState<string>("");
+  const [degree, setDegree] = useState<string>("");
+  const [fieldOfStudy, setFieldOfStudy] = useState<string>("");
+  const [startYear, setStartYear] = useState<number | null>(null);
+  const [endYear, setEndYear] = useState<number | null>(null);
+  const [grade, setGrade] = useState<number | null>(null);
 
+  interface EducationData {
+    school: string;
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startYear: number | null;
+    endYear: number | null;
+    grade: number | null;
+  }
   const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try{
-        const res = await axios.patch('/api/me/profile', {
-          fullName: { firstName: name.firstName, lastName: name.lastName },
+        const res = await axios.patch('http://localhost:4000/api/me/profile', {
+          fullName: `${firstname} ${lastname}`,
           phoneNumber,
           city,
           bio,
@@ -75,11 +50,26 @@ const EditProfile = () => {
           linkedIn: linkedin,
           github,
           portfolio: portFolio,
-          profession
+          profession,
+          industry,
         }, {
           withCredentials: true,
         })
-        console.log(res.data);
+
+        const resEducation = await axios.patch('http://localhost:4000/api/me/education', {
+          school,
+          institution,
+          degree,
+          fieldOfStudy,
+          startYear,
+          endYear,
+          grade
+        }, {
+          withCredentials: true
+        });
+        console.log(res.data.user.fullName);
+        
+        console.log(resEducation.data);
       } catch (error) {
         console.error("Error updating profile:", error);
         if(axios.isAxiosError(error)) {
@@ -88,11 +78,35 @@ const EditProfile = () => {
       }
   };
 
+  const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSchool(e.target.value);
+  };
+  const handleInstitutionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInstitution(e.target.value);
+  };
+  const handleDegreeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDegree(e.target.value);
+  };
+  const handleFieldOfStudyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFieldOfStudy(e.target.value);
+  };
+  const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setStartYear(value === "" ? null : Number.parseInt(value, 10));
+  };
+  const handleEndYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEndYear(value === "" ? null : Number.parseInt(value, 10));
+  };
+  const handleGradeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setGrade(value === "" ? null : Number.parseFloat(value));
+  };
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName({ ...name, firstName: e.target.value });
+    setFirstName(e.target.value);
   };
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName({ ...name, lastName: e.target.value });
+    setLastName(e.target.value);
   };
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
@@ -123,6 +137,9 @@ const EditProfile = () => {
   const handleProfessionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfession(e.target.value);
   };
+  const handleIndustryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setIndustry(e.target.value);
+  }
   const coverRef = useRef<HTMLDivElement | null>(null); // parallax cover image
   const sectionRefs = useRef<HTMLElement[]>([]); // scroll-reveal sections
   sectionRefs.current = [];
@@ -285,14 +302,14 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="John"
-                    type="text" onChange={handleFirstNameChange} value={name.firstName}
+                    type="text" onChange={handleFirstNameChange} value={firstname}
                   />
                 </div>
                 <div className="space-y-xs">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Last Name
                   </label>
-                  <input onChange={handleLastNameChange} value={name.lastName}
+                  <input onChange={handleLastNameChange} value={lastname}
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Doe"
                     type="text"
@@ -356,7 +373,7 @@ const EditProfile = () => {
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Industry
                   </label>
-                  <select  className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                  <select onChange={handleIndustryChange} value={industry} className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
                     <option value="">Select Industry</option>
                     <option>Technology Software</option>
                     <option>Creative Media</option>
@@ -443,7 +460,7 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. High School Name"
-                    type="text"
+                    type="text" onChange={handleSchoolChange} value={school}
                   />
                 </div>
                 <div className="space-y-xs md:col-span-2">
@@ -453,14 +470,14 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. Stanford University"
-                    type="text"
+                    type="text" onChange={handleInstitutionChange} value={institution}
                   />
                 </div>
                 <div className="space-y-xs md:col-span-1">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Degree
                   </label>
-                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white" onChange={handleDegreeChange} value={degree}>
                     <option value="">Select Degree</option>
                     <option>High School</option>
                     <option>Associate's</option>
@@ -474,7 +491,7 @@ const EditProfile = () => {
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Field of Study
                   </label>
-                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white" onChange={handleFieldOfStudyChange} value={fieldOfStudy}>
                     <option value="">Select Field of Study</option>
                     <option>Computer Science</option>
                     <option>Business Administration</option>
@@ -490,7 +507,10 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. 3.8/4.0"
-                    type="text"
+                    type="number"
+                    step="0.1"
+                    onChange={handleGradeChange}
+                    value={grade ?? ""}
                   />
                 </div>
                 <div className="space-y-xs">
@@ -500,7 +520,9 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="YYYY"
-                    type="text"
+                    type="number"
+                    onChange={handleStartYearChange}
+                    value={startYear ?? ""}
                   />
                 </div>
                 <div className="space-y-xs">
@@ -510,7 +532,9 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="YYYY (or Expected)"
-                    type="text"
+                    type="number"
+                    onChange={handleEndYearChange}
+                    value={endYear ?? ""}
                   />
                 </div>
               </div>

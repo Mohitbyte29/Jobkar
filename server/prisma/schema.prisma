@@ -76,7 +76,7 @@ model Education {
   fieldOfStudy String? @db.VarChar(255)
   startYear Int? 
   endYear Int?
-  grade String?
+  grade Float? @db.Float
   user User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  

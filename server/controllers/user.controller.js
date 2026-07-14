@@ -86,6 +86,8 @@ export const getUserProfile = async (req, res) => {
         linkedIn: true,
         country: true,
         city: true,
+        phoneNumber: true,
+        portfolio: true,
         bio: true,
         profileViews: true,
         yearsOfExperience: true,
@@ -139,7 +141,7 @@ export const createUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const {
-      fullName: { firstName, lastName },
+      fullName,
       profession,
       industry,
       coverImage,
@@ -182,18 +184,20 @@ export const updateUserProfile = async (req, res) => {
       return res.status(404).json({ error: "My profile not found" });
     }
     const updateData = {};
-    if (fullName !== undefined)
-      updateData.fullName = `${firstName} ${lastName}`;
-    if (industry !== undefined) updateData.industry = industry;
-    if (coverImage !== undefined) updateData.coverImage = coverImage;
-    if (linkedIn !== undefined) updateData.linkedIn = linkedIn;
-    if (portfolio !== undefined) updateData.portfolio = portfolio;
-    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
-    if (city !== undefined) updateData.city = city;
-    if (bio !== undefined) updateData.bio = bio;
-    if (country !== undefined) updateData.country = country;
-    if (github !== undefined) updateData.github = github;
-    if (profession !== undefined) updateData.profession = profession;
+    if (fullName && fullName.trim() !== "") {
+      updateData.fullName = fullName;
+    }
+    if (industry !== "") updateData.industry = industry;
+    if (coverImage !== "") updateData.coverImage = coverImage;
+    if (linkedIn !== "") updateData.linkedIn = linkedIn;
+    if (portfolio !== "") updateData.portfolio = portfolio;
+    if (phoneNumber !== "") updateData.phoneNumber = phoneNumber;
+    if (city !== "") updateData.city = city;
+    if (bio !== "") updateData.bio = bio;
+    if (country !== "") updateData.country = country;
+    if (github !== "") updateData.github = github;
+    if (profession !== "") updateData.profession = profession;
+
     const updatedUser = await prisma.userProfile.update({
       where: { userId: req.user.id },
       data: {
@@ -201,6 +205,7 @@ export const updateUserProfile = async (req, res) => {
       },
       select: {
         id: true,
+        fullName: true,
         profession: true,
         industry: true,
         coverImage: true,
@@ -236,8 +241,11 @@ export const createEducation = async (req, res) => {
       endYear,
       grade,
     } = req.body;
-    const education = await prisma.education.create({
-      data: {
+    const education = await prisma.education.upsert({
+      where: {
+        userId: req.user.id,
+      },
+      create: {
         school,
         institution,
         degree,
@@ -247,11 +255,20 @@ export const createEducation = async (req, res) => {
         grade,
         user: { connect: { id: req.user.id } },
       },
+      update: {
+        school,
+        institution,
+        degree,
+        fieldOfStudy,
+        startYear,
+        endYear,
+        grade,
+      },
     });
     return res.json({ education });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to create education" });
+    res.status(500).json({ error: "Failed to create education", message: error.message });
   }
 };
 
