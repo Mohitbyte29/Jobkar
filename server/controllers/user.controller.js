@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import cloudinary from "../config/cloudinary.js";
 const prisma = new PrismaClient();
 
 export const getUserData = async (req, res) => {
@@ -86,6 +87,7 @@ export const getUserProfile = async (req, res) => {
         linkedIn: true,
         country: true,
         city: true,
+        university: true,
         phoneNumber: true,
         portfolio: true,
         bio: true,
@@ -112,14 +114,12 @@ export const createUserProfile = async (req, res) => {
       fullName: { firstName, lastName },
       profession,
       industry,
-      coverImage,
       github,
       linkedin,
       bio,
       profileViews,
       yearsOfExperience,
       skills,
-      avatar,
       achievements,
     } = req.body;
     const user = await prisma.userProfile.create({
@@ -144,41 +144,21 @@ export const updateUserProfile = async (req, res) => {
       fullName,
       profession,
       industry,
-      coverImage,
       github,
       linkedIn,
       country,
       city,
       bio,
       profileViews,
+      university,
       yearsOfExperience,
       skills,
-      avatar,
       achievements,
       portfolio,
       phoneNumber,
     } = req.body;
     const user = await prisma.userProfile.findUnique({
-      where: { userId: req.user.id },
-      select: {
-        fullName: true,
-        id: true,
-        profession: true,
-        industry: true,
-        coverImage: true,
-        github: true,
-        linkedIn: true,
-        portfolio: true,
-        phoneNumber: true,
-        country: true,
-        city: true,
-        bio: true,
-        profileViews: true,
-        yearsOfExperience: true,
-        skills: true,
-        avatar: true,
-        achievements: true,
-      },
+      where: { userId: req.user.id },  
     });
     if (!user) {
       return res.status(404).json({ error: "My profile not found" });
@@ -188,10 +168,10 @@ export const updateUserProfile = async (req, res) => {
       updateData.fullName = fullName;
     }
     if (industry !== "") updateData.industry = industry;
-    if (coverImage !== "") updateData.coverImage = coverImage;
     if (linkedIn !== "") updateData.linkedIn = linkedIn;
     if (portfolio !== "") updateData.portfolio = portfolio;
     if (phoneNumber !== "") updateData.phoneNumber = phoneNumber;
+    if (university !== "") updateData.university = university;
     if (city !== "") updateData.city = city;
     if (bio !== "") updateData.bio = bio;
     if (country !== "") updateData.country = country;
@@ -208,10 +188,8 @@ export const updateUserProfile = async (req, res) => {
         fullName: true,
         profession: true,
         industry: true,
-        coverImage: true,
         github: true,
         linkedIn: true,
-        portfolio: true,
         phoneNumber: true,
         country: true,
         city: true,
@@ -219,14 +197,34 @@ export const updateUserProfile = async (req, res) => {
         profileViews: true,
         yearsOfExperience: true,
         skills: true,
-        avatar: true,
         achievements: true,
       },
     });
     return res.json({ user: updatedUser, success: true });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to update My profile" });
+    res.status(500).json({ error: "Failed to update My profile", message: error.message });
+  }
+};
+
+export const getUserEducation = async (req, res) => {
+  try {
+    const education = await prisma.education.findUnique({
+      where: { userId: req.user.id },
+      select: {
+        school: true,
+        institution: true,
+        degree: true,
+        fieldOfStudy: true,
+        startYear: true,
+        endYear: true,
+        grade: true,
+      },
+    })
+    return res.json({ education });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to get education", message: error.message });
   }
 };
 
@@ -241,8 +239,16 @@ export const createEducation = async (req, res) => {
       endYear,
       grade,
     } = req.body;
+    const updateData = {};
+    if(school && school.trim() !== "") updateData.school = school;
+    if(institution && institution.trim() !== "") updateData.institution = institution;
+    if(degree && degree.trim() !== "") updateData.degree = degree;
+    if(fieldOfStudy && fieldOfStudy.trim() !== "") updateData.fieldOfStudy = fieldOfStudy;
+    if(startYear !== null) updateData.startYear = startYear;
+    if(endYear !== null) updateData.endYear = endYear;
+    if(grade !== null) updateData.grade = grade;
     const education = await prisma.education.upsert({
-      where: {
+      where: {  
         userId: req.user.id,
       },
       create: {
@@ -256,13 +262,7 @@ export const createEducation = async (req, res) => {
         user: { connect: { id: req.user.id } },
       },
       update: {
-        school,
-        institution,
-        degree,
-        fieldOfStudy,
-        startYear,
-        endYear,
-        grade,
+        ...updateData
       },
     });
     return res.json({ education });
@@ -314,3 +314,56 @@ export const completeOnboarding = async (req, res) => {
     });
   }
 };
+
+export const updateCover = async (req, res) => {
+  try{
+
+    if (!req.file?.path) {
+      return res.status(400).json({ error: "Cover file is required" });
+    }
+  
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "coverImage",
+      width: 1584,
+      height: 396,
+      crop: "fill",
+    });
+  
+    const updated = await prisma.userProfile.update({
+      where: { userId: req.user.id },
+      data: { coverImage: result.secure_url },
+    })
+    res.json({ success: true, coverImage: result.secure_url, user: updated })
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to update cover image", message: error.message });
+  }
+}
+
+
+export const updateAvatar = async (req, res) => {
+  try{
+
+    if (!req.file?.path) {
+      return res.status(400).json({ error: "Avatar file is required" });
+    }
+  
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "avatar",
+      width: 150,
+      height: 150,
+      crop: "fill",
+    });
+  
+    const updated = await prisma.userProfile.update({
+      where: { userId: req.user.id },
+      data: { avatar: result.secure_url },
+    })
+    res.json({ success: true, avatar: result.secure_url, user: updated })
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to update avatar", message: error.message });
+  }
+}

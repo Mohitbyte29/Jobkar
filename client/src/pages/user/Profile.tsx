@@ -2,10 +2,15 @@ import UserNav from "@/components/UserNav"
 import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 interface User {
   gmail: string;
+}
+
+interface Education {
+  startYear: number | null;
+  endYear: number | null;
 }
 
 interface UserProfile {
@@ -19,6 +24,7 @@ interface UserProfile {
     github: string;
     linkedIn: string;
     portfolio: string;
+    university: string;
     phoneNumber: string;
     bio: string;
     profileViews: number;
@@ -40,6 +46,7 @@ const defaultProfile: UserProfile = {
     github: '',
     linkedIn: '',
     portfolio: '',
+    university: '',
     phoneNumber: '',
     bio: '',
     profileViews: 0,
@@ -50,6 +57,11 @@ const defaultProfile: UserProfile = {
   }
 };
 
+const defaultEducation: Education = {
+  startYear: null,
+  endYear: null,
+}
+
 const defaultUser: User = { 
   gmail: ''
 }
@@ -58,12 +70,20 @@ const Profile = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [education, setEducation] = useState<Education>(defaultEducation);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get('http://localhost:4000/api/me/profile', { withCredentials: true });
-        console.log(res.data)
+        const resEducation = await axios.get('http://localhost:4000/api/me/education', { withCredentials: true });
+        console.log(res.data);
+        console.log(resEducation.data);
         setProfile(res.data);
+        setEducation({
+          startYear: resEducation.data.education.startYear,
+          endYear: resEducation.data.education.endYear,
+        });
+        console.log(education.startYear, education.endYear);
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
@@ -110,7 +130,7 @@ const Profile = () => {
         className="h-48 w-full bg-cover bg-center"
         style={{
           backgroundImage:
-            'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEMiiHeq7N6QT4NYW8nZ7cE-0XIOUgYMAAV0zIoRdOxOwPaSyqDV209pg0yuHvQiLlnIyoJy4LE7sE2QPBaXjnRIxAPFv_tKHMUlfCpa5zemxGHQKbDBNa1W70UVF5jM8vAXM1TCb83JvKmnBij5QJr5ndgR0aUxuQg_EJPiNyDg657jWOWfUVkmsQhzqmAjyQPRJq55CP1DKj-RRwYjDR_60lA8Ah1w2YyzKCcCpUNO4KbCybph2XMebi5v_qm_y8BEBXOdnw2xo")'
+            `url("${profile.user.coverImage}")`
         }}
       />
       <div className="px-8 pb-8 relative">
@@ -157,15 +177,15 @@ const Profile = () => {
             <i className="fas fa-phone text-slate-400" />
             <span className="text-xs">{profile.user.phoneNumber}</span>
           </button>
-          <button className="flex items-center space-x-2 text-slate-100 bg-black  p-2 rounded-xl hover:text-job-blue cursor-pointer">
+          <button onClick={() => window.open(profile.user.portfolio, '_blank')} className="flex items-center space-x-2 text-slate-100 bg-black  p-2 rounded-xl hover:text-job-blue cursor-pointer">
             <i className="fas fa-link text-slate-400" />
             <span className="text-xs">{profile.user.portfolio}</span>
           </button>
-          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
+          <button onClick={() => window.open(profile.user.github, '_blank')} className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fab fa-github text-slate-400" />
             <span className="text-xs">{profile.user.github}</span>
           </button>
-          <button className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
+          <button onClick={() => window.open(profile.user.linkedIn, '_blank')} className="flex items-center space-x-2 text-slate-100 bg-black p-2 rounded-xl  hover:text-job-blue cursor-pointer">
             <i className="fab fa-linkedin text-slate-400" />
             <span className="text-xs">{profile.user.linkedIn}</span>
           </button>
@@ -367,9 +387,9 @@ const Profile = () => {
               <i className="fas fa-cube text-job-blue text-lg" />
               <h3 className="font-bold text-slate-900">Projects</h3>
             </div>
-            <button className="text-job-blue text-[10px] font-bold uppercase hover:underline">
+            <Link to='/projects' target="_blank" className="text-job-blue text-[10px] font-bold uppercase hover:underline">
               View All Projects
-            </button>
+            </Link>
           </div>
           <div className="grid grid-cols-3 gap-6">
             {/* Project 1 */}
@@ -618,10 +638,10 @@ const Profile = () => {
                 B.Tech in Information Technology
               </h4>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Dr. Akhilesh Das Gupta Institute of Professional Studies
+                {profile.user.university}
               </p>
               <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wide">
-                2022 - 2026
+                {education.startYear || 'N/A'} - {education.endYear || 'N/A'}
               </p>
             </div>
           </div>

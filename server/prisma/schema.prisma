@@ -42,11 +42,12 @@ model UserProfile{
   portfolio  String? @db.VarChar(255)
   github   String? @db.VarChar(255)
   linkedIn String? @db.VarChar(255)
+  university String? @db.VarChar(255)
   bio      String? @db.Text
   profileViews Int? @default(0)
   yearsOfExperience Int? @default(0)
   skills Json?
-  avatar String?
+  avatar String? @db.VarChar(255)
   achievements Json?
   user User @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())

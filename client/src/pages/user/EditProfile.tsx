@@ -7,9 +7,10 @@ import axios from "axios";
 
 gsap.registerPlugin(ScrollTrigger);
 
-
 const EditProfile = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const coverInputRef = useRef<HTMLInputElement | null>(null);
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,6 +29,8 @@ const EditProfile = () => {
   const [startYear, setStartYear] = useState<number | null>(null);
   const [endYear, setEndYear] = useState<number | null>(null);
   const [grade, setGrade] = useState<number | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<any>(null);
+  const [coverImage, setCoverImage] = useState<any>(null);
 
   interface EducationData {
     school: string;
@@ -38,44 +41,111 @@ const EditProfile = () => {
     endYear: number | null;
     grade: number | null;
   }
+
   const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try{
-        const res = await axios.patch('http://localhost:4000/api/me/profile', {
+    try {
+      const res = await axios.patch(
+        "http://localhost:4000/api/me/profile",
+        {
           fullName: `${firstname} ${lastname}`,
           phoneNumber,
           city,
           bio,
-          country, 
+          country,
           linkedIn: linkedin,
           github,
           portfolio: portFolio,
           profession,
+          university: institution,
           industry,
-        }, {
+        },
+        {
           withCredentials: true,
-        })
+        },
+      );
 
-        const resEducation = await axios.patch('http://localhost:4000/api/me/education', {
+      const resEducation = await axios.patch(
+        "http://localhost:4000/api/me/education",
+        {
           school,
           institution,
           degree,
           fieldOfStudy,
           startYear,
           endYear,
-          grade
-        }, {
-          withCredentials: true
-        });
-        console.log(res.data.user.fullName);
-        
-        console.log(resEducation.data);
-      } catch (error) {
-        console.error("Error updating profile:", error);
-        if(axios.isAxiosError(error)) {
-          console.log(error.response?.data);
-        }
+          grade,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(resEducation.data);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data);
       }
+    }
+  };
+
+  useEffect(() => {
+    const handleShowImages = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/me/profile", {
+          withCredentials: true,
+        });
+        setProfilePhoto(res.data.user.avatar);
+        setCoverImage(res.data.user.coverImage);
+        console.log(profilePhoto);
+        console.log(coverImage);
+      } catch (err) {
+        console.error("Error fetching profile images:", err);
+      }
+    };
+
+    handleShowImages();
+  }, []);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    fileInputRef.current?.click();
+  };
+  const handleCoverClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    coverInputRef.current?.click();
+  };
+  const handleProfilePhotoChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("avatar", file);
+    await axios.patch("http://localhost:4000/api/me/avatar", formData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(file);
+    setProfilePhoto(file);
+    console.log(profilePhoto);
+  };
+  const handleCoverImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("coverImage", file);
+    await axios.patch("http://localhost:4000/api/me/cover-image", formData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(file);
+    setCoverImage(file);
+    console.log(coverImage);
   };
 
   const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +157,9 @@ const EditProfile = () => {
   const handleDegreeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDegree(e.target.value);
   };
-  const handleFieldOfStudyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFieldOfStudyChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     setFieldOfStudy(e.target.value);
   };
   const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,12 +182,12 @@ const EditProfile = () => {
   };
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
-    console.log(phoneNumber)
+    console.log(phoneNumber);
   };
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // Handle bio change
     setBio(e.target.value);
-  }
+  };
   const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCity(e.target.value);
   };
@@ -139,8 +211,8 @@ const EditProfile = () => {
   };
   const handleIndustryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setIndustry(e.target.value);
-  }
-  const coverRef = useRef<HTMLDivElement | null>(null); // parallax cover image
+  };
+  const coverRef = useRef<HTMLImageElement | null>(null); // parallax cover image
   const sectionRefs = useRef<HTMLElement[]>([]); // scroll-reveal sections
   sectionRefs.current = [];
 
@@ -153,7 +225,7 @@ const EditProfile = () => {
   useEffect(() => {
     // Respect users who prefer reduced motion
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     // --- Locomotive Scroll v5 setup (full-page, window-based) ---
@@ -189,7 +261,7 @@ const EditProfile = () => {
             end: "bottom top",
             scrub: true,
           },
-        }
+        },
       );
     }
 
@@ -208,8 +280,8 @@ const EditProfile = () => {
             start: "top 85%",
             toggleActions: "play none none reverse",
           },
-        }
-      )
+        },
+      ),
     );
 
     // Let Locomotive recompute its sizing whenever ScrollTrigger recalculates
@@ -232,28 +304,37 @@ const EditProfile = () => {
         <div className="flex flex-col lg:flex-row gap-gutter">
           {/* Sidebar Navigation */}
           {/* Main Edit Content */}
-          <form onSubmit={handleSaveChanges} className="flex-1 space-y-md w-full">
+          <form
+            onSubmit={handleSaveChanges}
+            className="flex-1 space-y-md w-full"
+          >
             {/* Header / Media Section */}
             <section
               ref={addSectionRef}
               className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden"
             >
-              <div className="relative h-48 bg-surface-container-high group overflow-hidden">
-                <div
-                  ref={coverRef}
-                  className="w-full h-full bg-cover bg-center scale-125"
-                  data-alt="A minimalist architectural photograph of a modern glass office building reflecting a clear blue sky. The composition is clean, with strong geometric lines and plenty of negative space, creating a sense of professional stability and institutional trust. High-key lighting with a sophisticated, professional color palette of cool grays and blues."
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAoQE00zj5rOzcEO62jxHjs6cFBpPj0iiLX7KD1oKIJn8U3ryDYMhopKXnJRUe4UqwS1erR1rN2v85gJjJ-j0ZFJB2eyh9Tm4NxgTsP7EOlLWI2spzictBJol9RZNoZD7bAnY9uSxB-XKg7r7AqYk-uqp4t6aDorcwM0vYApegw4WeimQ2k6LnAmyhyUAO4R3LTG493A_I9UmN7BpLzAQrH6eLPf_gfDWlCxJDwd0CXr2Lw1Bc22_eVBPeK0BtZ4PWEfbh4R--gCrA")',
-                  }}
-                />
-                <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg font-label-strong text-label-strong text-primary flex items-center gap-2 hover:bg-white transition-all">
+              <div className="relative bg-surface-container-high group overflow-hidden w-full aspect-[4/1] rounded-xl">
+                  <img
+                    src={coverImage}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
+                    />
+                <button
+                  type="button"
+                  onClick={handleCoverClick}
+                  className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg font-label-strong text-label-strong text-primary flex items-center gap-2 hover:bg-white transition-all"
+                >
                   <span className="material-symbols-outlined text-[20px]">
                     photo_camera
                   </span>
                   Edit Cover
                 </button>
+                <input
+                  type="file"
+                  ref={coverInputRef}
+                  onChange={handleCoverImageChange}
+                  className="hidden"
+                  />
               </div>
               <div className="px-md pb-md mt-6">
                 <div className="flex flex-col sm:flex-row items-end gap-md -mt-12 sm:-mt-16 mb-6">
@@ -261,7 +342,7 @@ const EditProfile = () => {
                     <img
                       className="w-full h-full object-cover"
                       data-alt="A professional headshot of a male job seeker in a light-colored business casual outfit. He is smiling warmly against a soft-focus studio background. The visual style is crisp and modern, emphasizing clarity and reliability. The lighting is diffused and natural, highlighting a friendly yet professional demeanor."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_U1dIO5McOh41nIEej-7D5gE_7-MHWf7OIFXlW3auKB7ELMhalDD9Y579-hS6ljUknHU_RGbuzVSXjEg17AN3oAnVKK_aL4aGxlDjHSZOk87NPSFaADtc11V6-L7btQoBXTA26ULP_JicJATs5rcKujYDm90gRSvOqc1BhFaMxHWgfrVHvNkwPK4yvsk7U9xJShmlPY1Wt3MPZfu_1fDGOkohpOw0tjtmLSS75kDgyK6bgct3ZYjE40mLxICgBMqfk8kqgzZtAko"
+                      src={profilePhoto}
                     />
                     <button className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                       <span className="material-symbols-outlined">
@@ -270,9 +351,18 @@ const EditProfile = () => {
                     </button>
                   </div>
                   <div className="flex-1 pb-2">
-                    <button className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity">
+                    <button
+                      onClick={handleClick}
+                      className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity"
+                    >
                       Upload New Photo
                     </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleProfilePhotoChange}
+                      className="hidden"
+                    />
                     <p className="text-on-surface-variant font-body-sm text-body-sm mt-2">
                       Recommended: Square image, at least 400x400px.
                     </p>
@@ -302,14 +392,18 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="John"
-                    type="text" onChange={handleFirstNameChange} value={firstname}
+                    type="text"
+                    onChange={handleFirstNameChange}
+                    value={firstname}
                   />
                 </div>
                 <div className="space-y-xs">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Last Name
                   </label>
-                  <input onChange={handleLastNameChange} value={lastname}
+                  <input
+                    onChange={handleLastNameChange}
+                    value={lastname}
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Doe"
                     type="text"
@@ -329,7 +423,9 @@ const EditProfile = () => {
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Phone Number
                   </label>
-                  <input onChange={handlePhoneNumberChange} value={phoneNumber}
+                  <input
+                    onChange={handlePhoneNumberChange}
+                    value={phoneNumber}
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="+1 (555) 000-0000"
                     type="tel"
@@ -343,7 +439,9 @@ const EditProfile = () => {
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
                       location_on
                     </span>
-                    <input onChange={handleCityChange} value={city}
+                    <input
+                      onChange={handleCityChange}
+                      value={city}
                       className="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="San Francisco"
                       type="text"
@@ -358,22 +456,30 @@ const EditProfile = () => {
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
                       public
                     </span>
-                     <select onChange={handleCountryChange} value={country} className="w-full px-9 py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
-                    <option value="">Select Country</option>
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>United Kingdom</option>
-                    <option>Australia</option>
-                    <option>Germany</option>
-                    <option>India</option>
-                  </select>
-                  </div>  
+                    <select
+                      onChange={handleCountryChange}
+                      value={country}
+                      className="w-full px-9 py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    >
+                      <option value="">Select Country</option>
+                      <option>United States</option>
+                      <option>Canada</option>
+                      <option>United Kingdom</option>
+                      <option>Australia</option>
+                      <option>Germany</option>
+                      <option>India</option>
+                    </select>
+                  </div>
                 </div>
                 <div className="space-y-xs md:col-span-2">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Industry
                   </label>
-                  <select onChange={handleIndustryChange} value={industry} className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white">
+                  <select
+                    onChange={handleIndustryChange}
+                    value={industry}
+                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                  >
                     <option value="">Select Industry</option>
                     <option>Technology Software</option>
                     <option>Creative Media</option>
@@ -421,9 +527,7 @@ const EditProfile = () => {
               className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">
-                  Career Details
-                </h3>
+                <h3 className="font-h3 text-h3 text-primary">Career Details</h3>
                 <p className="text-on-surface-variant font-body-sm text-body-sm">
                   Help us match you with the right opportunities.
                 </p>
@@ -436,7 +540,9 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Senior Product Designer"
-                    type="text" onChange={handleProfessionChange} value={profession}
+                    type="text"
+                    onChange={handleProfessionChange}
+                    value={profession}
                   />
                 </div>
               </div>
@@ -460,7 +566,9 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. High School Name"
-                    type="text" onChange={handleSchoolChange} value={school}
+                    type="text"
+                    onChange={handleSchoolChange}
+                    value={school}
                   />
                 </div>
                 <div className="space-y-xs md:col-span-2">
@@ -470,14 +578,20 @@ const EditProfile = () => {
                   <input
                     className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. Stanford University"
-                    type="text" onChange={handleInstitutionChange} value={institution}
+                    type="text"
+                    onChange={handleInstitutionChange}
+                    value={institution}
                   />
                 </div>
                 <div className="space-y-xs md:col-span-1">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Degree
                   </label>
-                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white" onChange={handleDegreeChange} value={degree}>
+                  <select
+                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    onChange={handleDegreeChange}
+                    value={degree}
+                  >
                     <option value="">Select Degree</option>
                     <option>High School</option>
                     <option>Associate's</option>
@@ -491,7 +605,11 @@ const EditProfile = () => {
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Field of Study
                   </label>
-                  <select className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white" onChange={handleFieldOfStudyChange} value={fieldOfStudy}>
+                  <select
+                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    onChange={handleFieldOfStudyChange}
+                    value={fieldOfStudy}
+                  >
                     <option value="">Select Field of Study</option>
                     <option>Computer Science</option>
                     <option>Business Administration</option>
@@ -500,6 +618,7 @@ const EditProfile = () => {
                     <option>Economics</option>
                   </select>
                 </div>
+
                 <div className="space-y-xs">
                   <label className="font-label-strong text-label-strong text-on-surface">
                     Grade / GPA
@@ -543,17 +662,17 @@ const EditProfile = () => {
               ref={addSectionRef}
               className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
-             <div className="mb-md">
+              <div className="mb-md">
                 <h3 className="font-h3 text-h3 text-primary">Projects</h3>
                 <p className="text-on-surface-variant font-body-sm text-body-sm">
                   Show Your Projects and Work Samples to Potential Employers.
                 </p>
               </div>
               <button className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity active:scale-95 cursor-pointer">
-              Add Project
-            </button>
+                Add Project
+              </button>
             </section>
-            
+
             {/* Social Links */}
             <section
               ref={addSectionRef}
@@ -578,7 +697,9 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       LinkedIn
                     </label>
-                    <input onChange={handleLinkedinChange} value={linkedin}  
+                    <input
+                      onChange={handleLinkedinChange}
+                      value={linkedin}
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://linkedin.com/in/username"
                       type="url"
@@ -595,7 +716,9 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       GitHub
                     </label>
-                    <input onChange={handleGithubChange} value={github}
+                    <input
+                      onChange={handleGithubChange}
+                      value={github}
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://github.com/username"
                       type="url"
@@ -612,7 +735,9 @@ const EditProfile = () => {
                     <label className="font-label-strong text-label-strong text-on-surface">
                       Portfolio
                     </label>
-                    <input onChange={handlePortfolioChange} value={portFolio}
+                    <input
+                      onChange={handlePortfolioChange}
+                      value={portFolio}
                       className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://yourportfolio.com"
                       type="url"
@@ -623,16 +748,17 @@ const EditProfile = () => {
             </section>
 
             {/* Action Footer */}
-            <div
-              className="flex items-center justify-end gap-md pt-md border-t border-outline-variant"
-            >
-              <button 
+            <div className="flex items-center justify-end gap-md pt-md border-t border-outline-variant">
+              <button
                 className="px-md py-3 text-on-surface-variant font-label-strong text-label-strong hover:bg-surface-container-high rounded-lg transition-all"
                 onClick={() => navigate(-1)}
               >
                 Cancel
               </button>
-              <button type="submit" className="px-xl py-3 bg-primary text-on-primary font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
+              <button
+                type="submit"
+                className="cursor-pointer px-xl py-3 bg-primary text-on-primary font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2"
+              >
                 <span className="material-symbols-outlined text-[18px]">
                   check
                 </span>
