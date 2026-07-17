@@ -1,4 +1,4 @@
-import React from 'react'
+import { Link } from 'react-router'
 
 const UserNav = () => {
   return (
@@ -14,13 +14,13 @@ const UserNav = () => {
       <span className="text-xl font-bold text-slate-900">Jobkar</span>
     </div>
     <nav className="flex-1 p-4 space-y-1">
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
+        to="/"
       >
         <i className="fas fa-th-large w-5" />
-        <span className="text-sm font-medium">Dashboard</span>
-      </a>
+        <span className="text-sm font-medium">Home</span>
+      </Link>
       <a
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
         href="#"
@@ -28,13 +28,13 @@ const UserNav = () => {
         <i className="fas fa-file-alt w-5" />
         <span className="text-sm font-medium">My Applications</span>
       </a>
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
+        to="/saved-jobs"
       >
         <i className="fas fa-heart w-5" />
         <span className="text-sm font-medium">Saved Jobs</span>
-      </a>
+      </Link>
       <a
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
         href="#"
@@ -111,7 +111,7 @@ const UserNav = () => {
           <span className="text-xs font-bold text-job-blue">85%</span>
         </div>
       </div>
-      <button className="w-full py-2 bg-job-blue text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-600 transition-colors">
+      <button className="w-full py-2 bg-black text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-600 transition-colors cursor-pointer">
         Complete Now
       </button>
     </div>

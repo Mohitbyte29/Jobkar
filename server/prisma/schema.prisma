@@ -25,6 +25,7 @@ model User {
   userProfile   UserProfile?
   education   Education?
   project     Project?
+  savedJobs   SavedJobs[]
 
   @@map("users")
 }
@@ -141,6 +142,7 @@ model Job {
   applications Application[]
   company      Company       @relation(fields: [CompanyId], references: [id])
   employer     Employer      @relation(fields: [employerId], references: [userId])
+  savedJobs    SavedJobs[]
 
   @@index([CompanyId], map: "jobs_CompanyId_fkey")
   @@index([employerId], map: "jobs_employerId_fkey")
@@ -193,6 +195,16 @@ model Internship {
   @@index([employerId], map: "Internship_employerId_fkey")
 }
 
+model SavedJobs {
+  id Int @id @default(autoincrement())
+  userId Int  
+  jobId Int
+  user User @relation(fields: [userId], references: [id])
+  job Job @relation(fields: [jobId], references: [id])
+  createdAt DateTime @default(now())
+  @@unique([userId, jobId])
+}
+
 enum JobType {
   FULL_TIME
   PART_TIME
@@ -242,7 +254,7 @@ enum internshipStatus {
 }
 
 enum category {
-  TECHNOLOGY_SOFTWARE
+  TECHNOLOGY_SOFTWARE 
   CREATIVE_MEDIA
   MARKETING
   HEALTHCARE

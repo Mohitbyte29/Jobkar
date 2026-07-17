@@ -58,7 +58,7 @@ const App = () => {
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />
-        <Route path='/savedJobs' element={<SavedJob/>} />
+        <Route path='/saved-jobs' element={<SavedJob/>} />
         <Route path='/admin/jobs' element={<JobManagement/>} />
         <Route path='/admin/companies' element={<CompanyManagement/>} />
         <Route path='/admin/analytics' element={<Analytics/>} />

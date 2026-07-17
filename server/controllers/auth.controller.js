@@ -93,9 +93,7 @@ export const loginUser = async (req, res, next) => {
             const company = await prisma.company.findFirst({
                 where: {UserId: user.id}
             });
-            if(company) {
-                tokenPayload.companyId = company.id;
-            }
+
             const employer = await prisma.employer.findFirst({
                 where: {userId: user.id}
             });

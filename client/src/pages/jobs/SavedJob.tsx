@@ -1,11 +1,12 @@
 import Footer from "@/components/Footer"
-import Navbar from "@/components/Navbar"
+import UserNav from "@/components/UserNav"
 
 const SavedJob = () => {
   return (
-    <div>
-      <Navbar/>
-      <main className="flex-grow w-full max-w-max_width mx-auto px-margin py-lg mt-8">
+    <div className="min-h-screen flex flex-col">
+      <UserNav />
+      <div className="ml-64">
+      <main className="w-full max-w-full mx-auto px-margin py-lg mt-8">
   {/* Header Section */}
   <div className="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
     <div>
@@ -22,68 +23,7 @@ const SavedJob = () => {
       </button>
     </div>
   </div>
-  <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-    {/* Filters Sidebar */}
-    <aside className="lg:col-span-3">
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-surface-container">
-        <h3 className="font-label-strong text-label-strong text-primary mb-md uppercase tracking-wider">
-          Quick Filters
-        </h3>
-        <div className="space-y-sm">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="flex items-center gap-xs text-on-surface-variant group-hover:text-primary transition-colors">
-              <span className="material-symbols-outlined text-[20px]">
-                schedule
-              </span>
-              <span className="font-body-md">Closing Soon</span>
-            </span>
-            <span className="bg-surface-container px-xs py-[2px] rounded-full text-label-caps text-on-surface-variant">
-              2
-            </span>
-          </label>
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="flex items-center gap-xs text-primary font-semibold">
-              <span className="material-symbols-outlined text-[20px]">
-                all_inclusive
-              </span>
-              <span className="font-body-md">All Saved</span>
-            </span>
-            <span className="bg-primary text-on-primary px-xs py-[2px] rounded-full text-label-caps">
-              5
-            </span>
-          </label>
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="flex items-center gap-xs text-on-surface-variant group-hover:text-primary transition-colors">
-              <span className="material-symbols-outlined text-[20px]">
-                check_circle
-              </span>
-              <span className="font-body-md">Applied</span>
-            </span>
-            <span className="bg-surface-container px-xs py-[2px] rounded-full text-label-caps text-on-surface-variant">
-              1
-            </span>
-          </label>
-        </div>
-        <div className="mt-lg pt-lg border-t border-surface-container">
-          <h3 className="font-label-strong text-label-strong text-primary mb-md uppercase tracking-wider">
-            By Category
-          </h3>
-          <div className="space-y-xs">
-            <button className="w-full text-left px-xs py-base rounded hover:bg-surface-container-low font-body-sm text-on-surface-variant transition-colors">
-              Engineering (3)
-            </button>
-            <button className="w-full text-left px-xs py-base rounded hover:bg-surface-container-low font-body-sm text-on-surface-variant transition-colors">
-              Design (1)
-            </button>
-            <button className="w-full text-left px-xs py-base rounded hover:bg-surface-container-low font-body-sm text-on-surface-variant transition-colors">
-              Marketing (1)
-            </button>
-          </div>
-        </div>
-      </div>
-    </aside>
-    {/* Job List Container */}
-    <div className="lg:col-span-9 flex flex-col gap-md">
+  <div className="flex flex-col gap-md w-full">
       {/* Job Card 1 */}
       <div className="bg-surface-container-lowest p-md md:p-lg rounded-xl card-shadow border border-surface-container flex flex-col md:flex-row gap-md hover:border-secondary transition-all group">
         <div className="w-16 h-16 rounded-lg bg-surface-container-high flex-shrink-0 overflow-hidden border border-surface-variant">
@@ -371,7 +311,6 @@ const SavedJob = () => {
           </div>
         </div>
       </div>
-    </div>
   </div>
   {/* Empty State Preview (Hidden by Default) */}
   <div
@@ -394,6 +333,7 @@ const SavedJob = () => {
   </div>
 </main>
     <Footer/>
+      </div>
     </div>
   )
 }

@@ -40,16 +40,20 @@ export const authenticateAdmin = (req, res, next) => {
 }
 
 export const authenticateEmployer = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    console.log(authHeader);
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    // const authHeader = req.headers.authorization;
+    // console.log(authHeader);
+        // if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        //     return res.status(401).json({
+        //         message: "Unauthorized, JWT token is required"
+        //     });
+        // }
+        const token = req.cookies.accessToken;
+        if (!token) {
             return res.status(401).json({
                 message: "Unauthorized, JWT token is required"
             });
         }
-        
     try{
-        const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         if(req.user.role !== "EMPLOYER"){

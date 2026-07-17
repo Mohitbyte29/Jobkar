@@ -353,7 +353,7 @@ const EditProfile = () => {
                   <div className="flex-1 pb-2">
                     <button
                       onClick={handleClick}
-                      className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity"
+                      className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity cursor-pointer active:scale-95"
                     >
                       Upload New Photo
                     </button>

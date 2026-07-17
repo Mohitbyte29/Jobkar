@@ -150,8 +150,7 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category} = req.body;
-        const companyId = req.user.companyId;
+        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId} = req.body;
         const employerId = req.user.employerId;
         if(!companyId) {
             return res.status(400).json({error: "Company ID not found. User must be associated with a company"});
@@ -160,7 +159,7 @@ export const createJob = async(req, res) => {
             return res.status(400).json({error: "Employer ID not found. User must be an employer"});
         }
         
-        const company = await prisma.company.findFirst({
+        const company = await prisma.company.findUnique({
             where: {id: parseInt(companyId),
                 UserId: req.user.id}
             })
@@ -170,7 +169,17 @@ export const createJob = async(req, res) => {
             
         const job = await prisma.job.create({
             data: {
-                ...req.body,
+                title,
+                description,
+                location,
+                type,
+                salaryMax,
+                salaryMin,
+                requirements,
+                tags,
+                remote,
+                status,
+                category,
                 company: { connect: { id: companyId } },
                 employer: { connect: {id: employerId}},
             },
@@ -217,5 +226,86 @@ export const deleteJob = async(req, res) => {
         res.status(500).json({error: "Failed to delete job"});
     }
 }
+
+export const saveJob = async(req, res) => {
+    const jobId = parseInt(req.params.id);
+    const userId = req.user.id;
+    try{
+        const alreadySaved = await prisma.savedJobs.findUnique({
+            where: {
+                userId_jobId: {
+                    userId,
+                    jobId
+                }
+            }
+        });
+
+        if (alreadySaved) {
+            return res.status(400).json({ error: "Job already saved" });
+        }
+
+        const savedJobs = await prisma.savedJobs.create({
+            data:{
+                userId,
+                jobId,
+            },
+        });
+
+        res.json(savedJobs);
+    }
+    catch(error){
+        res.status(500).json({error: "Failed to save job", message: error.message});
+    }
+} 
+
+export const getSavedJobs = async(req, res) => {
+    try{
+        const savedJobs = await prisma.savedJobs.findMany({
+            where: {userId: req.user.id},
+            include: {
+                job: {
+                    include: {
+                        company: true,
+                    }
+                }
+            }
+        }),
+        } catch(error){
+            res.status(500).json({error: "Failed to fetch saved jobs", message: error.message});
+        }
+}
+
+export const removeSavedJob = async(req, res) => {
+    const jobId = parseInt(req.params.id);
+    const userId = req.user.id;
+    try{
+        const savedJob = await prisma.savedJobs.findUnique({
+            where: {
+                userId_jobId: {
+                    userId,
+                    jobId
+                }
+            }
+        });
+
+        if (!savedJob) {
+            return res.status(404).json({ error: "Saved job not found" });
+        }
+
+        await prisma.savedJobs.delete({
+            where: {
+                userId_jobId: {
+                    userId,
+                    jobId
+                }
+            }
+        });
+        res.json({ message: "Job removed from saved list" });
+    }
+    catch(error){
+        res.status(500).json({error: "Failed to remove saved job", message: error.message});
+    }
+}
+
 
 
