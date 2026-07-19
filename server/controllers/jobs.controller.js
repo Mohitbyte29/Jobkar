@@ -251,13 +251,12 @@ export const saveJob = async(req, res) => {
             },
         });
 
-        res.json(savedJobs);
+        res.json( savedJobs );
     }
     catch(error){
         res.status(500).json({error: "Failed to save job", message: error.message});
     }
 } 
-
 export const getSavedJobs = async(req, res) => {
     try{
         const savedJobs = await prisma.savedJobs.findMany({
@@ -269,10 +268,13 @@ export const getSavedJobs = async(req, res) => {
                     }
                 }
             }
-        }),
-        } catch(error){
-            res.status(500).json({error: "Failed to fetch saved jobs", message: error.message});
-        }
+        });
+
+        res.json( savedJobs );
+    }
+    catch(error){
+        res.status(500).json({error: "Failed to fetch saved jobs", message: error.message});
+    }
 }
 
 export const removeSavedJob = async(req, res) => {

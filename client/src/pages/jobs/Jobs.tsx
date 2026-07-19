@@ -1,5 +1,5 @@
 import { IndianRupee } from "lucide-react";
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState } from "react"
 import {useJobs} from "../../context/JobsContext.tsx";
 import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
@@ -7,6 +7,15 @@ import { useNavigate } from "react-router-dom";
 import toTitleCase from '../../../utils/titleCase.tsx';
 import toast, { Toaster } from "react-hot-toast";
 import { usejobSearch } from "@/hooks/JobSearch.tsx";
+import axios from "axios";
+
+interface SavedJob {
+  id: number;
+  jobId: number;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface Job{
     id: number;
@@ -24,9 +33,27 @@ interface Job{
   export function Jobs(){
     const { userData, total } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
+    const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
     const navigate = useNavigate();
-    const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, locationResults, category, setCategory, setCategoryResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
-  
+    const {handleChange, handleLocationChange, query, setQuery, results, setResults, location, setLocation, locationResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
+    const isSaved = (jobId: number) => {
+      return saveJob.some((saved) => saved.jobId === jobId);
+    };
+    
+    const handlegetSavedJobs = async() => {
+    try{
+      const res = await axios.get(`http://localhost:4000/api/jobs/saved`, { withCredentials: true });
+      console.log("Saved Jobs: ", res.data);
+      setsaveJob(res.data);
+      console.log([saveJob]);
+    } catch(error){
+      console.error("Error fetching saved jobs:", error);
+      if(axios.isAxiosError(error) && error.response){
+        console.error("Error response data:", error.response.data);
+      }
+      toast.error("Failed to fetch saved jobs");
+    }
+  }
   const getSortedJobs = () => {
     const jobs = [...userData];
     if (sortBy === "recent") {
@@ -37,6 +64,36 @@ interface Job{
     return jobs;
   };
   
+  
+  const handleSaveJob = async(jobId: number) => {
+    try{
+      const res = await axios.post(`http://localhost:4000/api/jobs/${jobId}/save`, {}, { withCredentials: true });
+      toast.success("Job saved successfully");
+    } catch(error){
+      console.error("Error saving job:", error);
+      if(axios.isAxiosError(error) && error.response){
+        console.error("Error response data:", error.response.data);
+      }
+      toast.error("Failed to save job");
+    }
+  }
+
+  const handleUnsaveJob = async(jobId: number) => {
+    try{
+      const res = await axios.delete(`http://localhost:4000/api/jobs/${jobId}/save`, { withCredentials: true });
+      toast.success("Job Removed successfully");
+    } catch(error){
+      console.error("Error Removing job:", error);
+      if(axios.isAxiosError(error) && error.response){
+        console.error("Error response data:", error.response.data);
+      }
+      toast.error("Failed to remove job");
+    }
+  }
+  useEffect(() => {
+    getSortedJobs();
+  handlegetSavedJobs();
+}, [handleSaveJob, handleUnsaveJob]); 
 
     return (
         <>
@@ -209,7 +266,7 @@ interface Job{
             <div key={job.id}>
               <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
-                  <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
                     <span
               className="material-symbols-outlined text-3xl text-primary"
               data-icon="token"
@@ -271,9 +328,16 @@ interface Job{
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
-                  Save Job
-                </button>
+                  
+                  {isSaved(job.id) ? (
+                    <button className="px-6 py-2 border border-error text-error font-label-strong rounded-lg hover:bg-error hover:text-white transition-all active:scale-95 cursor-pointer" onClick={() => void handleUnsaveJob(job.id)}>
+                      Remove
+                    </button>
+                  ) : (
+                    <button className="px-6 py-2 border border-error text-error font-label-strong rounded-lg hover:bg-error hover:text-white transition-all active:scale-95 cursor-pointer" onClick={() => void handleSaveJob(job.id)}>
+                      Save Job
+                    </button>
+                  )}
                 <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>

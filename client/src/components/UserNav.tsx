@@ -35,13 +35,13 @@ const UserNav = () => {
         <i className="fas fa-heart w-5" />
         <span className="text-sm font-medium">Saved Jobs</span>
       </Link>
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
+        to="/jobs"
       >
         <i className="fas fa-calendar-check w-5" />
-        <span className="text-sm font-medium">My Interviews</span>
-      </a>
+        <span className="text-sm font-medium">Jobs</span>
+      </Link>
       <a
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
         href="#"
@@ -49,13 +49,13 @@ const UserNav = () => {
         <i className="fas fa-comment-dots w-5" />
         <span className="text-sm font-medium">Messages</span>
       </a>
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-job-blue transition-colors"
-        href="#"
+        to="/profile"
       >
         <i className="fas fa-user w-5" />
         <span className="text-sm font-semibold">Profile</span>
-      </a>
+      </Link>
       <a
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
         href="#"

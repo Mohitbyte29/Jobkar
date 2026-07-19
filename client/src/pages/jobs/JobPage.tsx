@@ -7,7 +7,10 @@ import toTitleCase from "../../../utils/titleCase";
 const JobPage = () => {
     const location = useLocation();
     const user = location.state;
-    console.log(user.company.website);
+    // console.log(user.company.website);
+    console.log("location.state", location.state);
+console.log("job", user);
+console.log("company", user?.company);
   return (
       <div>
         <Navbar/>

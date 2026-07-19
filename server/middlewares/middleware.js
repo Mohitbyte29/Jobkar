@@ -67,12 +67,20 @@ export const authenticateEmployer = (req, res, next) => {
 }
 
 export const authenticateJobSeeker = (req, res, next) => {
+    const token = req.cookies.accessToken;
+    if (!token) {
+        return res.status(401).json({
+            message: "Unauthorized, JWT token is required"
+        });
+    }
     try{
-        const role = prisma.user.findUnique({
-            where: {role: "SEEKER"},
-            select: {role: true}
-        })
-        if(role !== "SEEKER"){
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        // const role = prisma.user.findUnique({
+        //     where: {role: "SEEKER"},
+        //     select: {role: true}
+        // })
+        if(req.user.role !== "SEEKER"){
             return res.status(403).json({message: "Access denied. Job Seekers only."});
         }
         next();
