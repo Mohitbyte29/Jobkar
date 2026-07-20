@@ -7,8 +7,6 @@ export const getApplications = async(req, res) => {
             where: {id: Number(req.params.id)},
             select: {
                 id: true, coverLetter: true, resumeUrl: true, createdAt: true,
-                job: {select: {id: true, title: true}},
-                applicant: {select: {id: true, name: true, email: true}}
             }
         })
         res.json({applications});
@@ -38,7 +36,7 @@ export const getApplicationById = async(req, res) => {
 
 export const createApplication = async(req, res) => {
     try{
-        const { userId, jobId, coverLetter, resumeUrl} = req.body;
+        const { name, email, city, resumeUrl} = req.body;
         const application = await prisma.application.create({
             data: {
                 userId,

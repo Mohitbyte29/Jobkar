@@ -26,6 +26,8 @@ model User {
   education   Education?
   project     Project?
   savedJobs   SavedJobs[]
+  Experience Experience?
+  Applicant Applicant? 
 
   @@map("users")
 }
@@ -53,6 +55,7 @@ model UserProfile{
   user User @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  applicant Applicant? 
 }
 
 model Project{
@@ -152,21 +155,53 @@ model Job {
 model Application {
   id           Int                @id @default(autoincrement())
   userId       Int
-  jobId        Int
-  resume       String?
-  coverletter  String
+  jobId        Int?
+  resume       String
+  coverletter  String?      @db.Text
+  portfolio    String?      @db.VarChar(255)
+  github       String?      @db.VarChar(255)
+  linkedIn     String?      @db.VarChar(255)
+  dribble     String?      @db.VarChar(255)
+  behance     String?      @db.VarChar(255)
   status       APPLICATION_STATUS @default(PENDING)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-  internshipId Int
-  internship   Internship         @relation(fields: [internshipId], references: [id])
-  job          Job                @relation(fields: [jobId], references: [id])
+  internshipId Int?
+  internship   Internship?         @relation(fields: [internshipId], references: [id])
+  job          Job?                @relation(fields: [jobId], references: [id])
   user         User               @relation(fields: [userId], references: [id])
 
   @@index([internshipId], map: "applications_internshipId_fkey")
   @@index([jobId], map: "applications_jobId_fkey")
   @@index([userId], map: "applications_userId_fkey")
   @@map("applications")
+}
+
+model Applicant{
+  id          Int           @id @default(autoincrement())
+  applicantId Int          @unique
+  name         String        @db.VarChar(255)
+  email        String       @unique @db.VarChar(255)
+  city       String        @db.VarChar(255)
+  country    String        @db.VarChar(255)
+  phoneNumber String        @db.VarChar(255)
+  user     User           @relation(fields: [email], references: [email])
+  userprofile UserProfile     @relation(fields: [applicantId], references: [id])
+}
+
+model Experience{
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  jobTitle String @db.VarChar(255)
+  companyName String @db.VarChar(255)
+  startDate DateTime
+  endDate DateTime?
+  city String @db.VarChar(255)
+  country String @db.VarChar(255)
+  description String? @db.Text
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Internship {
@@ -227,8 +262,13 @@ enum JobStatus {
 
 enum APPLICATION_STATUS {
   PENDING
-  ACCEPTED
+  SUBMITTED
+  UNDER_REVIEW
+  SHORTLISTED
+  INTERVIEW_SCHEDULED
+  HIRED
   REJECTED
+  WITHDRAWN
 }
 
 enum companyStatus {

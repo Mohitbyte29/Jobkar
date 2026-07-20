@@ -1,6 +1,19 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { useJobs } from "@/context/JobsContext";
 import { useState } from "react";
+
+interface Job {
+  id: number;
+  companyId: number;
+  category: string;
+  title: string;
+  type: string;
+  salaryMin: number;
+  salaryMax: number;
+  updatedAt: string;
+  createdAt: string;
+}
 
 export const PostJob = () => {
   const [remote, setRemote] = useState(false);

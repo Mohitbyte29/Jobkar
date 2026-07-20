@@ -35,6 +35,7 @@ interface SavedJob {
     createdAt: string;
   };
     }
+    
 const SavedJob = () => {
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([]);
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const SavedJob = () => {
       console.error("Error removing saved job:", error);
     }
   }
+  
   useEffect(() => {
     const handlegetSavedJobs = async () => {
       try{

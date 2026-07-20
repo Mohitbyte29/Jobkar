@@ -83,50 +83,6 @@ const Portfolio = () => {
         </p>
       </section>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        {/* Section: LinkedIn */}
-        <section>
-          <label
-            className="block font-label-strong text-label-strong text-on-surface mb-xs"
-            htmlFor="linkedin_url"
-          >
-            LinkedIn Profile
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-              <span className="material-symbols-outlined text-outline">
-                link
-              </span>
-            </div>
-            <input
-              className="block w-full pl-lg pr-md py-sm bg-surface border border-outline-variant rounded-lg font-body-md focus:focused-input transition-all outline-none"
-              id="linkedin_url"
-              placeholder="linkedin.com/in/username"
-              type="url"
-            />
-          </div>
-        </section>
-        {/* Section: GitHub */}
-        <section>
-          <label
-            className="block font-label-strong text-label-strong text-on-surface mb-xs"
-            htmlFor="github_url"
-          >
-            Design Profile / GitHub
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-              <span className="material-symbols-outlined text-outline">
-                code
-              </span>
-            </div>
-            <input
-              className="block w-full pl-lg pr-md py-sm bg-surface border border-outline-variant rounded-lg font-body-md focus:focused-input transition-all outline-none"
-              id="github_url"
-              placeholder="github.com/username or dribbble.com/username"
-              type="url"
-            />
-          </div>
-        </section>
       </div>
       {/* Section: Project Highlights */}
       <section className="pt-sm">

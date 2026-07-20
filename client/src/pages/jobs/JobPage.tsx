@@ -3,11 +3,14 @@ import Navbar from "@/components/Navbar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../../utils/titleCase";
+import { useJobs } from "@/context/JobsContext";
 
 const JobPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const user = location.state;
+      const {userData} = useJobs();
+
     // console.log(user.company.website);
     console.log("location.state", location.state);
 console.log("job", user);
