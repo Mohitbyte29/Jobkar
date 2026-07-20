@@ -627,7 +627,7 @@ export default function Home() {
                         {(job.salaryMax / 100000).toFixed(1)}L
                       </p>
                     )}
-                    <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors">
+                    <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="px-6 py-2 bg-primary-container text-white rounded-lg font-label-strong hover:bg-slate-800 transition-colors cursor-pointer">
                       Apply Now
                     </button>
                   </div>

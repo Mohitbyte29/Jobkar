@@ -1,10 +1,11 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../../utils/titleCase";
 
 const JobPage = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const user = location.state;
     // console.log(user.company.website);
@@ -225,7 +226,7 @@ console.log("company", user?.company);
               <span className="material-symbols-outlined">bookmark</span>
               Save Job
             </button>
-            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs">
+            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs cursor-pointer" onClick={() => navigate(`/jobs/application/${user.id}`, { state: user  })}>
               Apply Now
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>

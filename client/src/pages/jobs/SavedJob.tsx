@@ -154,7 +154,7 @@ const SavedJob = () => {
               >
                 Remove 
               </button>
-              <button className="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-strong hover:bg-opacity-90 transition-all active:scale-95 cursor-pointer" onClick={() => navigate(`/jobs/search/${savedJob.job.title}`, { state: savedJob.job  })}>
+              <button className="bg-[#635bff] text-on-primary px-lg py-sm rounded-lg font-label-strong hover:bg-opacity-90 transition-all active:scale-95 cursor-pointer" onClick={() => navigate(`/jobs/search/${savedJob.jobId}`, { state: savedJob.job  })}>
                 Apply Now
               </button>
             </div>

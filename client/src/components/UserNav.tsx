@@ -21,13 +21,13 @@ const UserNav = () => {
         <i className="fas fa-th-large w-5" />
         <span className="text-sm font-medium">Home</span>
       </Link>
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
+        to="/jobs/application"
       >
         <i className="fas fa-file-alt w-5" />
         <span className="text-sm font-medium">My Applications</span>
-      </a>
+      </Link>
       <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
         to="/saved-jobs"

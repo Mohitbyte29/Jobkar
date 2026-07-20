@@ -37,6 +37,12 @@ import Second from './pages/flowPages/second';
 import Profile from './pages/user/Profile';
 import EditProfile from './pages/user/EditProfile';
 import Projects from './pages/user/Projects';
+import Application from './pages/application/Application';
+import ApplicationJob from './pages/application/ApplicationJob';
+import Experience from './pages/application/Experience';
+import Review from './pages/application/Review';
+import Portfolio from './pages/application/Portfolio';
+import Success from './pages/application/Success';
 
 const App = () => {
   return (
@@ -79,6 +85,12 @@ const App = () => {
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/edit-profile' element={<EditProfile />}/>
         <Route path='/projects' element={<Projects/>} />
+        <Route path='/jobs/application' element={<Application/>} />
+        <Route path='/jobs/application/:jobId' element={<ApplicationJob/>} />
+        <Route path='/jobs/application/experience/:jobId' element={<Experience/>} />
+        <Route path='/jobs/application/review/:jobId' element={<Review/>} />
+        <Route path='/jobs/application/portfolio/:jobId' element={<Portfolio/>} />
+        <Route path='/jobs/application/success/:jobId' element={<Success/>} />
       </Routes>
     </div>
   )

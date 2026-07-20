@@ -1,5 +1,5 @@
 
-import { Bell, CreditCard, Lock, LogOut, Mail, User, Users } from "lucide-react"
+import { Bell, Briefcase, CreditCard, Lock, LogOut, Mail, User, Users } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,23 +39,21 @@ export const UserDropdown = () => {
   return (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button className="gap-2 h-9 bg-black rounded-full" variant="outline">
-        <Avatar className="h-8 w-8 ">
+        <Avatar className="h-10 w-10 cursor-pointer rounded-[20px]">
           <AvatarImage alt="@haydenbleasel" src="https://github.com/haydenbleasel.png" />
           <AvatarFallback>HB</AvatarFallback>
         </Avatar>
-      </Button>
-    </DropdownMenuTrigger>
+    </DropdownMenuTrigger>  
     <DropdownMenuContent align="end" className="w-64">
       <DropdownMenuLabel className="font-normal">
         <div className="flex items-center gap-3 pb-2">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-10 w-10 rounded-[20px] cursor-pointer">
             <AvatarImage alt="@haydenbleasel" src="https://github.com/haydenbleasel.png" />
             <AvatarFallback>HB</AvatarFallback>
           </Avatar>
           <div className="flex flex-col space-y-1">
-            <p className="font-medium text-sm leading-none">Hayden Bleasel</p>
-            <p className="text-muted-foreground text-xs leading-none">hello@haydenbleasel.com</p>
+            <p className="font-medium text-sm leading-none">{user?.name}</p>
+            <p className="text-muted-foreground text-xs leading-none">{user?.email}</p>
           </div>
         </div>
       </DropdownMenuLabel>
@@ -79,6 +77,12 @@ export const UserDropdown = () => {
         <DropdownMenuItem>
           <Lock />
           Privacy & Security
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Briefcase />
+          <Link to="/saved-jobs" className="text-sm font-label-strong text-on-surface-variant hover:text-on-surface transition-colors duration-200">
+            My Jobs
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />

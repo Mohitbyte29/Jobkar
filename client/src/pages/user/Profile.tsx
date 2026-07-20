@@ -71,6 +71,21 @@ const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [education, setEducation] = useState<Education>(defaultEducation);
+  const [savedJobs, setSavedJobs] = useState<string>("");
+  
+  useEffect(() => {
+  const handleCountSavedJobs = async () => {
+    try{
+      const res = await axios.get('http://localhost:4000/api/jobs/saved', { withCredentials: true });
+      setSavedJobs(res.data);
+      console.log("Saved Jobs Count: ", savedJobs.length);
+    } catch (error) {
+      console.error('Error fetching saved jobs:', error);
+    }
+  }; 
+  handleCountSavedJobs(); 
+}, []);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -89,7 +104,8 @@ const Profile = () => {
       }
     };
     fetchProfile();
-  }, []);
+  }, []); // Re-fetch profile when saved jobs count changes
+
   return (
     <div className="flex min-h-screen">
   {/* BEGIN: Sidebar Navigation */}
@@ -238,7 +254,7 @@ const Profile = () => {
               <div className="w-10 h-10 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center mb-2">
                 <i className="fas fa-heart text-sm" />
               </div>
-              <div className="text-lg font-bold">12</div>
+              <div className="text-lg font-bold">{savedJobs.length}</div>
               <div className="text-[10px] text-slate-400 font-medium uppercase tracking-tight">
                 Saved Jobs
               </div>

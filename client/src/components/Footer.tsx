@@ -87,7 +87,7 @@ import { Link } from "react-router";
     </div>
     <div className="border-t border-slate-200 dark:border-slate-800 py-6 text-center">
       <p className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400">
-        © 2024 JobKar Inc. All rights reserved.
+        © 2026 JobKar Inc. All rights reserved.
       </p>
     </div>
   </footer>

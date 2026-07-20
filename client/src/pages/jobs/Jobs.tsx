@@ -17,7 +17,7 @@ interface SavedJob {
   updatedAt: string;
 }
 
-interface Job{
+interface Job {
     id: number;
     title: string;
     company: {name: string, description: string, location: string, website: string, companyStatus: string, logo: string};
@@ -40,6 +40,7 @@ interface Job{
       return saveJob.some((saved) => saved.jobId === jobId);
     };
     
+
     const handlegetSavedJobs = async() => {
     try{
       const res = await axios.get(`http://localhost:4000/api/jobs/saved`, { withCredentials: true });
@@ -54,6 +55,7 @@ interface Job{
       toast.error("Failed to fetch saved jobs");
     }
   }
+
   const getSortedJobs = () => {
     const jobs = [...userData];
     if (sortBy === "recent") {
@@ -338,7 +340,7 @@ interface Job{
                       Save Job
                     </button>
                   )}
-                <button onClick={() => navigate(`/jobs/search/${job.title}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() => navigate(`/jobs/search/${job.id}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>

@@ -161,6 +161,16 @@
   }
 }
 
+.stepper-line {
+  width: 150px;
+  height: 2px;
+  background: #d1d5db;
+}
+
+.stepper-line.active {
+  background: #7c3aed;
+}
+
 .ticks {
   position: relative;
   width: 100%;
