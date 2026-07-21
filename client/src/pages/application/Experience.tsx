@@ -137,7 +137,7 @@ const Experience = () => {
                 <input
                   className="w-4 h-4 text-secondary border-outline-variant rounded focus:ring-secondary"
                   id="current-work-1"
-                  onchange="document.getElementById('end-date-1').disabled = this.checked"
+                  onChange="document.getElementById('end-date-1').disabled = this.checked"
                   type="checkbox"
                 />
                 <label

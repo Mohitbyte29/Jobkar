@@ -155,8 +155,8 @@ model Job {
 model Application {
   id           Int                @id @default(autoincrement())
   userId       Int
-  jobId        Int?
-  resume       String
+  jobId        Int?      @unique
+  resume       String?      @db.VarChar(255)
   coverletter  String?      @db.Text
   portfolio    String?      @db.VarChar(255)
   github       String?      @db.VarChar(255)

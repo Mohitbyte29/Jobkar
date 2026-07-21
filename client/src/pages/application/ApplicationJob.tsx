@@ -1,10 +1,45 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import axios from "axios";
 import { ArrowRight } from "lucide-react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationJob = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [resume, setResume] = useState<File | null>(null);
+
+  const handleClick = async(e: React.MouseEvent<HTMLButtonElement>) => {
+      fileInputRef.current?.click()
+  };
+
+  const handleFileChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
+    try{
+      const file = e.target.files?.[0];
+      if(!file) return;
+      const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+    if (file.size > MAX_FILE_SIZE) {
+        alert("Maximum file size is 10 MB");
+        return;
+    }
+      const formData = new FormData();
+      formData.append("resume", file);
+      await axios.patch(`http://localhost:4000/api/applications/resume`, formData, {
+        withCredentials: true,
+      });
+      setResume(file);
+      console.log("Resume uploaded:", file);
+    }
+    catch(err){
+      console.error("Error uploading resume:", err);
+      if(axios.isAxiosError(err) && err.response){
+        console.error("Server response:", err.response.data);
+      }
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -87,7 +122,7 @@ const ApplicationJob = () => {
                 <label className="font-label-strong text-on-surface-variant mb-xs block">
                   Resume / CV
                 </label>
-                <div className="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-white hover:border-secondary transition-colors cursor-pointer group">
+                <div className="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-white hover:border-secondary transition-colors group">
                   <span className="material-symbols-outlined text-4xl text-outline mb-sm group-hover:text-secondary transition-colors">
                     cloud_upload
                   </span>
@@ -97,9 +132,13 @@ const ApplicationJob = () => {
                   <p className="font-body-sm text-outline">
                     PDF, DOCX up to 10MB
                   </p>
-                  <button className="mt-md px-6 py-2 border border-outline text-primary font-semibold rounded-lg hover:bg-surface transition-colors">
+                  <button 
+                    className="mt-md px-6 py-2 border border-outline text-primary font-semibold rounded-lg hover:bg-surface transition-colors cursor-pointer"
+                    onClick={handleClick} 
+                  >
                     Browse Files
                   </button>
+                  <input ref={fileInputRef} onChange={handleFileChange} type="file" accept=".pdf,.docx" className="hidden" />
                 </div>
               </div>
               <div>

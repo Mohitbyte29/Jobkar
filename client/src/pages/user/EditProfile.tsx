@@ -113,6 +113,7 @@ const EditProfile = () => {
   const handleCoverClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     coverInputRef.current?.click();
   };
+  
   const handleProfilePhotoChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {

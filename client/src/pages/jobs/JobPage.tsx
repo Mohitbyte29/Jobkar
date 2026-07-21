@@ -4,23 +4,73 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../../utils/titleCase";
 import { useJobs } from "@/context/JobsContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useUser } from "@/context/UserContext";
+
+interface userDataProfile {
+  id: number;
+  fullName: string;
+  city: string;
+  country: string;
+  phoneNumber: string;
+}
 
 const JobPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state;
-      const {userData} = useJobs();
+  const [profile, setProfile] = useState<userDataProfile | null>(null)
+    const userData = location.state;
+    const {user, setUser} = useUser();
 
-    // console.log(user.company.website);
+    // console.log(userData.company.website);
     console.log("location.state", location.state);
-console.log("job", user);
-console.log("company", user?.company);
+console.log("job", userData);
+console.log("company", userData?.company);
+// console.log(userData?.id);
+
+  useEffect(() => {
+  const handleGetuserDataProfile = async() => {
+    try{
+      const res = await axios.get(`http://localhost:4000/api/me/profile`, { withCredentials: true })
+      setProfile(res.data.user);
+      console.log(res.data.user)
+      console.log(profile?.fullName);
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  handleGetuserDataProfile();
+  }, []);
+
+  const handleClick = async () => {
+    try{
+      await axios.post(`http://localhost:4000/api/applicant`, {
+         name: profile?.fullName, city: profile?.city, country: profile?.country, phoneNumber: profile?.phoneNumber, userprofile: {connect: {id: profile?.id}}
+      }, { withCredentials: true });
+      await axios.post(`http://localhost:4000/api/applications`, {
+        userId: user?.id,
+        jobId: userData?.id
+      }, { withCredentials: true });
+      navigate(`/jobs/application/${user?.id}`, { state: userData });
+    }
+    catch(err){
+      console.log(err);
+      if(axios.isAxiosError(err)) {
+        console.error("Axios Error:", err.response?.data);
+      } else {
+        console.error("Unexpected Error:", err);
+      }
+    }
+  }
   return (
       <div>
         <Navbar/>
       <main className="max-w-max_width mx-auto px-margin py-xl min-h-screen">
   {/* Hero / Context Area (Asymmetric Layout) */}
-        <h1 className="text-5xl font-semibold flex items-center justify-center my-5 text-center">{user.title}</h1>
+        <h1 className="text-5xl font-semibold flex items-center justify-center my-5 text-center">{userData.title}</h1>
   <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg max-w-max_width mx-auto">
     {/* Main Content: Job Detail Card */}
     <div className="lg:col-span-8 space-y-md">
@@ -34,12 +84,12 @@ console.log("company", user?.company);
                 alt="Insight AI Logo"
                 className="w-full h-full object-cover"
                 data-alt="A minimalist and high-tech corporate logo for an artificial intelligence company called Insight AI. The logo features abstract geometric patterns suggesting neural networks or data flow, set against a clean white background. The aesthetic is modern, professional, and sophisticated, reflecting institutional stability and cutting-edge technology in a bright, light-mode environment."
-                src={user.company.logo}
+                src={userData.company.logo}
               />
             </div>
             <div>
               <h1 className="font-h1 text-h1 text-primary mb-base">
-                {user.title}
+                {userData.title}
               </h1>
               <div className="flex items-center gap-xs text-on-surface-variant">
                 
@@ -47,7 +97,7 @@ console.log("company", user?.company);
                   <span className="material-symbols-outlined text-[18px]">
                     location_on
                   </span>
-                  {user.location} (Remote)
+                  {userData.location} (Remote)
                 </span>
                 <span className="text-outline">•</span>
                 <span className="font-body-sm text-body-sm">3 hours ago</span>
@@ -61,7 +111,7 @@ console.log("company", user?.company);
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">work</span>
             <span className="font-label-strong text-label-strong">
-              {toTitleCase(user.type)}
+              {toTitleCase(userData.type)}
             </span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
@@ -69,26 +119,26 @@ console.log("company", user?.company);
               psychology
             </span>
             <span className="font-label-strong text-label-strong">
-              {toTitleCase(user.category)}
+              {toTitleCase(userData.category)}
             </span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags[0]}</span>
+            <span className="font-label-strong text-label-strong">{userData.tags[0]}</span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags[1]}</span>
+            <span className="font-label-strong text-label-strong">{userData.tags[1]}</span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags[2]}</span>
+            <span className="font-label-strong text-label-strong">{userData.tags[2]}</span>
           </div>
           
         </div>
@@ -218,7 +268,7 @@ console.log("company", user?.company);
               COMPENSATION
             </span>
             <span className="font-h2 text-h2 text-primary flex">
-              <IndianRupee width={15}/>{user.salaryMin/1000}k - <IndianRupee width={15}/>{user.salaryMax/1000}k{" "}
+              <IndianRupee width={15}/>{userData.salaryMin/1000}k - <IndianRupee width={15}/>{userData.salaryMax/1000}k{" "}
               <small className="text-[1rem] font-normal text-on-surface-variant">
                 / year
               </small>
@@ -229,7 +279,7 @@ console.log("company", user?.company);
               <span className="material-symbols-outlined">bookmark</span>
               Save Job
             </button>
-            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs cursor-pointer" onClick={() => navigate(`/jobs/application/${user.id}`, { state: user  })}>
+            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs cursor-pointer" onClick={handleClick}> 
               Apply Now
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -270,8 +320,8 @@ console.log("company", user?.company);
       <div className="flex justify-between items-start mb-md">
         <div>
           <img
-            src={user.company.logo}
-            alt={user.company.name}
+            src={userData.company.logo}
+            alt={userData.company.name}
             className="w-16 h-16 rounded-lg object-cover"
           />
           <h4 className="font-h2 text-h2 text-primary">Insight AI</h4>
@@ -280,7 +330,7 @@ console.log("company", user?.company);
           </p>
         </div>
         <Link
-          to={user.company.website}
+          to={userData.company.website}
           target="_blank"
           className="text-secondary hover:underline flex items-center gap-xs font-label-strong text-label-strong"
         >

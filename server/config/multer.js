@@ -6,9 +6,13 @@ const upload = multer({
         fileSize: 5 * 1024 * 1024, // Limit file size to 5MB
     },
     fileFilter: (req, file, cb) => {
-        // Accept only image files
-        if (!file.mimetype.startsWith('image/')) {
-            return cb(new Error('Only image files are allowed!'), false);
+        const allowedMimeTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ];
+        if (!allowedMimeTypes.includes(file.mimetype)) {
+            return cb(new Error('Only PDF or DOC/DOCX files are allowed!'), false);
         }
         cb(null, true);
     }
