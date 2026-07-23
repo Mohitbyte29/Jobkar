@@ -86,11 +86,11 @@ const App = () => {
         <Route path='/edit-profile' element={<EditProfile />}/>
         <Route path='/projects' element={<Projects/>} />
         <Route path='/jobs/application' element={<Application/>} />
-        <Route path='/jobs/application/:jobId' element={<ApplicationJob/>} />
-        <Route path='/jobs/application/experience/:jobId' element={<Experience/>} />
-        <Route path='/jobs/application/review/:jobId' element={<Review/>} />
-        <Route path='/jobs/application/portfolio/:jobId' element={<Portfolio/>} />
-        <Route path='/jobs/application/success/:jobId' element={<Success/>} />
+        <Route path='/jobs/application/:id/:jobId' element={<ApplicationJob/>} />
+        <Route path='/jobs/application/experience/:id/:jobId' element={<Experience/>} />
+        <Route path='/jobs/application/review/:id/:jobId' element={<Review/>} />
+        <Route path='/jobs/application/portfolio/:id/:jobId' element={<Portfolio/>} />
+        <Route path='/jobs/application/success/:id/:jobId' element={<Success/>} />
       </Routes>
     </div>
   )

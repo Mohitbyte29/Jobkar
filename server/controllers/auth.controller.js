@@ -49,7 +49,7 @@ export const registerUser = async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000 
+            maxAge: 24 *60 * 60 * 1000 
         })
         res.status(201).json({success: true, message: "User Registered Successfully!", user: {id: user.id, email: user.email}});
     } catch(error) {
@@ -107,7 +107,7 @@ export const loginUser = async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000 
+            maxAge: 24 * 60 * 60 * 1000 
         })
         res.status(200).json({success: true, message: "Login successful", user: {id: user.id, email: user.email, role: user.role, companyId: tokenPayload.companyId}, employerId: tokenPayload.employerId});
     } catch(error) {

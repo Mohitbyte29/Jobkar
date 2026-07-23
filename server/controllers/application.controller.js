@@ -37,7 +37,7 @@ export const getApplicationById = async(req, res) => {
 
 export const createApplication = async(req, res) => {
     try{
-        const { jobId } = req.body;
+        const { userId, jobId, applicantId } = req.body;
         const existingApplicant = await prisma.application.findFirst({
             where: { jobId: jobId },
         });
@@ -45,39 +45,42 @@ export const createApplication = async(req, res) => {
         //     return res.status(400).json({ error: "Application already exists for this user" });
         // }
         const application = await prisma.application.create({
-            data: {                    
+            data: {                     
                 user: {
                     connect: {email: req.user.email}
                 }, job: jobId ? { connect: { id: jobId } } : undefined,
-            }
+                applicant: applicantId ? { connect: { userProfileId: applicantId } } : undefined,
+            },
+            select: {
+                id: true, createdAt: true,
+                job: {select: {id: true, title: true}},
+                applicant: {select: {id: true}}
+            },  
         });
         res.json({application});
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to create application"    
-            });
+        res.status(500).json({ error: "Failed to create application" , message: err.message });
     }
 }
 
 export const updateApplication = async(req, res) => {
     try{
-        const { name, email, city, country, phoneNumber, resume, github, linkedIn, dribble, behance, status, portfolio } = req.body;
-        const application = await prisma.application.upsert({
-            where: { id: Number(req.params.id) },
-            update: {
-                userId,
-                jobId,
-                coverLetter,
+        const { jobId, coverletter, resume, github, linkedIn, dribble, behance, status, portfolio } = req.body;
+        const application = await prisma.application.update({
+            where: { userId: req.user.id, jobId: jobId },
+            data: {
+                coverletter,
                 resume,
                 github,
-                linkedin,
+                linkedIn,
                 behance,
                 status,
                 dribble,
                 portfolio,
             },
             select: {
-                id: true, coverLetter: true, resume: true, createdAt: true,
+                id: true, coverletter: true, resume: true, createdAt: true,
                 job: {select: {id: true, title: true}},
                 applicant: {select: {id: true, name: true, email: true, city: true, country: true, phoneNumber: true}}
             },
@@ -103,6 +106,22 @@ export const deleteApplication = async(req, res) => {
     }
 }
 
+export const getApplicantById = async(req, res) => {
+    try{
+        const applicant = await prisma.applicant.findUnique({
+            where: {email: req.user.email},
+            select: {
+                id: true, userProfileId: true, name: true, email: true, city: true, country: true, phoneNumber: true,
+                userprofile: {select: {id: true, fullName: true, profession: true, industry: true, coverImage: true, github: true, linkedIn: true, country: true, city: true, university: true, phoneNumber: true, portfolio: true}}
+            }
+        })
+        res.json({applicant});
+    } catch(err){
+        console.log(err);
+        res.status(500).json({ error: "Failed to fetch applicant details", message: err.message });
+    }
+}
+
 export const createApplicant = async(req, res) => {
     try{
         const { name, city, country, phoneNumber, userprofile } = req.body;
@@ -125,7 +144,7 @@ export const createApplicant = async(req, res) => {
         res.json({ applicant });
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to create applicant" });
+        res.status(500).json({ error: "Failed to create applicant", message: err.message });
     }
 } 
 
@@ -154,11 +173,11 @@ export const uploadResume = async(req, res) => {
             folder: "resume",
             resource_type: "raw",
         });
-        const updatedApplication = await prisma.application.update({
-            where: { userId: req.user.id },
+        const updatedUser = await prisma.user.update({
+            where: { id: req.user.id },
             data: { resume: resumeUrl.secure_url },
         });
-        res.json({ application: updatedApplication, resume: resumeUrl.secure_url });
+        res.json({ user: updatedUser, resume: resumeUrl.secure_url });
     } catch(err){
         console.log(err);
         res.status(500).json({ error: "Failed to upload resume", message: err.message });

@@ -1,9 +1,55 @@
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar'
-import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/context/UserContext';
+import axios from 'axios';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Experience = () => {
     const navigate = useNavigate();
+    const {user, setUser} = useUser();
+    const location = useLocation();
+    const jobData = location.state;
+    const [formData, setFormData] = useState({
+        jobTitle: '',
+        company: '',
+        city: '',
+        country: '',
+        roleDescription: '',
+        startDate: '',
+        endDate: '',
+        currentWork: false,
+    });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+        const { name, value } = e.target;   
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    }
+
+    const handleAddExperience = async(e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try{
+          await axios.post(`/api/jobs/experience/${user?.id}`, 
+            {
+              ...formData,
+              startDate: new Date(formData.startDate).toISOString(),
+              endDate: new Date(formData.endDate).toISOString(),
+              userId: user?.id,
+            }
+            , { withCredentials: true });
+            navigate(`/jobs/application/portfolio/${user?.id}/${jobData?.id}`, { state: jobData });
+        }
+        catch(err){
+          console.error("Error adding experience:", err);  
+          if(axios.isAxiosError(err)){
+            console.log(err.response?.data);
+          }
+        }
+      }
+
   return (
     <div>
         <Navbar/>
@@ -55,7 +101,7 @@ const Experience = () => {
       </p>
     </div>
     {/* Form Experience Container */}
-    <form className="space-y-lg" id="experience-form">
+    <form className="space-y-lg" id="experience-form" onSubmit={handleAddExperience}>
       <div className="space-y-md" id="experience-list">
         {/* Experience Card 1 */}
         <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-surface-container-high transition-all">
@@ -77,7 +123,7 @@ const Experience = () => {
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md"
                 placeholder="e.g. Senior UI/UX Designer"
-                type="text"
+                type="text" name="jobTitle" onChange={handleChange} value={formData.jobTitle}
               />
             </div>
             {/* Company */}
@@ -88,7 +134,7 @@ const Experience = () => {
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md"
                 placeholder="e.g. TechFlow Solutions"
-                type="text"
+                type="text" name="company" onChange={handleChange} value={formData.company}
               />
             </div>
             {/* Location City */}
@@ -99,7 +145,7 @@ const Experience = () => {
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md"
                 placeholder="e.g. San Francisco"
-                type="text"
+                type="text" name="city" onChange={handleChange} value={formData.city}
               />
             </div>
             {/* Location Country */}
@@ -110,7 +156,7 @@ const Experience = () => {
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md"
                 placeholder="e.g. United States"
-                type="text"
+                type="text" name="country" onChange={handleChange} value={formData.country}
               />
             </div>
             {/* Start Date */}
@@ -120,7 +166,7 @@ const Experience = () => {
               </label>
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md"
-                type="date"
+                type="date" name="startDate" onChange={handleChange} value={formData.startDate}
               />
             </div>
             {/* End Date */}
@@ -131,13 +177,18 @@ const Experience = () => {
               <input
                 className="w-full bg-white border border-outline-variant rounded-lg px-md py-3 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body-md disabled:bg-surface-container-low disabled:text-outline"
                 id="end-date-1"
-                type="date"
+                type="date" name="endDate" onChange={handleChange} value={formData.endDate}
               />
               <div className="flex items-center gap-xs mt-base">
                 <input
                   className="w-4 h-4 text-secondary border-outline-variant rounded focus:ring-secondary"
                   id="current-work-1"
-                  onChange="document.getElementById('end-date-1').disabled = this.checked"
+                  onChange={(e) => {
+                    const end_date = document.getElementById('end-date-1');
+                    if (end_date) {
+                      end_date.disabled = e.target.checked;
+                    }
+                  }}
                   type="checkbox"
                 />
                 <label
@@ -188,7 +239,7 @@ const Experience = () => {
                   className="w-full bg-white border-none p-md focus:ring-0 font-body-md resize-none custom-scrollbar"
                   placeholder="Describe your key responsibilities and achievements..."
                   rows={6}
-                  defaultValue={""}
+                  defaultValue={""} name="roleDescription" onChange={handleChange} value={formData.roleDescription}
                 />
               </div>
             </div>
@@ -213,8 +264,8 @@ const Experience = () => {
           Back
         </button>
         <button
-          className="w-full md:w-auto px-xl py-3 bg-secondary text-on-secondary font-label-strong rounded-lg shadow-lg hover:opacity-90 active:scale-[0.98] transition-all" onClick={() => navigate(`/jobs/application/portfolio/5`)}
-          type="submit"
+          className="w-full md:w-auto px-xl py-3 bg-secondary text-on-secondary font-label-strong rounded-lg shadow-lg hover:opacity-90 active:scale-[0.98] transition-all" 
+          type="submit" 
         >
           Next Step
         </button>

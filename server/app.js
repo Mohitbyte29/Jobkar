@@ -15,6 +15,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import "./config/passport.js";
 import { userRoutes } from "./routes/users.routes.js";
+import { experienceRoutes } from "./routes/experience.routes.js";
 
 dotenv.config()
 
@@ -40,6 +41,7 @@ app.use(companyRoutes);
 app.use(jobsRoutes);
 app.use(applicationRoutes);
 app.use(adminRoutes);
+app.use(experienceRoutes);
 
 // app.get("/api/job", async(req, res) => {
 //   const { what, where, page = 1 } = req.query;

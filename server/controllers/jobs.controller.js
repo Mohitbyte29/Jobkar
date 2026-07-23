@@ -144,7 +144,7 @@ export const getJobById = async(req, res) => {
         res.json(job);
     } catch(error){
         console.log(error);
-        res.status(500).json({ error: "Failed to fetch job" });
+        res.status(500).json({ error: "Failed to fetch job", message: error.message });
     }
 }
 

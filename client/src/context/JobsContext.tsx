@@ -23,15 +23,18 @@ interface JobsContextType {
   setLoading: (loading: boolean) => void;
   total: number;
   setTotal: (total: number) => void;
+  currentJob: Job | null;
+  setCurrentJob: (job: Job | null) => void;
 }
 
-export const JobsContext = createContext<JobsContextType | undefined>(undefined);
+const JobsContext = createContext<JobsContextType | undefined>(undefined);
 
 export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
   const [error, setError]     = useState("");
   const [loading, setLoading] = useState(true);
     const [total, setTotal]     = useState(0);
   const [userData, setUserData] = useState<Job[]>([]);
+  const [currentJob, setCurrentJob] = useState<Job | null>(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -40,6 +43,7 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const { data } = await axios.get("/api/jobs"); // ✅ fetches all active jobs
         setUserData(data.jobs);
+        setCurrentJob(data.jobs);
         setTotal(data.pagination.total);
       } catch (err) {
         setError("Failed to load jobs");
@@ -47,12 +51,12 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     };
-
     fetchJobs();
   }, []); // ✅ runs once on mount
-
+  console.log(userData)
+  console.log(currentJob)
   return (
-    <JobsContext.Provider value={{ userData, setUserData, error, setError, loading, setLoading, total, setTotal }}>
+    <JobsContext.Provider value={{ userData, setUserData, error, setError, loading, setLoading, total, setTotal, currentJob, setCurrentJob }}>
       {children}
     </JobsContext.Provider>
   );

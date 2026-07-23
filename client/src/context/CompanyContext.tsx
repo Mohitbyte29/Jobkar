@@ -50,7 +50,7 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
         };
         fetchCompanies();
     }, []);
-
+    // console.log(companyData)
     return (
         <CompanyContext.Provider value={{companyData, setCompanyData, error, setError, loading, setLoading, total, setTotal}}>
             {children}

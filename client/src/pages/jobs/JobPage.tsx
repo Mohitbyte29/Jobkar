@@ -3,10 +3,10 @@ import Navbar from "@/components/Navbar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../../utils/titleCase";
-import { useJobs } from "@/context/JobsContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
+import { useJobs } from "@/context/JobsContext";
 
 interface userDataProfile {
   id: number;
@@ -16,45 +16,34 @@ interface userDataProfile {
   phoneNumber: string;
 }
 
+interface Applicant {
+  userProfileId: number;
+}
+
 const JobPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
   const [profile, setProfile] = useState<userDataProfile | null>(null)
+  const [applicantProfile, setApplicantProfile] = useState<Applicant | null>(null);
     const userData = location.state;
+    const {currentJob, setCurrentJob} = useJobs();
     const {user, setUser} = useUser();
 
     // console.log(userData.company.website);
     console.log("location.state", location.state);
 console.log("job", userData);
-console.log("company", userData?.company);
+console.log("company", userData.company);
 // console.log(userData?.id);
 
   useEffect(() => {
   const handleGetuserDataProfile = async() => {
     try{
       const res = await axios.get(`http://localhost:4000/api/me/profile`, { withCredentials: true })
+      const newres = await axios.get(`http://localhost:4000/api/applicant/${res.data.user.id}`, { withCredentials: true })
       setProfile(res.data.user);
-      console.log(res.data.user)
-      console.log(profile?.fullName);
-    }
-    catch(err){
-      console.log(err);
-    }
-  }
-
-  handleGetuserDataProfile();
-  }, []);
-
-  const handleClick = async () => {
-    try{
-      await axios.post(`http://localhost:4000/api/applicant`, {
-         name: profile?.fullName, city: profile?.city, country: profile?.country, phoneNumber: profile?.phoneNumber, userprofile: {connect: {id: profile?.id}}
-      }, { withCredentials: true });
-      await axios.post(`http://localhost:4000/api/applications`, {
-        userId: user?.id,
-        jobId: userData?.id
-      }, { withCredentials: true });
-      navigate(`/jobs/application/${user?.id}`, { state: userData });
+      setApplicantProfile(newres.data.applicant);
+      console.log(res.data.user);
+      console.log(applicantProfile);
     }
     catch(err){
       console.log(err);
@@ -65,6 +54,34 @@ console.log("company", userData?.company);
       }
     }
   }
+  
+  handleGetuserDataProfile();
+  }, []);
+
+  const handleClick = async () => {
+    try{
+      await axios.post(`http://localhost:4000/api/applicant`, {
+         name: profile?.fullName, city: profile?.city, country: profile?.country, phoneNumber: profile?.phoneNumber, userprofile: {connect: {id: profile?.id}}
+      }, { withCredentials: true });
+      await axios.post(`http://localhost:4000/api/applications`, {
+        userId: user?.id,
+        jobId: userData?.id,
+        applicantId: applicantProfile?.userProfileId
+      }, { withCredentials: true });
+      navigate(`/jobs/application/${user?.id}/${userData?.id}`, { state: userData });
+    }
+    catch(err){
+      console.log(err);
+      if(axios.isAxiosError(err)) {
+        console.error("Axios Error:", err.response?.data);
+      } else {
+        console.error("Unexpected Error:", err);
+      }
+    }
+  }
+  console.log(user)
+  console.log(userData)
+
   return (
       <div>
         <Navbar/>

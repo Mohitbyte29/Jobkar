@@ -31,7 +31,7 @@ interface Job {
   }
   
   export function Jobs(){
-    const { userData, total } = useJobs();
+    const { userData, total, currentJob, setCurrentJob } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
     const navigate = useNavigate();
@@ -40,13 +40,12 @@ interface Job {
       return saveJob.some((saved) => saved.jobId === jobId);
     };
     
-
     const handlegetSavedJobs = async() => {
     try{
       const res = await axios.get(`http://localhost:4000/api/jobs/saved`, { withCredentials: true });
-      console.log("Saved Jobs: ", res.data);
+      // console.log("Saved Jobs: ", res.data);
       setsaveJob(res.data);
-      console.log([saveJob]);
+      // console.log([saveJob]);
     } catch(error){
       console.error("Error fetching saved jobs:", error);
       if(axios.isAxiosError(error) && error.response){
@@ -340,7 +339,9 @@ interface Job {
                       Save Job
                     </button>
                   )}
-                <button onClick={() => navigate(`/jobs/search/${job.id}`, {state: job})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() =>{
+                  // setCurrentJob(job);
+                  navigate(`/jobs/search/${job.id}`, { state:  job })}} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>

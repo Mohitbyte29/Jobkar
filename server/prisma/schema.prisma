@@ -154,6 +154,7 @@ model Job {
 
 model Application {
   id           Int                @id @default(autoincrement())
+  applicantId   Int     @unique
   userId       Int
   jobId        Int?      @unique
   resume       String?      @db.VarChar(255)
@@ -170,7 +171,7 @@ model Application {
   internship   Internship?         @relation(fields: [internshipId], references: [id])
   job          Job?                @relation(fields: [jobId], references: [id])
   user         User               @relation(fields: [userId], references: [id])
-
+  applicant   Applicant @relation(fields: [applicantId], references: [id])
   @@index([internshipId], map: "applications_internshipId_fkey")
   @@index([jobId], map: "applications_jobId_fkey")
   @@index([userId], map: "applications_userId_fkey")
@@ -179,14 +180,15 @@ model Application {
 
 model Applicant{
   id          Int           @id @default(autoincrement())
-  applicantId Int          @unique
+  userProfileId Int          @unique
   name         String        @db.VarChar(255)
   email        String       @unique @db.VarChar(255)
   city       String        @db.VarChar(255)
   country    String        @db.VarChar(255)
   phoneNumber String        @db.VarChar(255)
   user     User           @relation(fields: [email], references: [email])
-  userprofile UserProfile     @relation(fields: [applicantId], references: [id])
+  userprofile UserProfile     @relation(fields: [userProfileId], references: [id])
+  applications Application[]
 }
 
 model Experience{

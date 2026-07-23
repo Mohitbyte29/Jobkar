@@ -14,6 +14,7 @@ export const getUserData = async (req, res) => {
         isOnboarded: true,
         createdAt: true,
         updatedAt: true,
+        resume: true,
       },
     });
     return res.json({ user, success: true });

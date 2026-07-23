@@ -1,15 +1,29 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { useJobs } from "@/context/JobsContext";
+import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { ArrowRight } from "lucide-react";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+interface Jobs{
+  id: number;
+}
 
 const ApplicationJob = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const userData = location.state;
+  const {user, setUser} = useUser();
+  const { currentJob, setCurrentJob } = useJobs();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [resume, setResume] = useState<File | null>(null);
-
+  const [coverLetter, setCoverLetter] = useState<string>("");
+  const [gitHub, setGitHub] = useState<string>("");
+  const [linkedIn, setLinkedIn] = useState<string>("");
+  console.log("location.state", location.state);
+  console.log(userData)
   const handleClick = async(e: React.MouseEvent<HTMLButtonElement>) => {
       fileInputRef.current?.click()
   };
@@ -28,6 +42,9 @@ const ApplicationJob = () => {
       formData.append("resume", file);
       await axios.patch(`http://localhost:4000/api/applications/resume`, formData, {
         withCredentials: true,
+        headers: {
+        "Content-Type": "multipart/form-data",
+      }
       });
       setResume(file);
       console.log("Resume uploaded:", file);
@@ -39,12 +56,50 @@ const ApplicationJob = () => {
       }
     }
   };
+  const [formData, setFormData] = useState({
+  coverLetter: "",
+  github: "",
+  linkedIn: "",
+});
+
+  const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
+  console.log(name, value);
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+console.log(formData)
+
+  const handleNext = async(e: React.MouseEvent<HTMLButtonElement>) => {
+    try{
+      console.log(userData);
+      const res = await axios.get(`http://localhost:4000/api/me`, { withCredentials: true });
+      await axios.patch(`http://localhost:4000/api/applications/${user?.id}/${userData?.id}`,{
+        jobId: userData?.id,
+        resume: res.data.user.resume,
+        coverletter: formData.coverLetter,
+        github: formData.github,
+        linkedIn: formData.linkedIn
+      }, { withCredentials: true });
+      navigate(`/jobs/application/experience/${user?.id}/${userData?.id}`, { state: userData });
+    }
+    catch(err){
+      console.error("Error updating application:", err);  
+      if(axios.isAxiosError(err) && err.response){
+        console.error("Server response:", err.response.data);
+      }
+    }
+  }
 
   return (
     <div>
       <Navbar />
-      <main className="flex-grow pt-xl pb-xl px-4">
-        <div className="max-w-[1000px] mx-auto">
+      <main className="grow pt-xl pb-xl px-4">
+        <div className="max-w-250 mx-auto">
           {/* Job Title Header */}
           <div className="mb-lg text-center">
             <span className="font-label-caps text-secondary tracking-widest uppercase mb-xs block">
@@ -168,7 +223,7 @@ const ApplicationJob = () => {
                       </span>
                     </button>
                   </div>
-                  <textarea
+                  <textarea onChange={handleChange} name="coverLetter" value={formData.coverLetter}
                     rows={6}
                     placeholder="Tell us why you are a great fit for this Senior UI/UX role..."
                     className="w-full p-4 border-none focus:ring-0 resize-none font-body-md custom-scrollbar"
@@ -193,7 +248,7 @@ const ApplicationJob = () => {
                     <input
                       className="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all"
                       placeholder="github.com/username"
-                      type="text"
+                      type="text" onChange={handleChange} value={formData.github} name="github"
                     />
                   </div>
                   <div className="flex flex-col gap-xs">
@@ -203,7 +258,7 @@ const ApplicationJob = () => {
                     <input
                       className="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all"
                       placeholder="linkedin.com/in/username"
-                      type="text"
+                      type="text" onChange={handleChange} value={formData.linkedIn} name="linkedIn"
                     />
                   </div>
                   <div className="w-full bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
@@ -238,8 +293,7 @@ const ApplicationJob = () => {
                   Save Draft
                 </button>
                 <button
-                  className="flex-1 md:flex-none px-xl py-4 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all cursor-pointer"
-                  onClick={() => navigate(`/jobs/application/experience/5`)}
+                  className="flex-1 md:flex-none px-xl py-4 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all cursor-pointer" onClick={handleNext}
                 >
                   <span className="flex items-center gap-2">
                     Next <ArrowRight />
