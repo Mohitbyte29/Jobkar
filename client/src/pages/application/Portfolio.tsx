@@ -1,9 +1,25 @@
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/context/UserContext';
+import axios from 'axios';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Portfolio = () => {
+  const location = useLocation();
     const navigate = useNavigate();
+    const [portfolio, setPortfolio] = useState<string>('');
+    const {user, setUser} = useUser();
+    const jobData = location.state;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPortfolio(e.target.value);
+    }
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault(); 
+      await axios.post('/api/applications/', { portfolio }, {withCredentials: true});
+      navigate(`/jobs/application/review/${user?.id}/${jobData.id}`, { state: jobData });
+    }
   return (
     <div>
         <Navbar/>
@@ -55,7 +71,7 @@ const Portfolio = () => {
       </p>
     </div>
     {/* Application Form */}
-    <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-high p-lg space-y-md">
+    <form className="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-high p-lg space-y-md" onSubmit={handleSubmit}>
       {/* Section: Main Portfolio */}
       <section>
         <label
@@ -74,8 +90,8 @@ const Portfolio = () => {
             className="block w-full pl-lg pr-md py-sm bg-surface border border-outline-variant rounded-lg font-body-md focus:focused-input transition-all outline-none"
             id="portfolio_url"
             placeholder="https://yourname.design"
-            required=""
-            type="url"
+            required={true}
+            type="url" onChange={handleChange}
           />
         </div>
         <p className="mt-base font-body-sm text-body-sm text-on-surface-variant">
@@ -105,7 +121,7 @@ const Portfolio = () => {
           {/* Project 1 */}
           <div className="p-sm bg-surface rounded-lg border border-surface-container-high grid grid-cols-1 md:grid-cols-12 gap-sm items-center">
             <div className="md:col-span-5">
-              <label className="font-label-caps text-label-caps text-on-surface-variant mb-[2px] block">
+              <label className="font-label-caps text-label-caps text-on-surface-variant mb-0.5 block">
                 Project Title
               </label>
               <input
@@ -116,7 +132,7 @@ const Portfolio = () => {
               />
             </div>
             <div className="md:col-span-6">
-              <label className="font-label-caps text-label-caps text-on-surface-variant mb-[2px] block">
+              <label className="font-label-caps text-label-caps text-on-surface-variant mb-0.5 block">
                 Project Link
               </label>
               <input
@@ -135,7 +151,7 @@ const Portfolio = () => {
           {/* Project 2 */}
           <div className="p-sm bg-surface rounded-lg border border-surface-container-high grid grid-cols-1 md:grid-cols-12 gap-sm items-center">
             <div className="md:col-span-5">
-              <label className="font-label-caps text-label-caps text-on-surface-variant mb-[2px] block">
+              <label className="font-label-caps text-label-caps text-on-surface-variant mb-0.5 block">
                 Project Title
               </label>
               <input
@@ -146,7 +162,7 @@ const Portfolio = () => {
               />
             </div>
             <div className="md:col-span-6">
-              <label className="font-label-caps text-label-caps text-on-surface-variant mb-[2px] block">
+              <label className="font-label-caps text-label-caps text-on-surface-variant mb-0.5 block">
                 Project Link
               </label>
               <input
@@ -169,11 +185,11 @@ const Portfolio = () => {
         <button className="px-md py-sm rounded-lg border border-secondary text-secondary font-label-strong text-label-strong hover:bg-secondary-container transition-all">
           Back to Experience
         </button>
-        <button className="px-lg py-sm rounded-lg bg-primary text-on-primary font-label-strong text-label-strong hover:opacity-90 active:scale-[0.98] transition-all shadow-md" onClick={() => navigate(`/jobs/application/review/5`)}>
+        <button className="px-lg py-sm rounded-lg bg-primary text-on-primary font-label-strong text-label-strong hover:opacity-90 active:scale-[0.98] transition-all shadow-md" type="submit">
           Review Application
         </button>
       </div>
-    </div>
+    </form>
     {/* Help Tip */}
     <div className="mt-md flex items-start gap-sm bg-secondary-container/20 p-md rounded-xl border border-secondary-container/40">
       <span className="material-symbols-outlined text-secondary">info</span>

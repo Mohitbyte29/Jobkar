@@ -1,9 +1,13 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Review = () => {
+  const location = useLocation();
     const navigate = useNavigate();
+    const { user, setUser } = useUser();
+    const jobData = location.state;
   return (
     <div>
         <Navbar/>
@@ -237,7 +241,7 @@ const Review = () => {
         <button className="flex-grow order-2 md:order-1 px-lg py-md rounded-lg border border-outline text-on-surface font-label-strong hover:bg-surface-container-high transition-all">
           Back to Portfolio
         </button>
-        <button className="flex-[2] order-1 md:order-2 px-lg py-md rounded-lg bg-primary text-on-primary font-h3 hover:opacity-90 active:scale-[0.98] transition-all shadow-md" onClick={() => navigate(`/jobs/application/success/5`)}>
+        <button className="flex-[2] order-1 md:order-2 px-lg py-md rounded-lg bg-primary text-on-primary font-h3 hover:opacity-90 active:scale-[0.98] transition-all shadow-md" onClick={() => navigate(`/jobs/application/success/${user?.id}/${jobData?.id}`, { state: jobData })}>
           Submit Application
         </button>
       </div>
