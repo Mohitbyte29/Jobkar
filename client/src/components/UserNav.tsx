@@ -1,6 +1,8 @@
+import { useUser } from '@/context/UserContext';
 import { Link } from 'react-router'
 
 const UserNav = () => {
+  const {user, setUser} = useUser();
   return (
     <div>
       <aside
@@ -23,7 +25,7 @@ const UserNav = () => {
       </Link>
       <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to="/jobs/application"
+        to={`/application/${user?.id}`}
       >
         <i className="fas fa-file-alt w-5" />
         <span className="text-sm font-medium">My Applications</span>

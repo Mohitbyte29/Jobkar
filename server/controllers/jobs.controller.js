@@ -133,9 +133,27 @@ export const getJobById = async(req, res) => {
     try{
         const job = await prisma.job.findUnique({
             where: {id: Number(req.params.id)},
-            include: {
-                employer: {select: {name: true, email: true}},
-                _count: {select: {applications: true}},
+            // include: {
+            //     employer: {select: {companyId: true, userId: true}},
+            //     _count: {select: {applications: true}},
+            // },
+            select: {
+                id: true, title: true, description: true, location: true, type: true, salaryMax: true, salaryMin: true, requirements: true, tags: {select: {tag: {select: {name: true}}}}, remote: true, status: true, category: true,
+                CompanyId: true,
+                employerId: true,
+                createdAt: true,
+                updatedAt: true,
+                company: {
+                    select: {
+                        name: true,
+                        description: true,
+                        location: true,
+                        logo: true,
+                        website: true,
+                        companyStatus: true,
+                        logo: true,
+                    }
+                }
             }
         })
         if(!job || job.status === JobStatus.DRAFT){

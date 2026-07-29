@@ -1,9 +1,12 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import { useNavigate } from "react-router-dom"
+import { useUser } from "@/context/UserContext";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom"
 
 const Success = () => {
   const navigate = useNavigate();
+  
   return (
     <div>
       <Navbar/>

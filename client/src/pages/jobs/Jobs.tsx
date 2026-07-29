@@ -1,5 +1,6 @@
 import { IndianRupee } from "lucide-react";
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import gsap from "gsap";
 import {useJobs} from "../../context/JobsContext.tsx";
 import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
@@ -34,6 +35,8 @@ interface Job {
     const { userData, total, currentJob, setCurrentJob } = useJobs();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
+    const pageRef = useRef<HTMLElement>(null);
+    const hasAnimatedRef = useRef(false);
     const navigate = useNavigate();
     const {handleChange, handleLocationChange, query, setQuery, results, setResults, location, setLocation, locationResults, selectedJob, setSelectedJob, selectedLocation, setSelectedLocation, canSearch, setLocationResults} = usejobSearch();  
     const isSaved = (jobId: number) => {
@@ -96,16 +99,55 @@ interface Job {
   handlegetSavedJobs();
 }, [handleSaveJob, handleUnsaveJob]); 
 
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !pageRef.current) return;
+
+    const context = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLElement>(".job-card");
+
+      if (!hasAnimatedRef.current) {
+        const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+        timeline
+          .from(".jobs-hero", { y: 16, opacity: 0, duration: 0.35 })
+          .from(".jobs-search", { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
+          .from([".jobs-sidebar", ".jobs-toolbar"], { y: 12, opacity: 0, duration: 0.3, stagger: 0.05 }, "-=0.12")
+          .from(cards, {
+            y: 12,
+            opacity: 0,
+            duration: 0.32,
+            stagger: 0.035,
+            clearProps: "transform,opacity",
+          }, "-=0.1");
+
+        hasAnimatedRef.current = true;
+        return;
+      }
+
+      gsap.from(cards, {
+          y: 8,
+          opacity: 0,
+          duration: 0.28,
+          stagger: 0.03,
+          ease: "power1.out",
+          clearProps: "transform,opacity",
+        });
+    }, pageRef);
+
+    return () => context.revert();
+  }, [sortBy, userData.length]);
+
     return (
         <>
             <Toaster/>
             <Navbar/>
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
+            <main ref={pageRef} className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
   <section className="mb-12">
-    <h1 className="font-bold text-[48px] text-on-surface mb-8">
+    <h1 className="jobs-hero font-bold text-[48px] text-on-surface mb-8">
       Find your next career move
     </h1>
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
+    <div className="jobs-search bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2 transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]">
             <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
               <span
                 className="material-symbols-outlined text-outline mr-2"
@@ -204,7 +246,7 @@ interface Job {
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
-    <aside className="md:col-span-3 space-y-8">
+    <aside className="jobs-sidebar md:col-span-3 space-y-8">
       <div>
         <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
         <div className="space-y-4">
@@ -242,7 +284,7 @@ interface Job {
     </aside>
     {/* Job Feed */}
     <div className="md:col-span-9 space-y-md">
-      <div className="flex justify-between items-center mb-4">
+      <div className="jobs-toolbar flex justify-between items-center mb-4">
         <span className="font-body-sm text-on-surface-variant">
           Showing <strong>{total}</strong> 
           <span>
@@ -265,7 +307,7 @@ interface Job {
       {userData.length > 0 && (
         getSortedJobs().map((job : Job) => (
             <div key={job.id}>
-              <div className="bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:border-secondary transition-all group">
+              <div className="job-card will-change-transform bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] motion-reduce:hover:transform-none motion-reduce:transition-none transition-all duration-200 group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
                     <span
@@ -285,7 +327,7 @@ interface Job {
                   {job.company.name} • {job.location} 
                 </p>
               </div>
-              <button className="text-outline hover:text-error transition-colors">
+              <button aria-label={`Save ${job.title}`} className="min-h-11 min-w-11 inline-flex items-center justify-center text-outline hover:text-error transition-colors duration-200">
                 <span
                   className="material-symbols-outlined"
                   data-icon="bookmark"

@@ -17,24 +17,28 @@ const prisma = new PrismaClient();
 // }
 
 export const getExperienceById = async (req, res) => {
+    console.log(req.params)
     try {
-        const experience = await prisma.experience.findMany({
+        const experience = await prisma.experience.findUnique({
             where: {
-                userId: req.user.id,
+                userId: Number(req.params.userId),
             },
         });
         return res.json({ experience });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error', message: error.message });
     }   
 }
 
 export const createExperience = async (req, res) => {
     try {
         const { userId, jobTitle, company, startDate, endDate, city, country, roleDescription } = req.body;    
-        const experience = await prisma.experience.create({
-            data: {
+        const experience = await prisma.experience.upsert({
+            where: {
+                userId: Number(req.params.userId),
+            },
+            update: {
                 jobTitle,
                 companyName: company,
                 startDate,
@@ -42,7 +46,16 @@ export const createExperience = async (req, res) => {
                 city,
                 country,
                 description: roleDescription,
-                userId
+            },
+            create: {
+                jobTitle,
+                companyName: company,
+                startDate,
+                endDate,
+                city,
+                country,
+                description: roleDescription,
+                userId: Number(req.params.userId)
             }
         });
         return res.json({ experience });

@@ -3,11 +3,12 @@ import Navbar from '@/components/Navbar';
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const Portfolio = () => {
   const location = useLocation();
     const navigate = useNavigate();
+    const { jobId } = useParams();
     const [portfolio, setPortfolio] = useState<string>('');
     const {user, setUser} = useUser();
     const jobData = location.state;
@@ -17,9 +18,19 @@ const Portfolio = () => {
     }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault(); 
-      await axios.post('/api/applications/', { portfolio }, {withCredentials: true});
-      navigate(`/jobs/application/review/${user?.id}/${jobData.id}`, { state: jobData });
-    }
+      try{
+      await axios.patch(`/api/application/${user?.id}/${jobId}`, { 
+        portfolio,
+        jobId: jobId,
+       }, {withCredentials: true});
+      navigate(`/jobs/application/review/${user?.id}/${jobId}`, { state: jobData });
+      } catch (error) {
+        console.error("Error submitting portfolio:", error);
+        if(axios.isAxiosError(error)) {
+          console.log(error.response?.data);
+        }
+      }
+    } 
   return (
     <div>
         <Navbar/>

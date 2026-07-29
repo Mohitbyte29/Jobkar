@@ -7,11 +7,13 @@ import { JobsProvider } from './context/JobsContext.tsx'
 import { CompanyProvider } from './context/CompanyContext.tsx'
 import { InternshipsProvider } from './context/InternshipsContext.tsx'
 import { UserProvider } from './context/UserContext.tsx'
+import { ThemeProvider } from './context/ThemeContext.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
   
   <BrowserRouter>
+  <ThemeProvider>
   <UserProvider>
     <CompanyProvider>
       <InternshipsProvider>
@@ -21,5 +23,6 @@ createRoot(document.getElementById('root')!).render(
     </InternshipsProvider>
     </CompanyProvider>
     </UserProvider>
+    </ThemeProvider>
   </BrowserRouter>
 )

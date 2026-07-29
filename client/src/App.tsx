@@ -59,7 +59,7 @@ const App = () => {
         <Route path='/resources' element={<Resources />} />
         <Route path='/jobs' element={<Jobs />} />
         <Route path='/jobs/search' element={<JobsCategory />} />
-        <Route path='/jobs/search/:category' element={<JobPage />} />
+        <Route path='/jobs/search/:jobId' element={<JobPage />} />
         <Route path='/internships/search/:category' element={<InternshipPage />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
@@ -75,7 +75,7 @@ const App = () => {
         <Route path='/employer/job-postings' element={<JobPosting/>} />
         <Route path='/employer/team-management' element={<TeamManagement/>} />
         <Route path='/employer/applicants' element={<Applicants/>} />
-        <Route path = '/auth-success' element={<AuthSuccess />} />
+        <Route path ='/auth-success' element={<AuthSuccess />} />
         <Route path='/first' element={<First/>} />
         <Route path='/second' element={<Second/>} />
         <Route path='/third' element={<Third/>} />
@@ -85,7 +85,7 @@ const App = () => {
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/edit-profile' element={<EditProfile />}/>
         <Route path='/projects' element={<Projects/>} />
-        <Route path='/jobs/application' element={<Application/>} />
+        <Route path='/application/:id' element={<Application/>} />
         <Route path='/jobs/application/:id/:jobId' element={<ApplicationJob/>} />
         <Route path='/jobs/application/experience/:id/:jobId' element={<Experience/>} />
         <Route path='/jobs/application/review/:id/:jobId' element={<Review/>} />

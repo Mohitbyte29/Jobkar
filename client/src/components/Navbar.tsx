@@ -2,6 +2,7 @@ import { useUser } from '@/context/UserContext';
 import { UserDropdown } from '@/components/account/UserDropdown';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
   const {user, setUser} = useUser();
@@ -71,6 +72,7 @@ export default function Navbar() {
       {user ? (
         <>
           <div className="flex items-center gap-4">
+      <ThemeToggle />
       <div className="flex items-center gap-2">
         <button className="p-2 text-slate-600 dark:text-slate-400 hover:bg-surface-container rounded-full transition-colors active:scale-95">
           <span className="material-symbols-outlined" data-icon="notifications">
@@ -90,6 +92,7 @@ export default function Navbar() {
       ) : (
         <>
         <div className="flex items-center gap-4">
+        <ThemeToggle />
         <Link to="/register" className="px-4 py-2 text-sm font-label-strong bg-primary-container text-white rounded-lg active:scale-95 transitLion-all">
           Sign In
         </Link>
@@ -103,4 +106,3 @@ export default function Navbar() {
   </nav>
     )
 }
-

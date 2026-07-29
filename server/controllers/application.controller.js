@@ -4,34 +4,39 @@ const prisma = new PrismaClient();
 
 export const getApplications = async(req, res) => {
     try{
-        const applications = await prisma.application.findUnique({
-            where: {id: Number(req.params.id)},
+        console.log(Number(req.params.userId));
+        const applications = await prisma.application.findMany({
+            where: { userId: Number(req.params.userId) },
             select: {
-                id: true, coverLetter: true, resumeUrl: true, createdAt: true,
-            }
+                id: true, createdAt: true, coverletter: true, resume: true, portfolio: true, github: true, linkedIn: true, dribble: true, behance: true,
+                job: {select: {id: true, title: true, type: true, location: true, salaryMax: true, salaryMin: true, company: {
+                    select: {id: true, name: true}
+                }}},
+                applicant: {select: {id: true, name: true, email: true}}
+            },
         })
-        res.json({applications});
+        res.json(applications);
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to fetch application details" 
-        })
+        res.status(500).json({ error: "Failed to fetch application details" , message: err.message });
     }
 }
 
 export const getApplicationById = async(req, res) => {
+    console.log(req.params)
     try{
         const application = await prisma.application.findUnique({
-            where: {id: Number(req.params.id)},
+            where: {userId: Number(req.params.userId), jobId: Number(req.params.jobId)},
             select: {
-                id: true, coverletter: true, resumeUrl: true, createdAt: true,
-                job: {select: {id: true, title: true}},
+                coverletter: true, resume: true, createdAt: true, portfolio: true, github: true, linkedIn: true, dribble: true, behance: true,
+                job: {select: {id: true, title: true, type: true, location: true, salaryMax: true, salaryMin: true}},
                 applicant: {select: {id: true, name: true, email: true}}
             },
         })
             res.json({application});
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to fetch application details" });
+        res.status(500).json({ error: "Failed to fetch application details", message: err.message });
     }
 }
 
@@ -44,8 +49,12 @@ export const createApplication = async(req, res) => {
         // if(existingApplicant) {
         //     return res.status(400).json({ error: "Application already exists for this user" });
         // }
-        const application = await prisma.application.create({
-            data: {                     
+        const application = await prisma.application.upsert({
+            where: { userId: req.user.id, jobId: jobId },
+            update: {
+                // Update fields if application exists
+            },
+            create: {
                 user: {
                     connect: {email: req.user.email}
                 }, job: jobId ? { connect: { id: jobId } } : undefined,
@@ -66,9 +75,9 @@ export const createApplication = async(req, res) => {
 
 export const updateApplication = async(req, res) => {
     try{
-        const { jobId, coverletter, resume, github, linkedIn, dribble, behance, status, portfolio } = req.body;
+        const { coverletter, resume, github, linkedIn, dribble, behance, status, portfolio } = req.body;
         const application = await prisma.application.update({
-            where: { userId: req.user.id, jobId: jobId },
+            where: { userId: req.user.id, jobId: Number(req.params.jobId) },
             data: {
                 coverletter,
                 resume,
@@ -80,15 +89,15 @@ export const updateApplication = async(req, res) => {
                 portfolio,
             },
             select: {
-                id: true, coverletter: true, resume: true, createdAt: true,
-                job: {select: {id: true, title: true}},
+                id: true, jobId: true, coverletter: true, resume: true, createdAt: true,
+                job: {select: {id: true, title: true}}, status: true, github: true, linkedIn: true, dribble: true, behance: true, portfolio: true,
                 applicant: {select: {id: true, name: true, email: true, city: true, country: true, phoneNumber: true}}
             },
         });
         res.json({application});
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to create application"    
+        res.status(500).json({ error: "Failed to update application" , message: err.message 
             });
     }
 }
@@ -175,7 +184,7 @@ export const uploadResume = async(req, res) => {
         });
         const updatedUser = await prisma.user.update({
             where: { id: req.user.id },
-            data: { resume: resumeUrl.secure_url },
+            data: { resume: resumeUrl.original_filename },
         });
         res.json({ user: updatedUser, resume: resumeUrl.secure_url });
     } catch(err){

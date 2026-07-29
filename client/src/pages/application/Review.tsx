@@ -1,14 +1,91 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import { useUser } from "@/context/UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
+interface ApplicationData {
+  id: number;
+  applicantId: number;
+  jobId: number;
+  internshipId: number;
+  resume: string;
+  coverletter: string;
+  portfolio: string;
+  github: string;
+  linkedIn: string;
+  dribbble: string;
+  behance: string;  
+  applicant: {
+    name: string;
+    email: string;
+    phone: string;
+    location: string;
+  }
+}
+
+interface ExperienceData {
+  id: number;
+  userId: number;
+  jobTitle: string;
+  companyName: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+// console.log("Job ID from URL:", jobId); // Debugging line to check the jobId value
 
 const Review = () => {
+  const { jobId } = useParams();
   const location = useLocation();
     const navigate = useNavigate();
     const { user, setUser } = useUser();
     const jobData = location.state;
-  return (
+    const [applicationData, setApplicationData] = useState<ApplicationData | null>(null);
+    const [experienceData, setExperienceData] = useState<ExperienceData | null>(null);
+    
+  useEffect(() => {
+    const handlegetApplication = async () => {
+      try {
+        console.log(user?.id);
+        const response = await axios.get(`http://localhost:4000/api/application/${user?.id}/${jobId}`, { withCredentials: true });
+        const experienceresponse = await axios.get(`http://localhost:4000/api/jobs/experience/${user?.id}`, { withCredentials: true });
+        const url = `http://localhost:4000/api/jobs/experience/${user?.id}`;
+        console.log("Experience URL:", url);
+        console.log(response.data.application);
+        setApplicationData(response.data.application);
+        setExperienceData(experienceresponse.data.experience);
+        console.log(experienceData)
+        console.log(applicationData)
+      } catch (error) {
+        console.error("Error fetching application data:", error);
+        if(axios.isAxiosError(error)) {
+          console.log(error.response?.data);
+        }
+      }
+    };
+
+    handlegetApplication();
+  }, [user?.id, jobId]);
+
+  const handleSubmit = async () => {
+    try {
+      await axios.patch(`http://localhost:4000/api/application/${user?.id}/${jobId}`, {
+        status: "SUBMITTED"
+      }, { withCredentials: true });
+      navigate(`/jobs/application/success/${user?.id}/${jobId}`, { state: jobData });
+    }
+    catch (error) {
+      console.error("Error submitting application:", error);  
+      if(axios.isAxiosError(error)) {
+        console.log(error.response?.data);
+      }
+    }
+  }
+  console.log(experienceData?.id)
+  return (  
     <div>
         <Navbar/>
         <main className="grow py-xl px-margin">
@@ -84,28 +161,32 @@ const Review = () => {
             <p className="font-label-caps text-on-surface-variant mb-1">
               FULL NAME
             </p>
-            <p className="font-body-md text-on-surface">Alex Thompson</p>
+            <p className="font-body-md text-on-surface">
+              {applicationData?.applicant?.name}
+            </p>
           </div>
           <div>
             <p className="font-label-caps text-on-surface-variant mb-1">
               EMAIL ADDRESS
             </p>
             <p className="font-body-md text-on-surface">
-              alex.thompson@design.io
+              {applicationData?.applicant?.email}
             </p>
           </div>
           <div>
             <p className="font-label-caps text-on-surface-variant mb-1">
               PHONE NUMBER
             </p>
-            <p className="font-body-md text-on-surface">+1 (555) 0123-4567</p>
+            <p className="font-body-md text-on-surface">
+              {applicationData?.applicant?.phone || "+1 (555) 0123-4567"}
+            </p>
           </div>
           <div>
             <p className="font-label-caps text-on-surface-variant mb-1">
               LOCATION
             </p>
             <p className="font-body-md text-on-surface">
-              San Francisco, CA (Remote)
+              {applicationData?.applicant?.location || "San Francisco, CA (Remote)"}
             </p>
           </div>
         </div>
@@ -135,10 +216,10 @@ const Review = () => {
             </div>
             <div>
               <p className="font-label-strong text-primary">
-                Senior Product Designer
+                {experienceData?.jobTitle || "Senior Product Designer"}
               </p>
               <p className="font-body-sm text-on-surface-variant">
-                TechSphere Solutions • 2020 — Present
+                {experienceData?.companyName} •   {experienceData?.startDate} — {experienceData?.endDate}
               </p>
               <p className="font-body-sm mt-xs">
                 Leading design for core SaaS platforms, improving user retention
@@ -194,7 +275,7 @@ const Review = () => {
                 PORTFOLIO URL
               </p>
               <p className="font-body-md text-on-surface">
-                alexthompson.design
+                {applicationData?.portfolio}
               </p>
             </div>
           </div>
@@ -205,7 +286,7 @@ const Review = () => {
             <div>
               <p className="font-label-caps text-on-surface-variant">RESUME</p>
               <p className="font-body-md text-on-surface">
-                Alex_Resume_2024.pdf
+                {applicationData?.resume || "Resume.pdf"}
               </p>
             </div>
           </div>
@@ -238,12 +319,12 @@ const Review = () => {
       </section>
       {/* Action Buttons */}
       <div className="flex flex-col md:flex-row gap-md pt-lg">
-        <button className="flex-grow order-2 md:order-1 px-lg py-md rounded-lg border border-outline text-on-surface font-label-strong hover:bg-surface-container-high transition-all">
+        <button onClick={() => navigate(-1)} className="flex-grow order-2 md:order-1 px-lg py-md rounded-lg border border-outline text-on-surface font-label-strong hover:bg-surface-container-high transition-all">
           Back to Portfolio
         </button>
-        <button className="flex-[2] order-1 md:order-2 px-lg py-md rounded-lg bg-primary text-on-primary font-h3 hover:opacity-90 active:scale-[0.98] transition-all shadow-md" onClick={() => navigate(`/jobs/application/success/${user?.id}/${jobData?.id}`, { state: jobData })}>
+        <button onClick={handleSubmit} className="flex-2 order-1 md:order-2 px-lg py-md rounded-lg bg-primary text-on-primary font-h3 hover:opacity-90 active:scale-[0.98] transition-all shadow-md">
           Submit Application
-        </button>
+        </button> 
       </div>
     </div>
   </div>
