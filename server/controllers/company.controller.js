@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { authenticateAdmin } from "../middlewares/middleware.js";
+import cloudinary from "../config/cloudinary.js";
 const prisma = new PrismaClient();
 
 export const searchCompanies = async (req, res) => {
@@ -136,12 +137,26 @@ export const deleteCompany = async (req, res) => {
 };
 
 export const createCompany = async (req, res) => {
-  try {
-    const { name, description, logoUrl, website, category, location } = req.body;
-
+  console.log(req.file);
+  try { 
+    const { name, description, website, category, country, city, companyStatus } = req.body;
+    let logoUrl = null;
+    if(req.file){
+      const uploadedLogo = await cloudinary.uploader.upload(req.file.path, {
+        folder: "logo",
+        resource_type: "raw",
+      });
+      logoUrl = uploadedLogo.original_filename;
+    }
     const company = await prisma.company.create({
       data: {
-        ...req.body,
+        name,
+                description,
+                website,
+                category,
+                companyStatus,
+                logo: logoUrl,
+                location: `${city}, ${country}`,
         user: { connect: { id: req.user.id } },
       },
     });
@@ -186,3 +201,50 @@ export const updateCompany = async (req, res) => {
     res.status(500).json({ error: "Failed to update company" });
   }
 };
+
+export const uploadLogo = async (req, res) => {
+  
+      try{
+              if (!req.file) {
+                  return res.status(400).json({ error: "No file uploaded" });
+              }
+              const logoUrl = await cloudinary.uploader.upload(req.file.path, {
+                  folder: "logo",
+                  resource_type: "raw",
+              });
+              const updatedCompany = await prisma.company.create({
+                  
+                    data: {
+                      logo: logoUrl.original_filename,
+                    }
+                  
+              });
+              res.json({ company: updatedCompany });
+          } catch(err){
+              console.log(err);
+              res.status(500).json({ error: "Failed to upload logo", message: err.message });
+          }
+        }
+
+export const updateLogo = async (req, res) => {
+  
+      try{
+              if (!req.file) {
+                  return res.status(400).json({ error: "No file uploaded" });
+              }
+              const logoUrl = await cloudinary.uploader.upload(req.file.path, {
+                  folder: "logo",
+                  resource_type: "raw",
+              });
+              const updatedCompany = await prisma.company.update({
+                  where: { id: Number(req.params.id) },
+                  data: {
+                      logo: logoUrl.original_filename,
+                  }
+              });
+              res.json({ company: updatedCompany });
+          } catch(err){
+              console.log(err);
+              res.status(500).json({ error: "Failed to update logo", message: err.message });
+                }
+              }

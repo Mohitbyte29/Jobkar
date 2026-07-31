@@ -47,10 +47,7 @@ const JobPage = () => {
     const userData = location.state;
     const {user, setUser} = useUser();
     const { jobId } = useParams();
-
     console.log("location.state", location.state);
-console.log("job", userData);
-console.log("company", job?.company);
 
   useEffect(() => {
   const handleGetuserDataProfile = async() => {
@@ -63,6 +60,7 @@ console.log("company", job?.company);
       setJob(jobRes.data);
       console.log(res.data.user);
       console.log(applicantProfile);
+      console.log(jobRes.data)
     }
     catch(err){
       console.log(err);
@@ -136,7 +134,7 @@ console.log("company", job?.company);
                   {job?.location} (Remote)
                 </span>
                 <span className="text-outline">•</span>
-                <span className="font-body-sm text-body-sm"> {timeAgo(job?.updatedAt)}</span>
+                <span className="font-body-sm text-body-sm"> {timeAgo(`${job?.updatedAt}`)}</span>
               </div>
             </div>
           </div>
@@ -304,7 +302,7 @@ console.log("company", job?.company);
               COMPENSATION
             </span>
             <span className="font-h2 text-h2 text-primary flex">
-              <IndianRupee width={15}/>{job?.salaryMin/1000}k - <IndianRupee width={15}/>{job?.salaryMax/1000}k{" "}
+              <IndianRupee width={15}/>{`${job?.salaryMin}k/1000`} - <IndianRupee width={15}/>{`${job?.salaryMax}k`}{" "}
               <small className="text-[1rem] font-normal text-on-surface-variant">
                 / year
               </small>
@@ -366,7 +364,7 @@ console.log("company", job?.company);
           </p>
         </div>
         <Link
-          to={job?.company.website}
+          to={`${job?.company.website}`}
           target="_blank"
           className="text-secondary hover:underline flex items-center gap-xs font-label-strong text-label-strong"
         >

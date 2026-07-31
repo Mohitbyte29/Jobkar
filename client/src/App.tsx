@@ -43,6 +43,7 @@ import Experience from './pages/application/Experience';
 import Review from './pages/application/Review';
 import Portfolio from './pages/application/Portfolio';
 import Success from './pages/application/Success';
+import AddCompany from './pages/employer/AddCompany';
 
 const App = () => {
   return (
@@ -72,6 +73,7 @@ const App = () => {
         <Route path='/admin/users' element={<UserManagement/>} />
         <Route path='/employer/dashboard' element={<Dashboard/>} />
         <Route path='/employer/companies' element={<CompanyProfile/>} />
+        <Route path='/employer/companies/add' element={<AddCompany/>} />
         <Route path='/employer/job-postings' element={<JobPosting/>} />
         <Route path='/employer/team-management' element={<TeamManagement/>} />
         <Route path='/employer/applicants' element={<Applicants/>} />

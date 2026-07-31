@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from '@/components/ThemeToggle';
 
-export default function Navbar() {
+export default function EmployerHomeNav() {
   const {user, setUser} = useUser();
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -33,7 +33,7 @@ export default function Navbar() {
     }
   };
 
-  console.log(user);
+  // console.log(user);
     return (
   <nav className="fixed top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
     <div className="flex justify-between items-center h-16 px-6 max-w-7xl mx-auto">
@@ -42,42 +42,18 @@ export default function Navbar() {
           JobKar
         </Link>
         <div className="hidden md:flex items-center gap-6">
-          {user && user.role === 'EMPLOYER' ? (
-            <>
-            <button
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-            >
-              Hiring Talents
-            </button>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/postJob"
-            >
-              Post Job
-            </Link>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/employer/companies/add"
-            >
-              Add Company 
-            </Link>
-            </>
-          ) : (
-            <>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/jobs"
-            >
-              Find Jobs
+          <Link
+            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
+            to="/jobs"
+          >
+            Hire Talents
           </Link>
           <Link
             className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-            to="/internships"
+            to="/postJob"
           >
-            Find Internships
+            Post Job
           </Link>
-          </>
-          )}
           <Link
             className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             to="/companies"

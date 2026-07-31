@@ -102,7 +102,7 @@ export const loginUser = async (req, res, next) => {
             }
         }
         
-        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"});
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "24h"});
         res.cookie("accessToken", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

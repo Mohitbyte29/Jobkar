@@ -57,6 +57,7 @@ const ApplicationJob = () => {
       }
     }
   };
+  
   const [formData, setFormData] = useState({
   coverLetter: "",
   github: "",

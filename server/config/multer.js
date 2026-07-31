@@ -17,6 +17,8 @@ const upload = multer({
     fileFilter: (req, file, cb) => {
         console.log(req.file);
         const allowedMimeTypes = [
+            'image/png',
+            'image/jpeg',
             'application/pdf',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

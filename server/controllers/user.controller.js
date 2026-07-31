@@ -11,6 +11,7 @@ export const getUserData = async (req, res) => {
         name: true,
         email: true,
         avatar: true,
+        role: true,
         isOnboarded: true,
         createdAt: true,
         updatedAt: true,
@@ -368,3 +369,4 @@ export const updateAvatar = async (req, res) => {
     res.status(500).json({ error: "Failed to update avatar", message: error.message });
   }
 }
+

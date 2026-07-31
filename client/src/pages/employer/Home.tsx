@@ -5,9 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState, type ChangeEvent } from "react";
 import { IndianRupee, MapPin, Search } from "lucide-react";
 import { useJobs } from "@/context/JobsContext";
-import timeAgo from "../../utils/timeAgo";
+import timeAgo from "../../../utils/timeAgo";
 import toast, { Toaster } from "react-hot-toast";
 import { usejobSearch } from "@/hooks/JobSearch";
+import EmployerHomeNav from "@/components/EmployerHomeNav";
 
 
 interface Job {
@@ -18,7 +19,7 @@ interface Job {
   updatedAt: string;
 }
 
-export default function Home() {
+export default function EmployerHome() {
   const navigate = useNavigate();
   const { userData, total } = useJobs();
   const heroRef = useRef<HTMLElement>(null);
@@ -247,7 +248,7 @@ export default function Home() {
   return (
     <>
       <Toaster position="top-center"/>
-      <Navbar />
+      <EmployerHomeNav />
       <header
         ref={heroRef}
         className="relative min-h-[90vh] flex items-center overflow-hidden"
