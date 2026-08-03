@@ -36,7 +36,7 @@ export const getApplicationById = async(req, res) => {
             res.json({application});
     } catch(err){
         console.log(err);
-        res.status(500).json({ error: "Failed to fetch application details", message: err.message });
+        res.status(500).json({ exrror: "Failed to fetch application details", message: err.message });
     }
 }
 

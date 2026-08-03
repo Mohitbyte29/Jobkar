@@ -23,9 +23,8 @@ const AddCompany = () => {
             ...prev,
             [name]: value,
         }));
-    };
+      };
     
-
     const handleLogoChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
         try{
             const file = e.target.files?.[0];

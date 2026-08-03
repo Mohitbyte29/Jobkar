@@ -1,5 +1,4 @@
 import EmployerNav from '@/components/EmployerNav'
-import React from 'react'
 
 const JobPosting = () => {
   return (
