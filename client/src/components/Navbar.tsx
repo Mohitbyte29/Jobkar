@@ -33,7 +33,7 @@ export default function Navbar() {
     }
   };
 
-  console.log(user);
+  // console.log(user);
     return (
   <nav className="fixed top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
     <div className="flex justify-between items-center h-16 px-6 max-w-7xl mx-auto">

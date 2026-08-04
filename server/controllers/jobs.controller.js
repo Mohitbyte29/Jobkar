@@ -168,7 +168,7 @@ export const getJobById = async(req, res) => {
 
 export const createJob = async(req, res) => {
     try{
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId} = req.body;
+        const { title, description, city, country, type, salaryMax, salaryMin, requirements, tags, remote, status, category, companyId} = req.body;
         const employerId = req.user.employerId;
         if(!companyId) {
             return res.status(400).json({error: "Company ID not found. User must be associated with a company"});
@@ -189,10 +189,10 @@ export const createJob = async(req, res) => {
             data: {
                 title,
                 description,
-                location,
+                location: `${city}, ${country}`,
                 type,
-                salaryMax,
-                salaryMin,
+                salaryMax: Number(salaryMax),
+                salaryMin: Number(salaryMin),
                 requirements,
                 tags,
                 remote,
@@ -206,6 +206,7 @@ export const createJob = async(req, res) => {
         res.status(201).json(job);
     }
     catch(error){
+        console.log(error.message)
         res.status(400).json({ message: error.message });
     }
 }

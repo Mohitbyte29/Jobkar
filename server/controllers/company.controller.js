@@ -71,6 +71,7 @@ export const getCompanies = async (req, res) => {
       select: {
         id: true,
         name: true,
+        UserId: true,
         category: true | null,
         description: true,
         website: true,

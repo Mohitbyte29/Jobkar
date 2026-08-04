@@ -94,7 +94,6 @@ model Employer {
   id         Int          @id @default(autoincrement())
   userId     Int          @unique
   companyId  Int?
-  Role      String?         @default("HIRING MANAGER") @db.VarChar(255)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   company    Company?      @relation(fields: [companyId], references: [id])

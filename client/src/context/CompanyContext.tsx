@@ -2,6 +2,7 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface Company{
+    id: number;
     name: string;
     logo: string;
     category: string;
@@ -12,6 +13,7 @@ interface Company{
     updatedAt: string;
     companyStatus: string;
     jobs: { title: string};
+    UserId: number;
 }
 
 interface CompanyContextType {

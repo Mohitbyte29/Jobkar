@@ -93,7 +93,6 @@ export const loginUser = async (req, res, next) => {
             const company = await prisma.company.findFirst({
                 where: {UserId: user.id}
             });
-
             const employer = await prisma.employer.findFirst({
                 where: {userId: user.id}
             });
