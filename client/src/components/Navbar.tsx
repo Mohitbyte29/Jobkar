@@ -47,7 +47,7 @@ export default function Navbar() {
             <button
               className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
             >
-              Hiring Talents
+              Post Internship
             </button>
             <Link
               className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
