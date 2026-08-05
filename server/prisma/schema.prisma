@@ -133,6 +133,7 @@ model Job {
   category     String        @db.VarChar(255)
   requirements String        @db.Text
   location     String        @db.VarChar(255)
+  openings   Int             @default(1)
   tags         Json
   salaryMin    Int?
   salaryMax    Int?
@@ -215,6 +216,7 @@ model Internship {
   requirements     String                      @db.Text
   location         String                      @db.VarChar(255)
   tags             Json
+  openings         Int             @default(1)
   salaryMin        Int?
   salaryMax        Int?
   duration        Int?
