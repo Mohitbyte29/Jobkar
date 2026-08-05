@@ -44,6 +44,7 @@ import Review from './pages/application/Review';
 import Portfolio from './pages/application/Portfolio';
 import Success from './pages/application/Success';
 import AddCompany from './pages/employer/AddCompany';
+import PostInternship from './pages/internships/PostInternship';
 
 const App = () => {
   return (
@@ -64,6 +65,7 @@ const App = () => {
         <Route path='/internships/search/:category' element={<InternshipPage />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
+        <Route path='/postInternship' element={<PostInternship />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />
         <Route path='/saved-jobs' element={<SavedJob/>} />
         <Route path='/admin/jobs' element={<JobManagement/>} />

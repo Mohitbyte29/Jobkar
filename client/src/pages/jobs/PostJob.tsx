@@ -48,6 +48,7 @@ export const PostJob = () => {
     description: "",
     requirements: "",
   });
+  
   const navigate = useNavigate();
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;

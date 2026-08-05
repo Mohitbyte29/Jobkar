@@ -44,11 +44,12 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           {user && user.role === 'EMPLOYER' ? (
             <>
-            <button
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
+            <Link 
+              className="font-h3 text-sm cursor-pointer text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
+              to="/postInternship"
             >
               Post Internship
-            </button>
+            </Link>
             <Link
               className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
               to="/postJob"

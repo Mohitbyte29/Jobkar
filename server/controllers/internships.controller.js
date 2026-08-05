@@ -124,12 +124,14 @@ export const getInternshipById = async(req, res) => {
 
 export const createInternship = async(req, res) => {
     try{
-        const companyId = req.user.companyId;
-        const { title, description, location, type, salaryMax, salaryMin, requirements, tags, workType, remote, internshipstatus, category, companyId: company_Id } = req.body;
-        const userId = req.user.id;
+        const { title, description, city, country, duration, type, workType, salaryMax, salaryMin, requirements, tags, remote, internshipstatus, category, companyId} = req.body;
+        const employerId = req.user.employerId;
         
         if(!companyId) {
             return res.status(400).json({error: "Company ID not found. User must be associated with a company"});
+        }
+        if(!employerId) {
+            return res.status(400).json({error: "Employer ID not found. User must be an employer"});
         }
         
         const company = await prisma.company.findFirst({
@@ -142,9 +144,21 @@ export const createInternship = async(req, res) => {
             
         const internship = await prisma.internship.create({
             data: {
-                ...req.body,
+                title,
+                description,
+                category,
+                location: `${city}, ${country}`,
+                duration: Number(duration),
+                workType,
+                salaryMax,
+                salaryMin,
+                requirements,
+                tags,
+                remote,
+                type,
+                internshipStatus: internshipStatus.DRAFT,
                 companies: { connect: { id: Number(companyId) } },
-                employer: { connect: {id: userId}},
+                employers: { connect: {id: employerId}},
             },
             include: { companies: true },
         });
@@ -152,6 +166,7 @@ export const createInternship = async(req, res) => {
     }
     catch(error){
         res.status(400).json({ message: error.message });
+        console.log(error);
     }
 }
 
