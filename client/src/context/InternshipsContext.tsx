@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { Children, createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-interface Internship{
+interface Internship {
     id: number;
   title: string;
-  company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
+  companies: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
   salaryMin: number;
@@ -15,8 +15,8 @@ interface Internship{
 }
 
 interface IntershipsContextType {
-    userData: Internship[];
-    setUserData: (internships: Internship[]) => void;
+    internshipData: Internship[];
+    setInternshipData: (internships: Internship[]) => void;
     error: string;
     setError: (error: string) => void;
     loading: boolean;
@@ -31,7 +31,7 @@ export const InternshipsProvider = ({children} : {children : React.ReactNode}) =
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
-    const [userData, setUserData] = useState<Internship[]>([]);
+    const [internshipData, setInternshipData] = useState<Internship[]>([]);
 
     useEffect(() => {
         const fetchInternships = async() => {
@@ -39,7 +39,8 @@ export const InternshipsProvider = ({children} : {children : React.ReactNode}) =
             setError("");
             try{
                 const { data } = await axios.get('/api/internships');
-                setUserData(data.internships);
+                console.log(data.internships);
+                setInternshipData(data.internships);
                 setTotal(data.total);
             }
             catch(err){
@@ -51,9 +52,9 @@ export const InternshipsProvider = ({children} : {children : React.ReactNode}) =
         };
         fetchInternships();
     }, []);
-
+    console.log(internshipData);
     return(
-        <InternshipsContext.Provider value={{userData, setUserData, loading, setLoading, error, setError, total, setTotal }}>
+        <InternshipsContext.Provider value={{internshipData, setInternshipData, loading, setLoading, error, setError, total, setTotal }}>
             {children}
         </InternshipsContext.Provider>
     );
@@ -62,7 +63,7 @@ export const InternshipsProvider = ({children} : {children : React.ReactNode}) =
 export const useInternships = () => {
     const context = useContext(InternshipsContext);
     if (!context) {
-    throw new Error('useJobs must be used within JobsProvider');
+    throw new Error('useInternships must be used within InternshipsProvider');
   }
   return context;
 }

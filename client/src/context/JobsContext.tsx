@@ -54,7 +54,7 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
     fetchJobs();
   }, []); // ✅ runs once on mount
   console.log(userData)
-  console.log(currentJob)
+  // console.log(currentJob)
   return (
     <JobsContext.Provider value={{ userData, setUserData, error, setError, loading, setLoading, total, setTotal, currentJob, setCurrentJob }}>
       {children}

@@ -90,7 +90,6 @@ export const getInternships = async(req, res) => {
         where
      })
         ])
-
         res.json({
             internships, total
         })

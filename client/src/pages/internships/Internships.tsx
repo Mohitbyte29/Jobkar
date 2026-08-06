@@ -12,7 +12,7 @@ import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
 interface Internship{
     id: number;
   title: string;
-  company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
+  companies: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
   salaryMin: number;
@@ -23,13 +23,13 @@ interface Internship{
   }
   
   export function Internships(){
-    const { userData, total } = useInternships();
+    const { internshipData, setInternshipData, total } = useInternships();
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
     const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedInternship, setSelectedInternship, selectedLocation, setSelectedLocation, canSearch} = useInternshipsearch();
 
   const getSortedInternships = () => {
-    const internships = [...userData];
+    const internships = [...internshipData];
     if (sortBy === "recent") {
       return internships.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     } else if (sortBy === "salary") {
@@ -130,7 +130,7 @@ interface Internship{
       )}
         {locationResults.length > 0 && (
         <ul className="locationdropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(locationResults.map((internship: Internship) => internship.location))).map((location: string) => (
+          {Array.from(new Set(locationResults.map((internship) => internship.location))).map((location: string) => (
             <li key={location} onClick={() => {
               setLocation(location);
               setSelectedLocation(location);
@@ -202,7 +202,8 @@ interface Internship{
           </select>
         </div>
       </div>
-      {userData.length > 0 && (
+      {internshipData.length > 0 && (
+        
         getSortedInternships().map((internship : Internship) => (
             <div key={internship.id}>
               <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
@@ -222,7 +223,7 @@ interface Internship{
                   {internship.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {internship.company.name} • {internship.location} 
+                  {internship.companies.name} • {internship.location} 
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors">

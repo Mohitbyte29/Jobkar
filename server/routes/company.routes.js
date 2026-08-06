@@ -14,3 +14,5 @@ router.patch('/api/company/:id', authenticateEmployer, updateCompany);
 
 export const companyRoutes = router;
 
+
+
