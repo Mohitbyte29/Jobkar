@@ -101,6 +101,7 @@ model Employer {
   internship Internship[]
   jobs       Job[]
 
+  @@index([userId], map: "employers_userId_fkey")
   @@index([companyId], map: "employers_companyId_fkey")
   @@map("employers")
 }
@@ -156,9 +157,9 @@ model Job {
 
 model Application {
   id           Int                @id @default(autoincrement())
-  applicantId   Int     @unique
+  applicantId   Int     
   userId       Int
-  jobId        Int?      @unique
+  jobId        Int?      
   resume       String?      @db.VarChar(255)
   coverletter  String?      @db.Text
   portfolio    String?      @db.VarChar(255)
@@ -177,6 +178,8 @@ model Application {
   @@index([internshipId], map: "applications_internshipId_fkey")
   @@index([jobId], map: "applications_jobId_fkey")
   @@index([userId], map: "applications_userId_fkey")
+  @@unique([userId, jobId])
+  @@unique([userId, internshipId])
   @@map("applications")
 }
 

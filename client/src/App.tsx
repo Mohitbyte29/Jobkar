@@ -38,13 +38,14 @@ import Profile from './pages/user/Profile';
 import EditProfile from './pages/user/EditProfile';
 import Projects from './pages/user/Projects';
 import Application from './pages/application/Application';
-import ApplicationJob from './pages/application/ApplicationJob';
+import ApplicationJob from './pages/application/ApplicationPage';
 import Experience from './pages/application/Experience';
 import Review from './pages/application/Review';
 import Portfolio from './pages/application/Portfolio';
 import Success from './pages/application/Success';
 import AddCompany from './pages/employer/AddCompany';
 import PostInternship from './pages/internships/PostInternship';
+import ApplicationPage from './pages/application/ApplicationPage';
 
 const App = () => {
   return (
@@ -62,7 +63,7 @@ const App = () => {
         <Route path='/jobs' element={<Jobs />} />
         <Route path='/jobs/search' element={<JobsCategory />} />
         <Route path='/jobs/search/:jobId' element={<JobPage />} />
-        <Route path='/internships/search/:category' element={<InternshipPage />} />
+        <Route path='/internships/search/:internshipId' element={<InternshipPage />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/postInternship' element={<PostInternship />} />
@@ -90,7 +91,8 @@ const App = () => {
         <Route path='/edit-profile' element={<EditProfile />}/>
         <Route path='/projects' element={<Projects/>} />
         <Route path='/application/:id' element={<Application/>} />
-        <Route path='/jobs/application/:id/:jobId' element={<ApplicationJob/>} />
+        <Route path='/jobs/application/:jobId' element={<ApplicationPage/>} />
+        <Route path='/internships/application/:internshipId' element={<ApplicationPage/>} />
         <Route path='/jobs/application/experience/:id/:jobId' element={<Experience/>} />
         <Route path='/jobs/application/review/:id/:jobId' element={<Review/>} />
         <Route path='/jobs/application/portfolio/:id/:jobId' element={<Portfolio/>} />

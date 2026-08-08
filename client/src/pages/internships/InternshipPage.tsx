@@ -1,19 +1,109 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { IndianRupee } from "lucide-react";
 import toTitleCase from "../../../utils/titleCase";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useUser } from "@/context/UserContext";
+
+interface userDataProfile {
+  id: number;
+  fullName: string;
+  city: string;
+  country: string;
+  phoneNumber: string;
+}
+
+interface Applicant {
+  userProfileId: number;
+}
+
+interface Internship {
+  id: number;
+  title: string;
+  location: string;
+  type: string;
+  category: string;
+  duration: string;
+  tags: string[];
+  salaryMin: number ;
+  salaryMax: number ;
+  updatedAt: string;
+  companies: {
+    name: string;
+    logo: string;
+    website: string;
+  };
+}
+
 
 const InternshipPage = () => {
-    const location = useLocation();
-    const user = location.state;
-    console.log(user.company.website);
+    // const location = useLocation();
+    const [profile, setProfile] = useState<userDataProfile | null>(null);
+    const [applicantProfile, setApplicantProfile] = useState<Applicant | null>(null);
+    const [internship, setInternship] = useState<Internship | null>(null);
+    const navigate = useNavigate();
+    const {user, setUser} = useUser();
+    // const user = location.state;
+    // console.log(user.companies.website);
+    const {internshipId} = useParams();
+    useEffect(() => {
+      const handleGetuserDataProfile = async() => {
+        try{
+          const res = await axios.get(`http://localhost:4000/api/me/profile`, { withCredentials: true })
+          const newres = await axios.get(`http://localhost:4000/api/applicant/${res.data.user.id}`, { withCredentials: true })
+          const internshipRes = await axios.get(`http://localhost:4000/api/internships/${internshipId}`, { withCredentials: true })
+          setProfile(res.data.user);
+          setApplicantProfile(newres.data.applicant);
+          setInternship(internshipRes.data);
+          console.log(res.data.user);
+          console.log(applicantProfile);
+          console.log(internshipRes.data)
+        }
+        catch(err){
+          console.log(err);
+          if(axios.isAxiosError(err)) {
+            console.error("Axios Error:", err.response?.data);
+          } else {
+            console.error("Unexpected Error:", err);
+          }
+        }
+      }
+      
+      handleGetuserDataProfile();
+    }, [internshipId]);
+    
+      const handleClick = async () => {
+        try{
+          await axios.post(`http://localhost:4000/api/applicant`, {
+             name: profile?.fullName, city: profile?.city, country: profile?.country, phoneNumber: profile?.phoneNumber, userprofile: {connect: {id: profile?.id}}
+          }, { withCredentials: true });
+          await axios.post(`http://localhost:4000/api/applications`, {
+            userId: user?.id,
+            internshipId: internship?.id,
+            applicantId: applicantProfile?.userProfileId
+          }, { withCredentials: true });
+          navigate(`/internships/application/${internship?.id}`);
+        }
+        catch(err){
+          console.log(err);
+          if(axios.isAxiosError(err)) {
+            console.error("Axios Error:", err.response?.data);
+          } else {
+            console.error("Unexpected Error:", err);
+          }
+        }
+      }
+      console.log(user)
+      console.log(internship)
+    
   return (
       <div>
         <Navbar/>
       <main className="max-w-max_width mx-auto px-margin py-xl min-h-screen">
   {/* Hero / Context Area (Asymmetric Layout) */}
-        <h1 className="text-5xl font-semibold flex items-center justify-center my-5 text-center">{user.title}</h1>
+        <h1 className="text-5xl font-semibold flex items-center justify-center my-5 text-center">{internship?.title}</h1>
   <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg max-w-max_width mx-auto">
     {/* Main Content: Job Detail Card */}
     <div className="lg:col-span-8 space-y-md">
@@ -27,12 +117,12 @@ const InternshipPage = () => {
                 alt="Insight AI Logo"
                 className="w-full h-full object-cover"
                 data-alt="A minimalist and high-tech corporate logo for an artificial intelligence company called Insight AI. The logo features abstract geometric patterns suggesting neural networks or data flow, set against a clean white background. The aesthetic is modern, professional, and sophisticated, reflecting institutional stability and cutting-edge technology in a bright, light-mode environment."
-                src={user.company.logo}
+                src={internship?.companies.logo}
               />
             </div>
             <div>
               <h1 className="font-h1 text-h1 text-primary mb-base">
-                {user.title}
+                {internship?.title}
               </h1>
               <div className="flex items-center gap-xs text-on-surface-variant">
                 
@@ -40,7 +130,7 @@ const InternshipPage = () => {
                   <span className="material-symbols-outlined text-[18px]">
                     location_on
                   </span>
-                  {user.location} (Remote)
+                  {internship?.location} (Remote)
                 </span>
                 <span className="text-outline">•</span>
                 <span className="font-body-sm text-body-sm">3 hours ago</span>
@@ -54,7 +144,7 @@ const InternshipPage = () => {
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">work</span>
             <span className="font-label-strong text-label-strong">
-              {toTitleCase(user.type)}
+              {toTitleCase(`${internship?.type}`)}
             </span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
@@ -62,26 +152,20 @@ const InternshipPage = () => {
               psychology
             </span>
             <span className="font-label-strong text-label-strong">
-              {toTitleCase(user.category)}
+              {toTitleCase(`${internship?.category}`)}
             </span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags[0]}</span>
+            <span className="font-label-strong text-label-strong">{internship?.tags[1]}</span>
           </div>
           <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">
               terminal
             </span>
-            <span className="font-label-strong text-label-strong">{user.tags[1]}</span>
-          </div>
-          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">
-              terminal
-            </span>
-            <span className="font-label-strong text-label-strong">{user.tags[2]}</span>
+            <span className="font-label-strong text-label-strong">{internship?.tags[2]}</span>
           </div>
           
         </div>
@@ -211,7 +295,7 @@ const InternshipPage = () => {
               COMPENSATION
             </span>
             <span className="font-h2 text-h2 text-primary flex">
-              <IndianRupee width={15}/>{user.salaryMin/1000}k - <IndianRupee width={15}/>{user.salaryMax/1000}k{" "}
+              <IndianRupee width={15}/>{`${internship?.salaryMin}k/1000`} - <IndianRupee width={15}/>{`${internship?.salaryMax}k`}{" "}
               <small className="text-[1rem] font-normal text-on-surface-variant">
                 / year
               </small>
@@ -222,7 +306,7 @@ const InternshipPage = () => {
               <span className="material-symbols-outlined">bookmark</span>
               Save Job
             </button>
-            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs">
+            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs" onClick={handleClick}>
               Apply Now
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -263,8 +347,8 @@ const InternshipPage = () => {
       <div className="flex justify-between items-start mb-md">
         <div>
           <img
-            src={user.company.logo}
-            alt={user.company.name}
+            src={internship?.companies.logo}
+            alt={internship?.companies.name}
             className="w-16 h-16 rounded-lg object-cover"
           />
           <h4 className="font-h2 text-h2 text-primary">Insight AI</h4>
@@ -273,7 +357,7 @@ const InternshipPage = () => {
           </p>
         </div>
         <Link
-          to={user.company.website}
+          to={` ${internship?.companies.website}`}
           target="_blank"
           className="text-secondary hover:underline flex items-center gap-xs font-label-strong text-label-strong"
         >

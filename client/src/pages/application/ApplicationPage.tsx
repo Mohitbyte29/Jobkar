@@ -11,7 +11,7 @@ interface Jobs{
   id: number;
 }
 
-const ApplicationJob = () => {
+const ApplicationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = location.state;
@@ -19,9 +19,6 @@ const ApplicationJob = () => {
   const {user, setUser} = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [resume, setResume] = useState<string | null>(null);
-  const [coverLetter, setCoverLetter] = useState<string>("");
-  const [gitHub, setGitHub] = useState<string>("");
-  const [linkedIn, setLinkedIn] = useState<string>("");
   console.log("location.state", location.state);
   console.log(userData)
   const handleClick = async(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -229,7 +226,6 @@ console.log(formData)
                     rows={6}
                     placeholder="Tell us why you are a great fit for this Senior UI/UX role..."
                     className="w-full p-4 border-none focus:ring-0 resize-none font-body-md custom-scrollbar"
-                    defaultValue={""}
                   />
                 </div>
               </div>
@@ -322,4 +318,4 @@ console.log(formData)
   );
 };
 
-export default ApplicationJob;
+export default ApplicationPage;

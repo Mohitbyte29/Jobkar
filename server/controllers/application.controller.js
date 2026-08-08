@@ -42,7 +42,20 @@ export const getApplicationById = async(req, res) => {
 
 export const createApplication = async(req, res) => {
     try{
-        const { userId, jobId, applicantId } = req.body;
+        const { userId, jobId, applicantId, internshipId } = req.body;
+        const where = jobId
+  ? {
+      userId_jobId: {
+        userId: req.user.id,
+        jobId
+      }
+    }
+  : {
+      userId_internshipId: {
+        userId: req.user.id,
+        internshipId
+      }
+    };
         const existingApplicant = await prisma.application.findFirst({
             where: { jobId: jobId },
         });
@@ -50,28 +63,49 @@ export const createApplication = async(req, res) => {
         //     return res.status(400).json({ error: "Application already exists for this user" });
         // }
         const application = await prisma.application.upsert({
-            where: { userId: req.user.id, jobId: jobId },
-            update: {
-                // Update fields if application exists
-            },
-            create: {
-                user: {
-                    connect: {email: req.user.email}
-                }, job: jobId ? { connect: { id: jobId } } : undefined,
-                applicant: applicantId ? { connect: { userProfileId: applicantId } } : undefined,
-            },
-            select: {
-                id: true, createdAt: true,
-                job: {select: {id: true, title: true}},
-                applicant: {select: {id: true}}
-            },  
-        });
+    where: where,
+
+    update: {},
+
+    create: {
+        user: {
+            connect: {
+                email: req.user.email
+            }
+        },
+
+        applicant: applicantId
+            ? {
+                connect: {
+                    userProfileId: applicantId
+                }
+            }
+            : undefined,
+
+        job: jobId
+            ? {
+                connect: {
+                    id: jobId
+                }
+            }
+            : undefined,
+
+        internship: internshipId
+            ? {
+                connect: {
+                    id: internshipId
+                }
+            }
+            : undefined,
+    }
+});
         res.json({application});
     } catch(err){
         console.log(err);
         res.status(500).json({ error: "Failed to create application" , message: err.message });
     }
 }
+
 
 export const updateApplication = async(req, res) => {
     try{

@@ -100,13 +100,28 @@ export const getInternships = async(req, res) => {
 }
 
 export const getInternshipById = async(req, res) => {
+    console.log(req.params)
     try{
             const internship = await prisma.internship.findUnique({
                 where: {id: Number(req.params.id)},
-                include: {
-                    employer: {select: {name: true, email: true}},
-                    _count: {select: {applications: true}},
+                select: {
+                id: true, title: true, description: true, location: true, salaryMax: true, salaryMin: true, requirements: true, tags: {select: {tag: {select: {name: true}}}}, remote: true, internshipStatus: true, workType: true, type: true, category: true,
+                CompanyId: true,
+                employerId: true,
+                createdAt: true,
+                updatedAt: true,
+                companies: {
+                    select: {
+                        name: true,
+                        description: true,
+                        location: true,
+                        logo: true,
+                        website: true,
+                        companyStatus: true,
+                        logo: true,
+                    }
                 }
+            }
             })
             if(!internship || internship.internshipStatus === internshipStatus.DRAFT){
                 return res.status(404).json({error: "Internship not found"});
@@ -114,9 +129,7 @@ export const getInternshipById = async(req, res) => {
             res.json(internship);
         } catch(error){
             console.log(error);
-            console.log(req.params);
-            console.log(req.params.id);
-            res.status(500).json({ error: "Failed to fetch job" });
+            res.status(500).json({ error: "Failed to fetch internship" });
         }
 }
 

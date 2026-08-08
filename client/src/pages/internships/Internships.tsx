@@ -115,7 +115,7 @@ interface Internship{
 
           {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(results.map((internship: Internship) => internship.title))).map((title: string) => (
+          {Array.from(new Set(results.map((internship) => internship.title))).map((title: string) => (
             <li key={title} onClick={() => {
               setQuery(title)
               setSelectedInternship(title);
@@ -273,7 +273,7 @@ interface Internship{
                 <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
                   Save internship
                 </button>
-                <button onClick={() => navigate(`/internships/search/${internship.title}`, {state: internship})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() => navigate(`/internships/search/${internship.id}`)} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>

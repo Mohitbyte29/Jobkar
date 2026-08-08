@@ -85,7 +85,7 @@ const JobPage = () => {
         jobId: job?.id,
         applicantId: applicantProfile?.userProfileId
       }, { withCredentials: true });
-      navigate(`/jobs/application/${user?.id}/${job?.id}`, { state: userData });
+      navigate(`/jobs/application/${job?.id}`, { state: userData });
     }
     catch(err){
       console.log(err);
