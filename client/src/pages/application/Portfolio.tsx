@@ -9,6 +9,7 @@ const Portfolio = () => {
   const location = useLocation();
     const navigate = useNavigate();
     const { jobId } = useParams();
+    const { internshipId } = useParams();
     const [portfolio, setPortfolio] = useState<string>('');
     const {user, setUser} = useUser();
     const jobData = location.state;
@@ -16,14 +17,17 @@ const Portfolio = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setPortfolio(e.target.value);
     }
+    
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault(); 
       try{
-      await axios.patch(`/api/application/${user?.id}/${jobId}`, { 
+        
+      await axios.patch(`/api/application/${user?.id}`, { 
         portfolio,
-        jobId: jobId,
+        jobId: jobId ? parseInt(jobId) : null,
+        internshipId: internshipId ? parseInt(internshipId) : null,
        }, {withCredentials: true});
-      navigate(`/jobs/application/review/${user?.id}/${jobId}`, { state: jobData });
+      {jobId ? navigate(`/jobs/application/review/${jobId}`) : navigate(`/internships/application/review/${internshipId}` )}
       } catch (error) {
         console.error("Error submitting portfolio:", error);
         if(axios.isAxiosError(error)) {

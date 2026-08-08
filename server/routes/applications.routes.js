@@ -9,7 +9,7 @@ router.get('/api/applications/:userId', isAuthenticated, getApplications);
 router.get('/api/application/:userId/:jobId', isAuthenticated, getApplicationById);
 router.post('/api/applications', isAuthenticated, createApplication);
 router.delete('/api/application/:id', isAuthenticated, deleteApplication);
-router.patch('/api/application/:userId/:jobId', isAuthenticated, updateApplication);
+router.patch('/api/application/:userId', isAuthenticated, updateApplication);
 router.get('/api/applicant/:id', isAuthenticated, getApplicantById);
 router.post('/api/applicant', isAuthenticated, createApplicant);
 router.patch('/api/applicant/:id', isAuthenticated, updateApplicant);

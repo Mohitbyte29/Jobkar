@@ -16,6 +16,7 @@ const ApplicationPage = () => {
   const location = useLocation();
   const userData = location.state;
   const { jobId } = useParams();
+  const { internshipId } = useParams();
   const {user, setUser} = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [resume, setResume] = useState<string | null>(null);
@@ -77,14 +78,17 @@ console.log(formData)
     try{
       console.log(userData);
       const res = await axios.get(`http://localhost:4000/api/me`, { withCredentials: true });
-      await axios.patch(`http://localhost:4000/api/application/${user?.id}/${jobId}`,{
-        jobId: userData?.id,
-        resume: res.data.user.resume,
-        coverletter: formData.coverLetter,
-        github: formData.github,
-        linkedIn: formData.linkedIn
-      }, { withCredentials: true });
-      navigate(`/jobs/application/experience/${user?.id}/${jobId}`, { state: userData });
+      const applicationData = {
+            ...(jobId ? { jobId } : { internshipId }),
+            resume: res.data.user.resume,
+            coverletter: formData.coverLetter,
+            github: formData.github,
+            linkedIn: formData.linkedIn
+        };
+      await axios.patch(`http://localhost:4000/api/application/${user?.id}/${jobId}`, applicationData, {
+        withCredentials: true
+      });
+      {jobId ? navigate(`/application/experience/${jobId}`, { state: userData }) : navigate(`/application/experience/${internshipId}`, { state: userData })}
     }
     catch(err){
       console.error("Error updating application:", err);  

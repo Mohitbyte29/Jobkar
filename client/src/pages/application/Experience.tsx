@@ -3,12 +3,14 @@ import Navbar from '@/components/Navbar'
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const Experience = () => {
     const navigate = useNavigate();
     const {user, setUser} = useUser();
     const location = useLocation();
+    const {jobId } = useParams();
+    const {internshipId } = useParams();
     const jobData = location.state;
     const [formData, setFormData] = useState({
         jobTitle: '',
@@ -32,7 +34,7 @@ const Experience = () => {
     const handleAddExperience = async(e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         try{
-          await axios.post(`/api/jobs/experience/${user?.id}`, 
+          await axios.post(`/api/experience/${user?.id}`, 
             {
               ...formData,
               startDate: new Date(formData.startDate).toISOString(),
@@ -40,7 +42,7 @@ const Experience = () => {
               userId: user?.id,
             }
             , { withCredentials: true });
-            navigate(`/jobs/application/portfolio/${user?.id}/${jobData?.id}`, { state: jobData });
+            {jobId ? navigate(`/jobs/application/portfolio/${jobId}`) : navigate(`/internships/application/portfolio/${internshipId}` )}
         }
         catch(err){
           console.error("Error adding experience:", err);  

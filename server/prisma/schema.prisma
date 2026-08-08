@@ -27,7 +27,7 @@ model User {
   education   Education?
   project     Project?
   savedJobs   SavedJobs[]
-  Experience Experience?
+  Experience Experience[]
   Applicant Applicant? 
 
   @@map("users")
@@ -198,10 +198,11 @@ model Applicant{
 
 model Experience{
   id Int @id @default(autoincrement())
-  userId Int @unique
+  userId Int 
   jobTitle String @db.VarChar(255)
   companyName String @db.VarChar(255)
   startDate DateTime
+  type String? @db.VarChar(255)
   endDate DateTime?
   city String @db.VarChar(255)
   country String @db.VarChar(255)

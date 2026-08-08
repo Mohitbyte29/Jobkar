@@ -93,10 +93,14 @@ const App = () => {
         <Route path='/application/:id' element={<Application/>} />
         <Route path='/jobs/application/:jobId' element={<ApplicationPage/>} />
         <Route path='/internships/application/:internshipId' element={<ApplicationPage/>} />
-        <Route path='/jobs/application/experience/:id/:jobId' element={<Experience/>} />
-        <Route path='/jobs/application/review/:id/:jobId' element={<Review/>} />
-        <Route path='/jobs/application/portfolio/:id/:jobId' element={<Portfolio/>} />
-        <Route path='/jobs/application/success/:id/:jobId' element={<Success/>} />
+        <Route path='/internships/application/experience/:internshipId' element={<Experience/>} />
+        <Route path='/internships/application/review/:internshipId' element={<Review/>} />
+        <Route path='/internships/application/portfolio/:internshipId' element={<Portfolio/>} />
+        <Route path='/internships/application/success/:internshipId' element={<Success/>} />
+        <Route path='/jobs/application/experience/:jobId' element={<Experience/>} />
+        <Route path='/jobs/application/review/:jobId' element={<Review/>} />
+        <Route path='/jobs/application/portfolio/:jobId' element={<Portfolio/>} />
+        <Route path='/jobs/application/success/:jobId' element={<Success/>} />
       </Routes>
     </div>
   )

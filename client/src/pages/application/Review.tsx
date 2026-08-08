@@ -39,6 +39,7 @@ interface ExperienceData {
 
 const Review = () => {
   const { jobId } = useParams();
+  const { internshipId } = useParams();
   const location = useLocation();
     const navigate = useNavigate();
     const { user, setUser } = useUser();
@@ -75,7 +76,7 @@ const Review = () => {
       await axios.patch(`http://localhost:4000/api/application/${user?.id}/${jobId}`, {
         status: "SUBMITTED"
       }, { withCredentials: true });
-      navigate(`/jobs/application/success/${user?.id}/${jobId}`, { state: jobData });
+      navigate(`/application/success/${jobId}`, { state: jobData });
     }
     catch (error) {
       console.error("Error submitting application:", error);  

@@ -1,3 +1,3 @@
 UPDATE `_prisma_migrations`
-SET checksum = 'db6d777f28ed908f931c9b03a2bbd63bac2ff8e73e2199dc0dbcb6137a99aefc'
-WHERE migration_name = '20260808113747_make';
+SET checksum = 'b3700e36d05bd0939d9200fe2b084e98fff8bb10d97c3cf390b384f30f560022'
+WHERE migration_name = '20260808153756_add';

@@ -108,10 +108,24 @@ export const createApplication = async(req, res) => {
 
 
 export const updateApplication = async(req, res) => {
+    console.log(req.params)
     try{
-        const { coverletter, resume, github, linkedIn, dribble, behance, status, portfolio } = req.body;
+        const { coverletter, resume, github, linkedIn, dribble, behance, status, portfolio, jobId, internshipId } = req.body;
+        const where = jobId
+  ? {
+      userId_jobId: {
+        userId: req.user.id,
+        jobId: Number(jobId)
+      }
+    }
+  : {
+      userId_internshipId: {
+        userId: req.user.id,
+        internshipId: Number(internshipId)
+      }
+    };
         const application = await prisma.application.update({
-            where: { userId: req.user.id, jobId: Number(req.params.jobId) },
+            where: where,
             data: {
                 coverletter,
                 resume,
@@ -124,7 +138,14 @@ export const updateApplication = async(req, res) => {
             },
             select: {
                 id: true, jobId: true, coverletter: true, resume: true, createdAt: true,
-                job: {select: {id: true, title: true}}, status: true, github: true, linkedIn: true, dribble: true, behance: true, portfolio: true,
+                internshipId: true,
+                job: {select: {id: true, title: true, type: true, location: true, salaryMax: true, salaryMin: true, company: {
+                    select: {id: true, name: true}
+                }}},
+                internship: {select: {id: true, title: true, type: true, location: true, salaryMax: true, salaryMin: true, companies: {
+                    select: {id: true, name: true}
+                }}},
+                status: true, github: true, linkedIn: true, dribble: true, behance: true, portfolio: true,
                 applicant: {select: {id: true, name: true, email: true, city: true, country: true, phoneNumber: true}}
             },
         });

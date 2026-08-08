@@ -3,8 +3,8 @@ import { createExperience, getExperienceById, updateExperience } from "../contro
 
 const router = new Router();
 
-router.get('/api/jobs/experience/:userId', getExperienceById);
-router.post('/api/jobs/experience/:userId', createExperience);
-router.patch('/api/jobs/experience/:userId', updateExperience);
+router.get('/api/experience/:userId', getExperienceById);
+router.post('/api/experience/:userId', createExperience);
+router.patch('/api/experience/:userId', updateExperience);
 
 export const experienceRoutes = router;
