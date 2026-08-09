@@ -35,7 +35,7 @@ export default function Navbar() {
 
   // console.log(user);
     return (
-  <nav className="fixed top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
+  <nav className="fixed top-0 w-full z-50 border-b bg-white/88 dark:bg-slate-950/88 backdrop-blur-xl border-slate-200/80 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(15,23,42,0.06)] dark:shadow-none">
     <div className="flex justify-between items-center h-16 px-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-8">
         <Link to='/' className="text-xl font-extrabold tracking-tighter text-slate-900 dark:text-white">

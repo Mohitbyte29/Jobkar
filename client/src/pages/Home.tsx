@@ -250,7 +250,7 @@ export default function Home() {
       <Navbar />
       <header
         ref={heroRef}
-        className="relative min-h-[90vh] flex items-center overflow-hidden"
+        className="relative min-h-[92vh] flex items-center overflow-hidden bg-slate-950"
       >
         {/* Full-width background video */}
         <div className="hero-video-wrapper absolute inset-0 z-0">
@@ -277,7 +277,7 @@ export default function Home() {
             <span className="hero-badge inline-block px-4 py-1.5 rounded-full bg-white/15 text-white font-label-caps mb-6 backdrop-blur-sm border border-white/20">
               NOW HIRING IN 45 COUNTRIES
             </span>
-            <h1 className="hero-title font-bold text-5xl lg:text-6xl text-white mb-6 leading-tight">
+            <h1 className="hero-title max-w-3xl font-bold text-5xl lg:text-7xl tracking-[-0.04em] text-white mb-6 leading-[1.02] text-balance">
               Find Your Next Career Move
             </h1>
             <p className="hero-subtitle font-body-lg text-lg text-white/80 mb-10 max-w-3xl">
