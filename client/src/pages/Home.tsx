@@ -286,12 +286,12 @@ export default function Home() {
             </p>
             {/* Search Interface */}
             <div
-              className="hero-search flex-1 flex items-center gap-3 px-4 py-2 w-full"
+              className="hero-search w-full"
               style={{ color: "white" }}
             >
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input
-                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                className="w-full min-h-12 bg-background/95 pl-10 p-3 rounded-lg border border-border/70 focus:ring-0 font-body-sm text-base placeholder:text-muted-foreground text-foreground"
                 placeholder="Job title or keyword"
                 type="text"
                 value={query}
@@ -300,7 +300,7 @@ export default function Home() {
               />
               <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
               <input
-                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                className="w-full min-h-12 bg-background/95 pl-10 p-3 rounded-lg border border-border/70 focus:ring-0 font-body-sm text-base placeholder:text-muted-foreground text-foreground"
                 placeholder="Location"
                 type="text"
                 value={location}
@@ -312,8 +312,8 @@ export default function Home() {
                   disabled={!canSearch}
                   className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
                     canSearch
-                      ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
-                      : "bg-gray-400 text-white cursor-not-allowed opacity-50"
+                      ? "bg-secondary text-secondary-foreground cursor-pointer hover:bg-secondary/90 shadow-lg shadow-secondary/20"
+                      : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
                   }`}
                   onClick={() => {
                     if (!selectedJob && query.trim()) {
@@ -468,13 +468,13 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Tech */}
             <div
-              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-card/90 p-8 rounded-2xl border border-border/70 hover:border-secondary/70 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (window.location.href = `/jobs/search?category=${encodeURIComponent("TECHNOLOGY_SOFTWARE")}`)
               }
               onChange={handleCategoryChange}
             >
-              <div className="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
+              <div className="w-12 h-12 bg-primary-fixed/80 rounded-xl flex items-center justify-center mb-6 group-hover:bg-secondary-container group-hover:scale-110 transition-all duration-300">
                 <span
                   className="material-symbols-outlined text-primary-container"
                   data-icon="code"
@@ -492,7 +492,7 @@ export default function Home() {
             </div>
             {/* Design */}
             <div
-              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-card/90 p-8 rounded-2xl border border-border/70 hover:border-secondary/70 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (window.location.href = `/jobs/search?category=${encodeURIComponent("CREATIVE_MEDIA")}`)
               }
@@ -516,7 +516,7 @@ export default function Home() {
             </div>
             {/* Marketing */}
             <div
-              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-card/90 p-8 rounded-2xl border border-border/70 hover:border-secondary/70 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (window.location.href = `/jobs/search?category=${encodeURIComponent("MARKETING")}`)
               }
@@ -540,7 +540,7 @@ export default function Home() {
             </div>
             {/* Finance */}
             <div
-              className="category-card bg-white p-8 rounded-xl border border-transparent hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-card/90 p-8 rounded-2xl border border-border/70 hover:border-secondary/70 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (window.location.href = `/jobs/search?category=${encodeURIComponent("FINANCE")}`)
               }
@@ -579,10 +579,10 @@ export default function Home() {
             userData.slice(0, 3).map((job: any) => (
               <div
                 key={job.id}
-                className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group"
+                className="job-card bg-card/90 p-6 rounded-2xl border border-border/70 shadow-lg hover:border-secondary/70 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-300 group"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                  <div className="w-14 h-14 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
+                  <div className="w-14 h-14 rounded-xl bg-muted/70 border border-border/70 flex items-center justify-center p-2">
                     <span
                       className="material-symbols-outlined text-3xl text-primary"
                       data-icon="token"
