@@ -1,7 +1,9 @@
 import AdminNav from '@/components/AdminNav'
-import React from 'react'
+import { useCompany } from '@/context/CompanyContext';
+import toTitleCase from '../../../utils/titleCase'
 
 const CompanyManagement = () => {
+  const { companyData, setCompanyData } = useCompany();
   return (
     <div>
       <>
@@ -74,7 +76,7 @@ const CompanyManagement = () => {
             Total Companies
           </p>
           <h3 className="text-h1 font-bold text-slate-900 leading-none">
-            1,284
+            {companyData.length}
           </h3>
           <p className="text-xs text-secondary font-semibold mt-1">
             ↑ 12% from last month
@@ -161,7 +163,9 @@ const CompanyManagement = () => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {/* Table Row 1 */}
-            <tr className="hover:bg-slate-50/30 transition-colors group">
+            {companyData.map((company) => {
+              return (
+                <tr className="hover:bg-slate-50/30 transition-colors group">
               <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
@@ -173,7 +177,7 @@ const CompanyManagement = () => {
                   </div>
                   <div>
                     <div className="font-label-strong text-slate-900">
-                      NexaPath Systems
+                      {company.name}
                     </div>
                     <div className="text-xs text-slate-500">nexapath.io</div>
                   </div>
@@ -181,7 +185,7 @@ const CompanyManagement = () => {
               </td>
               <td className="px-6 py-4">
                 <span className="text-body-sm text-slate-600">
-                  Software &amp; Cloud
+                  {`${toTitleCase(company.category)}`}
                 </span>
               </td>
               <td className="px-6 py-4">
@@ -191,7 +195,7 @@ const CompanyManagement = () => {
               </td>
               <td className="px-6 py-4">
                 <span className="text-body-sm font-semibold text-slate-700">
-                  142
+                  {company._count.jobs}
                 </span>
               </td>
               <td className="px-6 py-4 text-right">
@@ -200,164 +204,10 @@ const CompanyManagement = () => {
                 </button>
               </td>
             </tr>
-            {/* Table Row 2 */}
-            <tr className="hover:bg-slate-50/30 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
-                    <img
-                      className="w-full h-full object-contain"
-                      data-alt="Abstract leaf symbol logo for a renewable energy firm called GreenCurrent, professional corporate style, green and slate color scheme."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHHLZQ7FVxeWNk6Cy3TxSRnQ_BK3xi5fF6vLiIYIBK6XhCIqef5tQU8d1cmfYGE2Xu0EKFTLO2lpZvy3w-kqdTKNhlITbzOaodidNOt6eQGYog6EeJyDXHTMwcrZxcz0Okjwb4e_RvO8fN2w3TMvUvDwZjtoXRuQWb89uJYL1XPl2vD5zfgOJFPX4dc2BsuuYtqqc5zglCYCMmX2vdxr8vO5svQkKDx5qQ39_xCTy45dRSqmOOoYTXwxUqX0MKwOUXZPlDOoQmSoo"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-label-strong text-slate-900">
-                      GreenCurrent Ltd
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      greencurrent.co
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm text-slate-600">
-                  Renewable Energy
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="px-2 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider border border-amber-100">
-                  Pending
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm font-semibold text-slate-700">
-                  0
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button className="px-3 py-1.5 text-secondary font-semibold hover:bg-secondary/10 rounded transition-colors text-xs">
-                  Manage
-                </button>
-              </td>
-            </tr>
-            {/* Table Row 3 */}
-            <tr className="hover:bg-slate-50/30 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
-                    <img
-                      className="w-full h-full object-contain"
-                      data-alt="Modern block typography logo for a global logistics provider named VeloxLogix, bold dark blue and gray professional look."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD06R-BfPtIszqrXc_e_2z-PymjkuTC_RSldCj2sP8lYJ7o45PcUI7xKsM5cPcO7eJNSpoEsecospRZOJDZpmUi7LOQjKMpFdhr51HRIWr9VttnOeSjA9Jn-rrPxmPMQzfgPDnmY6dWwX0VIbHpc4yr9wyaVDD6YiqnlGqOUF1xu2n5HmuuzDVlbj8SJTRGYY0Xqpax5Bqnml5r_XFMmfkkUUMwTGSb0zKcpOHN4qs1Dh8Q8IknscOLs57OreD-O-UNO1tFPiV2s_g"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-label-strong text-slate-900">
-                      VeloxLogix Global
-                    </div>
-                    <div className="text-xs text-slate-500">veloxlogix.com</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm text-slate-600">Logistics</span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="px-2 py-1 bg-slate-100 text-slate-700 text-[10px] font-bold rounded uppercase tracking-wider border border-slate-200">
-                  Suspended
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm font-semibold text-slate-700">
-                  89
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button className="px-3 py-1.5 text-secondary font-semibold hover:bg-secondary/10 rounded transition-colors text-xs">
-                  Manage
-                </button>
-              </td>
-            </tr>
-            {/* Table Row 4 */}
-            <tr className="hover:bg-slate-50/30 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
-                    <img
-                      className="w-full h-full object-contain"
-                      data-alt="Creative brain icon logo for a marketing agency called MindCanvas, vibrant artistic professional design, corporate branding."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsge_5G6-IJmdA5DWgeEEaQYnW5Fjqcdj11QzaF8Taf-0ZTVW67detHjpOmRIWYtY9k_ixe_42LGPUIF-5JOpOnHIERHrcRrcjbIL_BYadGrzFyxOr4vqQIdd_YmvRDIjryzK4AIBoz1cEuuyth0EUaFnfqOmtU_fvqOJXsHe4XCjElK4gYimNdSXV77CdvH2A98CcZWNqPx5ny_Ve-q4KSAOlM0b-9CFje4jvVh9g1TeGH7PxwrvoQFPSKoAg0uvrajq0uecQ8oA"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-label-strong text-slate-900">
-                      MindCanvas Agency
-                    </div>
-                    <div className="text-xs text-slate-500">mindcanvas.com</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm text-slate-600">Marketing</span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider border border-green-100">
-                  Active
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm font-semibold text-slate-700">
-                  31
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button className="px-3 py-1.5 text-secondary font-semibold hover:bg-secondary/10 rounded transition-colors text-xs">
-                  Manage
-                </button>
-              </td>
-            </tr>
-            {/* Table Row 5 */}
-            <tr className="hover:bg-slate-50/30 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
-                    <img
-                      className="w-full h-full object-contain"
-                      data-alt="Sleek silver shield logo for a cybersecurity firm named AegisShield, high-tech security aesthetic, slate gray background."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO8td3GfIsdTTT60EKXj4FD3cvM8fIvZTs8ileZuaUrWQClwMDR3c7Z6QJ_iEF54y6O7CyblKBjmIeRmyRitHzfhwaP7p0-LNYCpnHOuB-aCzj8ER-bMeWWaufzy22XX8ra3073HFKRMrMhAKATNF5XhjxpSUbB3Ssbwkyuwdg3vbv2iJMt21J0jf-7kx5A42PIL835m5Ih2Cw2eFJJGd-HBELtAkfUjOFeAQzuDeEUdG2AFFn80TUZtvecGjvZj3uxfb_lCBfkwg"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-label-strong text-slate-900">
-                      AegisShield Security
-                    </div>
-                    <div className="text-xs text-slate-500">aegis.security</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm text-slate-600">
-                  Cybersecurity
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider border border-green-100">
-                  Active
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm font-semibold text-slate-700">
-                  12
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button className="px-3 py-1.5 text-secondary font-semibold hover:bg-secondary/10 rounded transition-colors text-xs">
-                  Manage
-                </button>
-              </td>
-            </tr>
+              )
+            })}
+            
+            
           </tbody>
         </table>
       </div>

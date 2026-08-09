@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { createApplicant, createApplication, deleteApplication, getApplicantById, getApplicationById, getApplications, updateApplicant, updateApplication, uploadResume } from "../controllers/application.controller.js";
-import { isAuthenticated } from "../middlewares/middleware.js";
+import { createApplicant, createApplication, deleteApplication, getAllApplications, getApplicantById, getApplicationById, getApplications, updateApplicant, updateApplication, uploadResume } from "../controllers/application.controller.js";
+import { authenticateAdmin, isAuthenticated } from "../middlewares/middleware.js";
 import upload from "../config/multer.js";
 
 const router = new Router();
 
+router.get('/api/applications',  authenticateAdmin, getAllApplications);
 router.get('/api/applications/:userId', isAuthenticated, getApplications);
 router.get('/api/application/:userId/:jobId', isAuthenticated, getApplicationById);
 router.post('/api/applications', isAuthenticated, createApplication);

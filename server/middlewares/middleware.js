@@ -23,19 +23,21 @@ export const isAuthenticated = (req, res, next) => {
     }
 }
 
-export const authenticateAdmin = (req, res, next) => {
+export const authenticateAdmin = async(req, res, next) => {
+    const token = req.cookies.accessToken;
+    if(!token){
+        return res.status(401).json({message: "Unauthorized, JWT token is required"});
+    }
     try{
-        const role = prisma.user.findUnique({
-        where: {role: "ADMIN"},
-        select: {role: true}
-        })
-        if(role !== "ADMIN"){
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        if(req.user.role !== "ADMIN"){
             return res.status(403).json({message: "Access denied. Admins only."});
         }
         next();
     } catch(error) {
         console.log(error);
-        return res.status(500).json({message: "Server error during admin authentication"});
+        return res.status(500).json({message: "Server error during admin authentication", error: error.message});
     }
 }
 

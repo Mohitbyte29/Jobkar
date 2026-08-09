@@ -1,6 +1,8 @@
 import EmployerNav from "@/components/EmployerNav"
+import { useJobs } from "@/context/JobsContext";
 
 const Dashboard = () => {
+  const { userData, setUserData } = useJobs();
   return (
       <>
     <div className="bg-background text-on-background font-body-md min-h-screen flex">
@@ -73,7 +75,7 @@ const Dashboard = () => {
             <p className="text-label-caps text-slate-500 mb-1">
               Active Job Postings
             </p>
-            <h3 className="text-display font-display text-slate-900">24</h3>
+            <h3 className="text-display font-display text-slate-900">{userData.length}</h3>
           </div>
           <div className="mt-4 flex items-center text-secondary font-label-strong text-sm">
             <span

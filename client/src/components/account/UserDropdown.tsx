@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useUser } from "@/context/UserContext"
 import axios from "axios"
 
-export const UserDropdown = () => {
+export const  UserDropdown = () => {
   const {user, setUser} = useUser();
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -62,9 +62,15 @@ export const UserDropdown = () => {
       <DropdownMenuGroup>
         <DropdownMenuItem>
           <User />
-          <Link to="/profile" className="text-sm font-label-strong text-on-surface-variant hover:text-on-surface transition-colors duration-200">
+          {user && user.role === 'ADMIN' ? (
+            <Link to="/admin/dashboard" className="text-sm font-label-strong text-on-surface-variant hover:text-on-surface transition-colors duration-200">
+              Profile
+            </Link> ): (
+            <Link to="/profile" className="text-sm font-label-strong text-on-surface-variant hover:text-on-surface transition-colors duration-200">
             Profile
           </Link>
+          )}
+          
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Mail />

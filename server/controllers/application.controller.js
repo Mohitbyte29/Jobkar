@@ -2,6 +2,63 @@ import { PrismaClient } from "@prisma/client";
 import cloudinary from "../config/cloudinary.js";
 const prisma = new PrismaClient();
 
+export const getAllApplications = async (req, res) => {
+    try {
+        const applications = await prisma.application.findMany({
+            select: {
+                id: true,
+                createdAt: true,
+                coverletter: true,
+                resume: true,
+                portfolio: true,
+                github: true,
+                linkedIn: true,
+                dribble: true,
+                behance: true,
+                job: {
+                    select: {
+                        id: true,
+                        title: true,
+                        type: true,
+                        location: true,
+                        salaryMax: true,
+                        salaryMin: true,
+                        company: {
+                            select: { id: true, name: true }
+                        }
+                    }
+                },
+                internship: {
+                    select: {
+                        id: true,
+                        title: true,
+                        type: true,
+                        location: true,
+                        salaryMax: true,
+                        salaryMin: true,
+                        companies: {
+                            select: { id: true, name: true }
+                        }
+                    }
+                },
+                status: true,
+                github: true,
+                linkedIn: true,
+                dribble: true,
+                behance: true,
+                portfolio: true,
+                applicant: {
+                    select: { id: true, name: true, email: true }
+                }
+            }
+        });
+        res.json(applications);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Failed to fetch application details", message: err.message });
+    }
+};
+
 export const getApplications = async(req, res) => {
     try{
         console.log(Number(req.params.userId));

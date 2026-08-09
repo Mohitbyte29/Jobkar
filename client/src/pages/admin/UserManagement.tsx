@@ -1,7 +1,35 @@
 import AdminNav from '@/components/AdminNav'
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const UserManagement = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const {data} = await axios.get('/api/users');
+        setUsers(data);
+        console.log(users);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        if(axios.isAxiosError(error)) {
+          console.error('Axios error response:', error.response?.data);
+        }
+      }
+    };
+    fetchUsers();
+  }, []);
+
   return (
     <div>
       <>
@@ -105,7 +133,7 @@ const UserManagement = () => {
             TOTAL USERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">12,842</span>
+            <span className="font-h2 text-h2 text-on-surface">{users.length}</span>
             <span className="text-secondary text-xs font-bold">+12%</span>
           </div>
         </div>
@@ -114,7 +142,7 @@ const UserManagement = () => {
             ACTIVE EMPLOYERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">1,205</span>
+            <span className="font-h2 text-h2 text-on-surface">{users.filter((u) => u.role === 'EMPLOYER').length}</span>
             <span className="text-secondary text-xs font-bold">+4%</span>
           </div>
         </div>
@@ -165,157 +193,63 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-container">
-              {/* User Row 1 */}
-              <tr className="hover:bg-surface-container-low transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">
-                      JD
-                    </div>
-                    <div>
-                      <p className="font-label-strong text-on-surface">
-                        Jane Doe
-                      </p>
-                      <p className="text-xs text-on-primary-container font-body-sm">
-                        jane.doe@example.com
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-caps text-[10px]">
-                    JOB SEEKER
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-secondary" />
-                    <span className="font-body-sm text-on-surface">Active</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 font-body-sm text-on-surface-variant">
-                  Oct 12, 2023
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
-                    Manage
-                  </button>
-                </td>
-              </tr>
-              {/* User Row 2 */}
-              <tr className="hover:bg-surface-container-low transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold">
-                      TC
-                    </div>
-                    <div>
-                      <p className="font-label-strong text-on-surface">
-                        TechCorp Solutions
-                      </p>
-                      <p className="text-xs text-on-primary-container font-body-sm">
-                        hr@techcorp.io
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="px-3 py-1 rounded-full bg-primary-fixed/30 text-on-primary-fixed-variant font-label-caps text-[10px]">
-                    EMPLOYER
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-secondary" />
-                    <span className="font-body-sm text-on-surface">Active</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 font-body-sm text-on-surface-variant">
-                  Sep 28, 2023
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
-                    Manage
-                  </button>
-                </td>
-              </tr>
-              {/* User Row 3 */}
-              <tr className="hover:bg-surface-container-low transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-bold">
-                      MS
-                    </div>
-                    <div>
-                      <p className="font-label-strong text-on-surface">
-                        Mark Smith
-                      </p>
-                      <p className="text-xs text-on-primary-container font-body-sm">
-                        m.smith@webmail.com
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-caps text-[10px]">
-                    JOB SEEKER
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-error" />
-                    <span className="font-body-sm text-on-surface">
-                      Suspended
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 font-body-sm text-on-surface-variant">
-                  Nov 05, 2023
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
-                    Manage
-                  </button>
-                </td>
-              </tr>
-              {/* User Row 4 */}
-              <tr className="hover:bg-surface-container-low transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold">
-                      AL
-                    </div>
-                    <div>
-                      <p className="font-label-strong text-on-surface">
-                        Astra Logistics
-                      </p>
-                      <p className="text-xs text-on-primary-container font-body-sm">
-                        ops@astra.com
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="px-3 py-1 rounded-full bg-primary-fixed/30 text-on-primary-fixed-variant font-label-caps text-[10px]">
-                    EMPLOYER
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-secondary" />
-                    <span className="font-body-sm text-on-surface">Active</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 font-body-sm text-on-surface-variant">
-                  Aug 14, 2023
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
-                    Manage
-                  </button>
-                </td>
-              </tr>
-            </tbody>
+  {users.map((user) => {
+    return (
+      <tr
+        key={user.id}
+        className="hover:bg-surface-container-low transition-colors group"
+      >
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">
+              {user.name?.charAt(0).toUpperCase()}
+            </div>
+
+            <div>
+              <p className="font-label-strong text-on-surface">
+                {user.name}
+              </p>
+
+              <p className="text-xs text-on-primary-container font-body-sm">
+                {user.email}
+              </p>
+            </div>
+          </div>
+        </td>
+
+        <td className="px-6 py-4">
+          <span className="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-caps text-[10px]">
+            {user.role}
+          </span>
+        </td>
+
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-secondary" />
+            <span className="font-body-sm text-on-surface">
+              Active
+            </span>
+          </div>
+        </td>
+
+        <td className="px-6 py-4 font-body-sm text-on-surface-variant">
+          {new Date(user.createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })}
+        </td>
+
+        <td className="px-6 py-4 text-right">
+          <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
+            Manage
+          </button>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+              
           </table>
         </div>
         {/* Table Pagination */}

@@ -11,6 +11,13 @@ const AdminNav = () => {
     </div>
     <nav className="flex-1 px-sm">
       <div className="space-y-base">
+        <Link aria-current="page" className="flex items-center px-md py-sm rounded-xl transition-all group
+         bg-surface-container-high text-on-surface font-label-strong" 
+         data-path="dashboard" 
+         to="/admin/dashboard">
+          <span className="material-symbols-outlined mr-md text-[22px]">dashboard</span>
+          <span className="font-label-strong text-label-strong">Dashboard</span>
+          </Link>
         <Link
           className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 transition-colors"
           to="/admin/users"
@@ -43,6 +50,13 @@ const AdminNav = () => {
         >
           <span className="material-symbols-outlined">analytics</span>
           <span className="font-label-strong text-label-strong">Analytics</span>
+        </Link>
+        <Link
+          className="flex items-center gap-3 px-4 py-3 bg-slate-50 text-secondary border-r-4 border-secondary font-semibold"
+          to="/admin/company"
+        >
+          <span className="material-symbols-outlined" data-icon="corporate_fare">corporate_fare</span>
+          <span className="font-label-strong text-label-strong">Company Management</span>
         </Link>
       </div>
     </nav>

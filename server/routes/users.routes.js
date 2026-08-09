@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/middleware.js";
-import { completeOnboarding, createEducation, createUserProfile, deleteUserData, getUserData, getUserEducation, getUserProfile, updateAvatar, updateCover, updateUserData, updateUserProfile } from "../controllers/user.controller.js";
+import { completeOnboarding, createEducation, createUserProfile, deleteUserData, getAllUsers, getUserData, getUserEducation, getUserProfile, updateAvatar, updateCover, updateUserData, updateUserProfile } from "../controllers/user.controller.js";
 import upload from "../config/multer.js";
 
 const router = new Router();
 
+router.get('/api/users', isAuthenticated, getAllUsers);
 router.get('/api/me', isAuthenticated, getUserData);
 router.patch('/api/me', isAuthenticated, updateUserData);
 router.delete('/api/me', isAuthenticated, deleteUserData);

@@ -14,6 +14,7 @@ interface Company{
     companyStatus: string;
     jobs: { title: string};
     UserId: number;
+    _count: { jobs: number };
 }
 
 interface CompanyContextType {

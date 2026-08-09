@@ -1,5 +1,4 @@
 import AdminNav from '@/components/AdminNav'
-import React from 'react'
 
 const Analytics = () => {
   return (

@@ -2,6 +2,26 @@ import { PrismaClient } from "@prisma/client";
 import cloudinary from "../config/cloudinary.js";
 const prisma = new PrismaClient();
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+};
+
 export const getUserData = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({

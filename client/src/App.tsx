@@ -46,6 +46,7 @@ import Success from './pages/application/Success';
 import AddCompany from './pages/employer/AddCompany';
 import PostInternship from './pages/internships/PostInternship';
 import ApplicationPage from './pages/application/ApplicationPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 const App = () => {
   return (
@@ -69,11 +70,13 @@ const App = () => {
         <Route path='/postInternship' element={<PostInternship />} />
         <Route path='/company/:companyName' element={<CompanyPage />} />
         <Route path='/saved-jobs' element={<SavedJob/>} />
+        <Route path='/admin/dashboard' element={<AdminDashboard/>} />
         <Route path='/admin/jobs' element={<JobManagement/>} />
         <Route path='/admin/companies' element={<CompanyManagement/>} />
         <Route path='/admin/analytics' element={<Analytics/>} />
         <Route path='/admin/payments' element={<Payment/>} />
         <Route path='/admin/users' element={<UserManagement/>} />
+        <Route path='/admin/company' element={<CompanyManagement/>} />
         <Route path='/employer/dashboard' element={<Dashboard/>} />
         <Route path='/employer/companies' element={<CompanyProfile/>} />
         <Route path='/employer/companies/add' element={<AddCompany/>} />
