@@ -7,6 +7,7 @@ interface Job {
   company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
+  mode: string;
   salaryMin: number;
   salaryMax: number;
   updatedAt: string;
@@ -15,8 +16,8 @@ interface Job {
 }
 
 interface JobsContextType {
-  userData: Job[];
-  setUserData: (jobs: Job[]) => void;
+  jobData: Job[];
+  setJobData: (jobs: Job[]) => void;
   error: string;
   setError: (error: string) => void;
   loading: boolean;
@@ -33,7 +34,7 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
   const [error, setError]     = useState("");
   const [loading, setLoading] = useState(true);
     const [total, setTotal]     = useState(0);
-  const [userData, setUserData] = useState<Job[]>([]);
+  const [jobData, setJobData] = useState<Job[]>([]);
   const [currentJob, setCurrentJob] = useState<Job | null>(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
       setError("");
       try {
         const { data } = await axios.get("/api/jobs"); // ✅ fetches all active jobs
-        setUserData(data.jobs);
+        setJobData(data.jobs);
         setCurrentJob(data.jobs);
         setTotal(data.pagination.total);
       } catch (err) {
@@ -53,10 +54,10 @@ export const JobsProvider = ({ children }: { children: React.ReactNode }) => {
     };
     fetchJobs();
   }, []); // ✅ runs once on mount
-  console.log(userData)
+  console.log(jobData)
   // console.log(currentJob)
   return (
-    <JobsContext.Provider value={{ userData, setUserData, error, setError, loading, setLoading, total, setTotal, currentJob, setCurrentJob }}>
+    <JobsContext.Provider value={{ jobData, setJobData, error, setError, loading, setLoading, total, setTotal, currentJob, setCurrentJob }}>
       {children}
     </JobsContext.Provider>
   );

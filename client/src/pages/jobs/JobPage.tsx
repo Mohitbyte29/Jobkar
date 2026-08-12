@@ -26,8 +26,10 @@ interface Job {
   title: string;
   location: string;
   type: string;
+  requirements: string;
   category: string;
   tags: string[];
+  description: string;
   salaryMin: number;
   salaryMax: number;
   updatedAt: string;
@@ -44,6 +46,7 @@ const JobPage = () => {
   const [profile, setProfile] = useState<userDataProfile | null>(null)
   const [applicantProfile, setApplicantProfile] = useState<Applicant | null>(null);
   const [job, setJob] = useState<Job | null>(null);
+  const { jobData, setJobData } = useJobs();
     const userData = location.state;
     const {user, setUser} = useUser();
     const { jobId } = useParams();
@@ -183,52 +186,19 @@ const JobPage = () => {
           </h3>
           <div className="space-y-md text-on-surface-variant leading-relaxed">
             <p className="">
-              As a Senior Data Scientist at Insight AI, you will lead the
-              development of next-generation predictive models that drive
-              strategic decision-making for our global partners. You'll work at
-              the intersection of big data, deep learning, and business
-              intelligence to solve complex challenges in real-time.
-            </p>
-            <p className="">
-              We are looking for a visionary leader who can bridge the gap
-              between complex mathematical theory and practical business
-              application. You will be responsible for architecting the data
-              strategy that powers our core products, ensuring scalability and
-              accuracy at every step of the pipeline.
+             {job?.description}
             </p>
           </div>
           <div className="mt-lg">
             <h4 className="font-label-strong text-label-strong text-primary mb-sm uppercase tracking-wider">
-              What You'll Do
+              Requirements
             </h4>
             <ul className="space-y-sm font-body-md text-body-md text-on-surface-variant">
               <li className="flex items-start gap-xs">
                 <span className="material-symbols-outlined text-secondary text-[20px]">
                   check_circle
                 </span>
-                Design and implement robust ML pipelines in production
-                environments using state-of-the-art orchestration tools.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Mentor junior team members and establish best practices for data
-                engineering and model governance.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Collaborate with product leads to define data-driven product
-                roadmaps and identify new opportunities for AI integration.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Conduct rigorous A/B testing and statistical analysis to
-                validate model performance and business impact.
+                {job?.requirements}
               </li>
             </ul>
           </div>
@@ -239,22 +209,22 @@ const JobPage = () => {
             <div className="grid grid-cols-2 gap-sm">
               <div className="bg-surface-container-low p-sm rounded-xl">
                 <span className="font-label-strong block">Languages</span>
-                <span className="text-body-sm">Python, SQL, R</span>
+                <span className="text-body-sm">{job?.tags[0]}</span>
               </div>
               <div className="bg-surface-container-low p-sm rounded-xl">
                 <span className="font-label-strong block">Frameworks</span>
                 <span className="text-body-sm">
-                  PyTorch, TensorFlow, Scikit-learn
+                  {job?.tags[1]}
                 </span>
               </div>
               <div className="bg-surface-container-low p-sm rounded-xl">
                 <span className="font-label-strong block">Infrastructure</span>
-                <span className="text-body-sm">Kubernetes, Docker, AWS</span>
+                <span className="text-body-sm">{job?.tags[2]}</span>
               </div>
               <div className="bg-surface-container-low p-sm rounded-xl">
                 <span className="font-label-strong block">Modeling</span>
                 <span className="text-body-sm">
-                  NLP, Computer Vision, Data Modeling
+                  {job?.tags[3]}
                 </span>
               </div>
             </div>
@@ -302,7 +272,7 @@ const JobPage = () => {
               COMPENSATION
             </span>
             <span className="font-h2 text-h2 text-primary flex">
-              <IndianRupee width={15}/>{`${job?.salaryMin}k/1000`} - <IndianRupee width={15}/>{`${job?.salaryMax}k`}{" "}
+              <IndianRupee width={15}/>{`${job?.salaryMin/1000}k`} - <IndianRupee width={15}/>{`${job?.salaryMax/1000}k`}{" "}
               <small className="text-[1rem] font-normal text-on-surface-variant">
                 / year
               </small>
@@ -399,74 +369,35 @@ const JobPage = () => {
   <h3 className="font-h3 text-h3 text-primary mb-sm px-base">
     Latest Job Postings
   </h3>
-  <div className="space-y-sm">
+
+  {jobData.slice(0, 3).map((job) => (
+    <div key={job.id} className="space-y-sm">
     <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
       <div className="flex gap-sm mb-xs">
         <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
         <div>
           <h4 className="font-label-strong text-label-strong text-primary">
-            Senior Product Designer
+            {job.title}
           </h4>
-          <p className="text-body-sm text-secondary">Stripe</p>
+          <p className="text-body-sm text-secondary">{job.company.name}</p>
         </div>
       </div>
       <div className="flex justify-between items-center">
         <span className="text-body-sm text-on-surface-variant">
-          Remote • $140k - $180k
+          {job.mode} • {job.salaryMin/1000}k - ${job.salaryMax/1000}k
         </span>
-        <a
+        <Link
+          to={`/jobs/search/${job.id}`}
+          state={jobData}
           className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
         >
           View
-        </a>
-      </div>
-    </div>
-    <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
-      <div className="flex gap-sm mb-xs">
-        <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
-        <div>
-          <h4 className="font-label-strong text-label-strong text-primary">
-            Full Stack Developer
-          </h4>
-          <p className="text-body-sm text-secondary">Vercel</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-body-sm text-on-surface-variant">
-          Remote • $120k - $160k
-        </span>
-        <a
-          className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
-        >
-          View
-        </a>
-      </div>
-    </div>
-    <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
-      <div className="flex gap-sm mb-xs">
-        <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
-        <div>
-          <h4 className="font-label-strong text-label-strong text-primary">
-            Marketing Manager
-          </h4>
-          <p className="text-body-sm text-secondary">Airbnb</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-body-sm text-on-surface-variant">
-          SF • $130k - $175k
-        </span>
-        <a
-          className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
-        >
-          View
-        </a>
+        </Link>
       </div>
     </div>
   </div>
+  ))}
+  
 </aside>
 
   </div>

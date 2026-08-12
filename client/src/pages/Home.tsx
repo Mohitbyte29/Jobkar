@@ -20,7 +20,7 @@ interface Job {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { userData, total } = useJobs();
+  const { jobData, total } = useJobs();
   const heroRef = useRef<HTMLElement>(null);
   const categoriesRef = useRef<HTMLElement>(null);
   const jobsRef = useRef<HTMLElement>(null);
@@ -240,10 +240,10 @@ export default function Home() {
       ctx?.revert();
     };
   }, []);
-  const techCount = userData.filter((job) => job.category === "TECHNOLOGY_SOFTWARE").length;
-  const designCount = userData.filter((job) => job.category === "CREATIVE_MEDIA").length;
-  const marketingCount = userData.filter((job) => job.category === "MARKETING").length;
-  const financeCount = userData.filter((job) => job.category === "FINANCE").length;
+  const techCount = jobData.filter((job : Job) => job.category === "TECHNOLOGY_SOFTWARE").length;
+  const designCount = jobData.filter((job : Job) => job.category === "CREATIVE_MEDIA").length;
+  const marketingCount = jobData.filter((job : Job) => job.category === "MARKETING").length;
+  const financeCount = jobData.filter((job : Job) => job.category === "FINANCE").length;
   return (
     <>
       <Toaster position="top-center"/>
@@ -575,8 +575,8 @@ export default function Home() {
           </p>
         </div>
         <div className="space-y-4">
-          {userData && userData.length > 0 ? (
-            userData.slice(0, 3).map((job: any) => (
+          {jobData && jobData.length > 0 ? (
+            jobData.slice(0, 3).map((job: any) => (
               <div
                 key={job.id}
                 className="job-card bg-white p-6 rounded-xl border border-slate-100 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] hover:border-secondary hover:shadow-lg transition-all duration-300 group"

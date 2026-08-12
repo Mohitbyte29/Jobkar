@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useCompanySearch } from '../../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { IndianRupee } from "lucide-react";
 
 interface Company {
   name: string;
@@ -37,71 +39,16 @@ export default function Companies() {
   const gridRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLUListElement>(null);
   const locationResultsRef = useRef<HTMLUListElement>(null);
+  const [companies, setCompanies] = useState<Company[]>(companyData);
 
-  // Intro animation: hero text + search bar
-  useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-    tl.from(heroRef.current?.children ?? [], {
-      y: 24,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-    }).from(
-      searchBarRef.current,
-      {
-        y: 16,
-        opacity: 0,
-        duration: 0.5,
-      },
-      "-=0.3"
-    );
-
-    return () => {
-      tl.kill();
-    };
-  }, []);
-
-  // Stagger-in the company cards whenever the list updates
-  useEffect(() => {
-    if (!gridRef.current) return;
-    const cards = gridRef.current.querySelectorAll(".company-card");
-    if (!cards.length) return;
-
-    gsap.fromTo(
-      cards,
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        stagger: 0.06,
-        ease: "power2.out",
-      }
-    );
-  }, [companyData]);
-
-  // Pop-in animation for the search dropdown
-  useEffect(() => {
-    if (results.length > 0 && resultsRef.current) {
-      gsap.fromTo(
-        resultsRef.current,
-        { opacity: 0, y: -8, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "power2.out" }
-      );
+  interface Filters{
+      category: string[];
     }
-  }, [results]);
-
-  // // Pop-in animation for the location dropdown
-  useEffect(() => {
-    if (locationResults.length > 0 && locationResultsRef.current) {
-      gsap.fromTo(
-        locationResultsRef.current,
-        { opacity: 0, y: -8, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "power2.out" }
-      );
-    }
-  }, [locationResults]);
+    
+    const [filters, setFilters] = useState<Filters>({
+      category: [],
+    })
+  
 
   // Small helper for the button press/hover micro-interaction
  const handleSearchClick = () => {
@@ -122,21 +69,43 @@ export default function Companies() {
   if (!query.trim() && !location.trim()) {
     toast.error("Please enter either company name or location");
     return;
-  }
+  };
+}
+type filterName = keyof Filters;
+const handleFilterChange =  ( name: filterName, value: string ) => {
+    setFilters(prev => ({ 
+      ...prev,
+      [name]: prev[name].includes(value) ? prev[name].filter(item => item !== value) : [...prev[name], value]
+    }))
+  };
+  
 
-  // Animate the search bar out before navigating, for a smoother transition
-  gsap.to(searchBarRef.current, {
-    opacity: 0,
-    y: -8,
-    duration: 0.2,
-    ease: 'back',
-    onComplete: () => {
-      navigate(`/companies/search?${params.toString()}`);
-      setResults([]);
-      setLocationResults([]);
-    },
-  });
-};
+  const applyFilters = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        filters.category.forEach(category => {
+            params.append("category", category);
+        });
+         console.log("Filters:", filters);
+        console.log("Query:", params.toString());
+                const res = await axios.get(
+            `/api/jobs/company?${params.toString()}`,
+            {
+                withCredentials: true
+            }
+        );
+
+        console.log("Filtered jobs:", res.data);
+
+        setCompanies(res.data);
+
+         navigate(`/jobs/search?${params.toString()}`);
+
+    } catch (error) {
+        console.error(error);
+    }
+  };
 
   return (
     <>
@@ -249,9 +218,90 @@ export default function Companies() {
         <section className="max-w-7xl mx-auto px-6 py-xl">
           <div className="flex flex-col lg:flex-row gap-gutter">
             {/* Filters Sidebar (unchanged) */}
-            <aside className="w-full lg:w-64 flex-shrink-0 space-y-lg">
-              {/* ... your existing filter JSX stays exactly as-is ... */}
-            </aside>
+            <aside className="md:col-span-3 space-y-8">
+            <div>
+              <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
+              <button className="text-sm text-secondary hover:underline mb-4 block">
+                Clear All
+              </button>
+              <div className="space-y-4">
+                
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Category
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary "
+                        type="checkbox" onChange={() => handleFilterChange("category", "TECHNOLOGY_SOFTWARE")}
+                      />
+                      <span className="font-body-sm text-on-surface" >
+                        Software Engineering
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Design
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Marketing
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Healthcare
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Business Operations
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Finance
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Other
+                      </span>
+                    </label>
+                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-primary-container text-white cursor-pointer hover:opacity-90 mt-4">
+                      Apply Changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
 
             {/* Grid Section */}
             <div className="flex-1">
