@@ -31,21 +31,24 @@ export const usejobSearch = () => {
     const val = e.target.value;
     setQuery(val);
     setSelectedJob(null);
+    console.log(val)
     if (!val.trim()) {
       setResults([]);
       return;
     }
     try {
       const res = await axios.get(
-        `/api/jobs/search?q=${encodeURIComponent(val)}`,
+        `/api/jobs/search?q=${encodeURIComponent(val)}`, {
+          withCredentials: true,
+        }
       );
       setResults(res.data);
+      console.log(res.data)
     } catch (err) {
       console.error("Search failed:", err);
       setResults([]);
     }
   };
-
    const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const locationVal = e.target.value;
     setLocation(locationVal);

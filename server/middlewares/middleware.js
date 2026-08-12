@@ -7,9 +7,9 @@ export const isAuthenticated = (req, res, next) => {
     // if(!authHeader || !authHeader.startsWith('Bearer ')){
     //     return res.status(401).json({success: false, message: 'Unauthorized, JWT token is require'});
     // }
-    console.log(req.cookies);
+    // console.log(req.cookies);
     const token = req.cookies.accessToken;
-    console.log("Token: ", token);
+    // console.log("Token: ", token);
     if(!token){
         return res.status(401).json({success: false, message: 'Unauthorized, JWT token is required'});
     }

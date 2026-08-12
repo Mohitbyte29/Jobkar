@@ -44,13 +44,13 @@ const UserNav = () => {
         <i className="fas fa-calendar-check w-5" />
         <span className="text-sm font-medium">Jobs</span>
       </Link>
-      <a
+      <Link
         className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
+        to="/internships"
       >
         <i className="fas fa-comment-dots w-5" />
-        <span className="text-sm font-medium">Messages</span>
-      </a>
+        <span className="text-sm font-medium">Internships</span>
+      </Link>
       <Link
         className="flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-job-blue transition-colors"
         to="/profile"

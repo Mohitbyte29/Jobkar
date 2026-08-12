@@ -4,8 +4,8 @@ import { authenticateEmployer, authenticateJobSeeker, isAuthenticated } from "..
 
 const router = new Router();
 
-router.get('/api/jobs', getJobs);
 router.get('/api/jobs/search', jobSearch);
+router.get('/api/jobs', getJobs);
 router.post('/api/jobs', isAuthenticated, authenticateEmployer, createJob);
 router.get('/api/jobs/saved', isAuthenticated, authenticateJobSeeker, getSavedJobs);
 router.get('/api/jobs/:id', getJobById);

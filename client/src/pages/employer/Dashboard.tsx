@@ -1,5 +1,6 @@
 import EmployerNav from "@/components/EmployerNav"
 import { useJobs } from "@/context/JobsContext";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { userData, setUserData } = useJobs();
@@ -223,9 +224,9 @@ const Dashboard = () => {
                     >
                       post_add
                     </span>
-                    <span className="font-label-strong">
+                    <Link to="/postJob" className="font-label-strong">
                       Create Job Posting
-                    </span>
+                    </Link>
                   </div>
                   <span
                     className="material-symbols-outlined text-slate-500 group-hover:text-white transition-colors"
@@ -242,7 +243,9 @@ const Dashboard = () => {
                     >
                       person_search
                     </span>
-                    <span className="font-label-strong">Talent Search</span>
+                    <Link to="/postInternship" className="font-label-strong">
+                      Create Internship Posting
+                    </Link>
                   </div>
                   <span
                     className="material-symbols-outlined text-slate-500 group-hover:text-white transition-colors"

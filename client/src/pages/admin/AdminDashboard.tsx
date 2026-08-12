@@ -2,7 +2,6 @@ import AdminNav from '@/components/AdminNav'
 import { useCompany } from '@/context/CompanyContext';
 import { useInternships } from '@/context/InternshipsContext';
 import { useJobs } from '@/context/JobsContext';
-import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 

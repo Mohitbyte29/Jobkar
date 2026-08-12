@@ -1,13 +1,13 @@
 import { IndianRupee } from "lucide-react";
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import {useInternships} from "../../context/InternshipsContext.tsx";
 import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
 import { useNavigate } from "react-router-dom";
 import toTitleCase from '../../../utils/titleCase.tsx';
-import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
+import gsap from "gsap";
 
 interface Internship{
     id: number;
@@ -27,6 +27,8 @@ interface Internship{
     const [sortBy, setSortBy]   = useState<string>("recent");
     const navigate = useNavigate();
     const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedInternship, setSelectedInternship, selectedLocation, setSelectedLocation, canSearch} = useInternshipsearch();
+    const pageRef = useRef<HTMLElement>(null);
+    const hasAnimatedRef = useRef(false);
 
   const getSortedInternships = () => {
     const internships = [...internshipData];
@@ -38,17 +40,66 @@ interface Internship{
     return internships;
   };
   
+  useEffect(() => {
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (reduceMotion || !pageRef.current) return;
   
+      const context = gsap.context(() => {
+        const cards = gsap.utils.toArray<HTMLElement>(".internship-card");
+  
+        if (!hasAnimatedRef.current) {
+          const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
+  
+          timeline
+            .from(".internships-hero", { y: 16, opacity: 0, duration: 0.35 })
+            .from(".internships-search", { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
+            .from(
+              [".internships-sidebar", ".internships-toolbar"],
+              { y: 12, opacity: 0, duration: 0.3, stagger: 0.05 },
+              "-=0.12",
+            )
+            .from(
+              cards,
+              {
+                y: 12,
+                opacity: 0,
+                duration: 0.32,
+                stagger: 0.035,
+                clearProps: "transform,opacity",
+              },
+              "-=0.1",
+            );
+  
+          hasAnimatedRef.current = true;
+          return;
+        }
+  
+        gsap.from(cards, {
+          y: 8,
+          opacity: 0,
+          duration: 0.28,
+          stagger: 0.03,
+          ease: "power1.out",
+          clearProps: "transform,opacity",
+        });
+      }, pageRef);
+  
+      return () => context.revert();
+    }, [sortBy, internshipData.length]);
     return (
         <>
             <Toaster/>
             <Navbar/>
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
+            <main
+            ref={pageRef}
+             className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
   <section className="mb-12">
-    <h1 className="font-bold text-[48px] text-on-surface mb-8">
+    <h1 className="internships-hero font-bold text-[48px] text-on-surface mb-8">
       Find your next career move
     </h1>
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
+    <div className="internships-search bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
             <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
               <span
                 className="material-symbols-outlined text-outline mr-2"
@@ -178,10 +229,158 @@ interface Internship{
                 />
                 <span className="font-body-sm text-on-surface">Remote</span>
               </label>
+              <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Salary Range
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Under $50k
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        $50k - $100k
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        $100k - $150k
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        $150k+
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Work Mode
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        On-site
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Hybrid
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Remote
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Category
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Software Engineering
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Design
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Marketing
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Healthcare
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Business Operations
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Finance
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Other
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
             </div>
           </div>
         </div>
-      </div>
     </aside>
     {/* internship Feed */}
     <div className="md:col-span-9 space-y-md">
@@ -206,7 +405,7 @@ interface Internship{
         
         getSortedInternships().map((internship : Internship) => (
             <div key={internship.id}>
-              <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
+              <div className="internship-card bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] motion-reduce:hover:transform-none motion-reduce:transition-none transition-all duration-200 group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
                     <span
@@ -270,7 +469,7 @@ interface Internship{
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
+                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-red-600 hover:text-white transition-all active:scale-95">
                   Save internship
                 </button>
                 <button onClick={() => navigate(`/internships/search/${internship.id}`)} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
