@@ -39,18 +39,18 @@ interface Job {
 }
 
 export function Jobs() {
-  const { userData, total } = useJobs();
+  const { jobData, total } = useJobs();
   const [sortBy, setSortBy] = useState<string>("recent");
   const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
   interface Filters{
-    jobType: string[];
+    type: string[];
     category: string[];
     salaryRange: string[];
     mode: string[];
   }
   
   const [filters, setFilters] = useState<Filters>({
-    jobType: [],
+    type: [],
     category: [],
     salaryRange: [],
     mode: [],
@@ -89,8 +89,8 @@ export function Jobs() {
     try {
         const params = new URLSearchParams();
 
-        filters.jobType.forEach(type => {
-            params.append("jobType", type);
+        filters.type.forEach(type => {
+            params.append("type", type);
         });
 
         filters.category.forEach(category => {
@@ -132,7 +132,7 @@ export function Jobs() {
   };
 
   const getSortedJobs = () => {
-    const jobs = [...userData];
+    const jobs = [...jobData];
     if (sortBy === "recent") {
       return jobs.sort(
         (a, b) =>
@@ -229,7 +229,7 @@ export function Jobs() {
     }, pageRef);
 
     return () => context.revert();
-  }, [sortBy, userData.length]);
+  }, [sortBy, jobData.length]);
 
   return (
     <>
@@ -518,7 +518,7 @@ export function Jobs() {
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
@@ -529,7 +529,7 @@ export function Jobs() {
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
                         type="checkbox"
-                      />
+                      onChange={() => handleFilterChange("category", "MARKETING")} /> 
                       <span className="font-body-sm text-on-surface">
                         Marketing
                       </span>
@@ -537,7 +537,7 @@ export function Jobs() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Healthcare
@@ -546,7 +546,7 @@ export function Jobs() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Business Operations
@@ -555,6 +555,7 @@ export function Jobs() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        onChange={() => handleFilterChange("category", "FINANCE")}
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
@@ -564,7 +565,7 @@ export function Jobs() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "OTHER")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Other
@@ -600,7 +601,7 @@ export function Jobs() {
                 </select>
               </div>
             </div>
-            {userData.length > 0 &&
+            {jobData.length > 0 &&
               getSortedJobs().map((job: Job) => (
                 <div key={job.id}>
                   <div className="job-card will-change-transform bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] motion-reduce:hover:transform-none motion-reduce:transition-none transition-all duration-200 group">

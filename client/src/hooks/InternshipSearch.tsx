@@ -41,6 +41,9 @@ export const useInternshipsearch = () => {
       setResults(res.data);
     } catch (err) {
       console.error("Search failed:", err);
+      if(axios.isAxiosError(err) && err.response?.status === 404){
+        console.error(err.response.data);
+      }
       setResults([]);
     }
   };

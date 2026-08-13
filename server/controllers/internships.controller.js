@@ -2,49 +2,115 @@ import { internshipStatus, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const searchInternships = async(req, res) => {
-    try{
-            const q = (req.query.q || "").toLowerCase();
-            const location = (req.query.location || "").toLowerCase();
-            const category = (req.query.category || "").toLowerCase();
-            if(!q && !location && !category) return res.json([]);
-             const internships = await prisma.internship.findMany({
-          where: {
-            AND: [
-              q ? {
-                OR: [
-                  { title: { contains: q } }
-                ],
-              } : {},
-              location
-                ? { location: { contains: location } }
-                : {},
-                category
-                 ? { category: { contains: category } } 
-                 : {},
-            ],
+export const searchInternships = async (req, res) => {
+    console.log(req.query)
+  try {
+    const q = String(req.query.q || "").toLowerCase();
+    const location = String(req.query.location || "").toLowerCase();
+
+    const categories = Array.isArray(req.query.category)
+      ? req.query.category
+      : req.query.category
+        ? [req.query.category]
+        : [];
+
+    const types = Array.isArray(req.query.type)
+      ? req.query.type
+      : req.query.type
+        ? [req.query.type]
+        : [];
+
+    // Convert selected values to lowercase
+    const lowerCategories = categories.map((c) =>
+      String(c).toLowerCase()
+    );
+
+    const lowerTypes = types.map((t) =>
+      String(t).toLowerCase()
+    );
+
+    // If no filter/search exists
+    if (
+      !q &&
+      !location &&
+      lowerCategories.length === 0 &&
+      lowerTypes.length === 0
+    ) {
+      return res.json([]);
+    }
+
+    const internships = await prisma.internship.findMany({
+      select: {
+        id: true,
+        title: true,
+        companies: {
+          select: {
+            name: true,
+            description: true,
+            location: true,
+            website: true,
+            companyStatus: true,
+            logo: true,
           },
-          take: 15,
-        });
-            let results = internships;
-            if(q){
-                results = results.filter(internship => (internship.title?.toLowerCase().includes(q) || job.category?.toLowerCase().includes(q)));
-            }   
-            if(location){
-                results = results.filter(internship => (internship.location?.toLowerCase().includes(location)));
-            }
-            if(category){
-                results = results.filter(internship => (internship.category?.toLowerCase().includes(category)));
-            }
-            const uniqueResults = Array.from(new Map(results.map(j => [j.id, j])).values());
-            
-            res.json(uniqueResults);
-        }
-        catch(err){
-            console.log(err);
-            res.status(500).json({error: "Failed to search internships"});
-        }
-}
+        },
+        category: true,
+        location: true,
+        salaryMin: true,
+        salaryMax: true,
+        updatedAt: true,
+        type: true,
+        tags: true,
+      },
+    });
+
+    let results = internships;
+
+    // Search
+    if (q) {
+      results = results.filter((internship) =>
+        internship.title?.toLowerCase().includes(q) ||
+        internship.category?.toLowerCase().includes(q)
+      );
+    }
+
+    // Location
+    if (location) {
+      results = results.filter((internship) =>
+        internship.location?.toLowerCase().includes(location)
+      );
+    }
+
+    // Category
+    if (lowerCategories.length > 0) {
+      results = results.filter((internship) =>
+        lowerCategories.includes(internship.category?.toLowerCase())
+      );
+    }
+
+    // Internship type
+    if (lowerTypes.length > 0) {
+      results = results.filter((internship) =>
+        lowerTypes.includes(internship.type?.toLowerCase())
+      );
+    }
+
+    // Return maximum 15 results
+    results = results.slice(0, 15);
+
+    console.log("Search:", q);
+    console.log("Location:", location);
+    console.log("Results:", results.length);
+
+    return res.json(results);
+
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      error: "Failed to search internships",
+    });
+  }
+};
 
 export const getInternships = async(req, res) => {
     try{
@@ -209,10 +275,12 @@ export const deleteInternship = async(req, res) => {
         const internship = await prisma.internship.findUnique({
             where: {id: Number(req.params.id)}
         })
-        await prisma.internship.delete({where: {id: job.id}});
+        await prisma.internship.delete({where: {id: internship.id}});
         res.json({message: "Internship deleted successfully"});
     } catch (error){
         console.log(error);
         res.status(500).json({error: "Failed to delete internship"});
     }
 }
+
+    

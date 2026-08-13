@@ -29,6 +29,16 @@ interface Internship{
     const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedInternship, setSelectedInternship, selectedLocation, setSelectedLocation, canSearch} = useInternshipsearch();
     const pageRef = useRef<HTMLElement>(null);
     const hasAnimatedRef = useRef(false);
+    interface Filters{
+    type: string[];
+    category: string[];
+    salaryRange: string[];
+  }
+    const [filters, setFilters] = useState<Filters>({
+      type: [],
+      category: [],
+      salaryRange: []
+    });
 
   const getSortedInternships = () => {
     const internships = [...internshipData];
@@ -39,6 +49,38 @@ interface Internship{
     }
     return internships;
   };
+
+  type filterName = keyof Filters;
+   const handleFilterChange =  ( name: filterName, value: string ) => {
+    setFilters(prev => ({ 
+      ...prev,
+      [name]: prev[name].includes(value) ? prev[name].filter(item => item !== value) : [...prev[name], value]
+    }))
+  };
+  
+  const applyFilters = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        filters.type.forEach(type => {
+            params.append("type", type);
+        });
+
+        filters.category.forEach(category => {
+            params.append("category", category);
+        });
+
+        filters.salaryRange.forEach(range => {
+            params.append("salaryRange", range);
+        });
+         console.log("Filters: ", filters);
+        console.log("Query: ", params.toString());
+        navigate(`/internships/search?${params.toString()}`);
+
+    } catch (error) {
+        console.error(error);
+    }
+};
   
   useEffect(() => {
       const reduceMotion = window.matchMedia(
@@ -48,7 +90,7 @@ interface Internship{
   
       const context = gsap.context(() => {
         const cards = gsap.utils.toArray<HTMLElement>(".internship-card");
-  
+        
         if (!hasAnimatedRef.current) {
           const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
   
@@ -156,7 +198,7 @@ interface Internship{
                       setResults([]);
                       setLocationResults([]);
                     } else {
-                      toast.error("Please enter either job title or location");
+                      toast.error("Please enter either internship title or location");
                     }
                   }}
                 >
@@ -199,37 +241,58 @@ interface Internship{
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
     <aside className="md:col-span-3 space-y-8">
-      <div>
-        <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
-        <div className="space-y-4">
-          <div>
-            <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
-              internship Type
-            </span>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  defaultChecked={true}
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Full-time</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Contract</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Remote</span>
-              </label>
-              <div>
+            <div>
+              <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
+              <button className="text-sm text-secondary hover:underline mb-4 block">
+                Clear All
+              </button>
+              <div className="space-y-4">
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
+                    Job Type
+                  </span> 
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        defaultChecked={true}
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Full-time
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Part-time
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Contract
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Remote
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
                   <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
                     Salary Range
                   </span>
@@ -239,8 +302,11 @@ interface Internship{
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
-                        Under $50k
+                      <span className="font-body-sm text-on-surface flex items-center gap-1">
+                        Under 
+                      <span className="flex items-center">
+                        <IndianRupee size={16} />500k
+                      </span>
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
@@ -249,7 +315,9 @@ interface Internship{
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
-                        $50k - $100k
+                        <span className="flex items-center gap-1">
+                        <IndianRupee size={16} />500k - <IndianRupee size={16} />1000k
+                        </span>
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
@@ -258,7 +326,9 @@ interface Internship{
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
-                        $100k - $150k
+                        <span className="flex items-center ">
+                          <IndianRupee size={16} />1000k - <IndianRupee size={16} />1500k
+                        </span>
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
@@ -267,7 +337,9 @@ interface Internship{
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
-                        $150k+
+                        <span className="flex items-center">
+                          <IndianRupee size={16} />1500k+
+                        </span>
                       </span>
                     </label>
                   </div>
@@ -313,16 +385,16 @@ interface Internship{
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary "
+                        type="checkbox" onChange={() => handleFilterChange("category", "TECHNOLOGY_SOFTWARE")}
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-on-surface" >
                         Software Engineering
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
@@ -333,7 +405,7 @@ interface Internship{
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
                         type="checkbox"
-                      />
+                      onChange={() => handleFilterChange("category", "MARKETING")} /> 
                       <span className="font-body-sm text-on-surface">
                         Marketing
                       </span>
@@ -341,7 +413,7 @@ interface Internship{
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Healthcare
@@ -350,7 +422,7 @@ interface Internship{
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Business Operations
@@ -359,6 +431,7 @@ interface Internship{
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        onChange={() => handleFilterChange("category", "FINANCE")}
                         type="checkbox"
                       />
                       <span className="font-body-sm text-on-surface">
@@ -368,20 +441,20 @@ interface Internship{
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "OTHER")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Other
                       </span>
                     </label>
+                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-primary-container text-white cursor-pointer hover:opacity-90 mt-4">
+                      Apply Changes
+                    </button>
                   </div>
                 </div>
               </div>
-              
             </div>
-          </div>
-        </div>
-    </aside>
+          </aside>
     {/* internship Feed */}
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">

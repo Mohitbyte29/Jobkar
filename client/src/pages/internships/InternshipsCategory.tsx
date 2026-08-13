@@ -7,11 +7,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import toTitleCase from '../../../utils/titleCase.tsx';
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
 
 interface Internship{
     id: number;
   title: string;
-  company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
+  companies: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
   salaryMin: number;
@@ -23,77 +24,64 @@ interface Internship{
   
   export function InternshipsCategory(){
     const [searchParams] = useSearchParams();
-    const { userData, total } = useInternships();
-    const [sortBy, setSortBy]   = useState<string>("recent");
+    const { internshipData, total } = useInternships();
+    interface Filters {
+        type: string[];
+        category: string[];
+        salaryRange: string[];
+    }
+    const [filters, setFilters] = useState<Filters>({
+        type: [],
+        category: [],
+        salaryRange: [],
+    });
+    const [sortBy, setSortBy] = useState<string>("recent");
     const navigate = useNavigate();
 
     const searchTitle = searchParams.get("q") || "";
     const searchLocation = searchParams.get("location") || "";
     const searchCategory = searchParams.get("category") || "";
 
-    const [query, setQuery] = useState<string>("");
-          const [results, setResults] = useState<Internship[]>([]);
-          const [locationResults, setLocationResults] = useState<Internship[]>([]);
-          const [location, setLocation] = useState<string>("");
-          const [category, setCategory] = useState<string>("");
-          const [categoryResults, setCategoryResults] = useState<Internship[]>([]);
-          
-          const filteredInternships = userData.filter((internship) => {
+    const {
+      handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedInternship, setSelectedInternship, selectedLocation, setSelectedLocation, canSearch
+  } = useInternshipsearch();
+          const filteredInternships = internshipData.filter((internship) => {
             return (
               internship.title?.toLowerCase().includes(searchTitle.toLowerCase()) && internship.location?.toLowerCase().includes(searchLocation.toLowerCase()) && internship.category?.toLowerCase().includes(searchCategory.toLowerCase()) && internship.salaryMin !== null && internship.salaryMax !== null
             );
           })
           const count = filteredInternships.length;
-        
-    const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setQuery(val);
-        if (!val.trim()) {
-          setResults([]);
-          return;
-        }
-    
-        try {
-          const res = await axios.get(`/api/internships/search?q=${encodeURIComponent(val)}`);
-          setResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setResults([]);
-        }
-      };
-    
-      const handleLocationChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const locationVal = e.target.value;
-        setLocation(locationVal);
-        if (!locationVal.trim()) {
-          setLocationResults([]);
-          return;
-        }
-    
-        try {
-          const res = await axios.get(`/api/internships/search?location=${encodeURIComponent(locationVal)}`);
-          setLocationResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setLocationResults([]);
-        }
-      };
-    
-      const handleCategoryChange = async(e: ChangeEvent<HTMLInputElement>) => {
-        const categoryVal = e.target.value;
-        setCategory(categoryVal);
-        if(!categoryVal.trim()){
-          setCategoryResults([]);
-          return;
-        }
-        try {
-          const res = await  axios.get(`/api/internships/search?category=${encodeURIComponent(categoryVal)}`);
-          setCategoryResults(res.data);
-        } catch (err) {
-          console.error("Search failed:", err); 
-          setCategoryResults([]);
-        }
-      }
+          type filterName = keyof Filters;
+   const handleFilterChange =  ( name: filterName, value: string ) => {
+    setFilters(prev => ({ 
+      ...prev,
+      [name]: prev[name].includes(value) ? prev[name].filter(item => item !== value) : [...prev[name], value]
+    }))
+  };
+      const applyFilters = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        filters.type.forEach(type => {
+            params.append("type", type);
+        });
+
+        filters.category.forEach(category => {
+            params.append("category", category);
+        });
+
+        filters.salaryRange.forEach(range => {
+            params.append("salaryRange", range);
+        });
+
+         console.log("Filters: ", filters);
+        console.log("Query: ", params.toString());
+        navigate(`/internships/search?${params.toString()}`);
+
+    } catch (error) {
+        console.error(error);
+    }
+};
 
     return (
         <>
@@ -114,7 +102,7 @@ interface Internship{
               </span>
               <input
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
-                placeholder="internship Title or Keywords..."
+                placeholder="internship Title or Keywords..." onChange={handleChange}
                 type="text"
               />
             </div>
@@ -129,33 +117,41 @@ interface Internship{
                 className="w-full border-none focus:ring-0 font-body-md bg-transparent"
                 placeholder="City or remote"
                 type="text"
+                onChange={handleLocationChange}
               />
             </div>
-            <button
+            
+      <button
             className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
               query.trim() || location.trim()
                 ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
                 : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
             }`}
             onClick={() => {
-              if(query.trim() && location.trim()){
-                window.location.href = `/internships/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if (query.trim()) {
-                window.location.href = `/internships/search?q=${encodeURIComponent(query)}}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-              else if(location.trim()){
-                window.location.href = `/internships/search?location=${encodeURIComponent(location)}`;
-                setResults([]);
-                setLocationResults([]);
-              }
-               else {
-                toast.error('Please enter either job title or location');
-              }
+              if (!selectedInternship && query.trim()) {
+                      toast.error("Please enter an internship");
+                      return;
+                    }
+
+                    if (!selectedLocation && location.trim()) {
+                      toast.error("Please enter a valid location");
+                      return;
+                    }
+                    if (query.trim() && location.trim()) {
+                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (query.trim()) {
+                      window.location.href = `/internships/search?c=${encodeURIComponent(query)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (location.trim()) {
+                      window.location.href = `/internships/search?location=${encodeURIComponent(location)}`;
+                      setResults([]);
+                      setLocationResults([]);
+                    } else {
+                      toast.error("Please enter either internship title or location");
+                    }
             }}>
                         Search 
                     </button>
@@ -193,41 +189,220 @@ interface Internship{
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
     <aside className="md:col-span-3 space-y-8">
-      <div>
-        <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
-        <div className="space-y-4">
-          <div>
-            <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
-              Internship Type
-            </span>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  defaultChecked={true}
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Full-time</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Contract</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                  type="checkbox"
-                />
-                <span className="font-body-sm text-on-surface">Remote</span>
-              </label>
+            <div>
+              <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
+              <button className="text-sm text-secondary hover:underline mb-4 block">
+                Clear All
+              </button>
+              <div className="space-y-4">
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
+                    Job Type
+                  </span> 
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        defaultChecked={true}
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Full-time
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Part-time
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Contract
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Remote
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Salary Range
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface flex items-center gap-1">
+                        Under 
+                      <span className="flex items-center">
+                        <IndianRupee size={16} />500k
+                      </span>
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        <span className="flex items-center gap-1">
+                        <IndianRupee size={16} />500k - <IndianRupee size={16} />1000k
+                        </span>
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        <span className="flex items-center ">
+                          <IndianRupee size={16} />1000k - <IndianRupee size={16} />1500k
+                        </span>
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        <span className="flex items-center">
+                          <IndianRupee size={16} />1500k+
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Work Mode
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        On-site
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Hybrid
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Remote
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Category
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary "
+                        type="checkbox" onChange={() => handleFilterChange("category", "TECHNOLOGY_SOFTWARE")}
+                      />
+                      <span className="font-body-sm text-on-surface" >
+                        Software Engineering
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Design
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      onChange={() => handleFilterChange("category", "MARKETING")} /> 
+                      <span className="font-body-sm text-on-surface">
+                        Marketing
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Healthcare
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Business Operations
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        onChange={() => handleFilterChange("category", "FINANCE")}
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Finance
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "OTHER")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Other
+                      </span>
+                    </label>
+                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-primary-container text-white cursor-pointer hover:opacity-90 mt-4">
+                      Apply Changes
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </aside>
+          </aside>
     {/* internship Feed */}
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
@@ -248,7 +423,7 @@ interface Internship{
         </div>
       </div>
       {filteredInternships.length > 0 && (
-        filteredInternships.map((internship : Internship) => (
+        filteredInternships.map((internship) => (
             <div key={internship.id}>
               <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
@@ -267,7 +442,7 @@ interface Internship{
                   {internship.title}
                 </h3>
                 <p className="font-body-md text-on-surface-variant mt-1">
-                  {internship.company.name} • {internship.location} 
+                  {internship.companies.name} • {internship.location} 
                 </p>
               </div>
               <button className="text-outline hover:text-error transition-colors">
