@@ -9,8 +9,10 @@ import { useCompanySearch } from '../../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { IndianRupee } from "lucide-react";
+import AlphaCase  from "../../../utils/AlphaCase";
 
 interface Company {
+  id: number;
   name: string;
   logo: string;
   category: string;
@@ -20,7 +22,8 @@ interface Company {
   createdAt: string;
   updatedAt: string;
   companyStatus: string;
-  jobs: { title: string };
+  jobs: { title: string};
+  _count: { jobs: number };
 }
 
 export default function Companies() {
@@ -90,23 +93,23 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
          console.log("Filters:", filters);
         console.log("Query:", params.toString());
                 const res = await axios.get(
-            `/api/jobs/company?${params.toString()}`,
+            `/api/companies/search?${params.toString()}`,
             {
                 withCredentials: true
             }
         );
 
-        console.log("Filtered jobs:", res.data);
+        console.log("Filtered companies:", res.data);
 
         setCompanies(res.data);
 
-         navigate(`/jobs/search?${params.toString()}`);
+         navigate(`/companies/search?${params.toString()}`);
 
     } catch (error) {
         console.error(error);
     }
   };
-
+  console.log(AlphaCase("TECHNOLOGY_SOFTWARE"))
   return (
     <>
       <Toaster />
@@ -243,7 +246,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Design
@@ -252,7 +255,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "MARKETING")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Marketing
@@ -261,7 +264,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Healthcare
@@ -270,7 +273,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Business Operations
@@ -279,7 +282,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "FINANCE")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Finance
@@ -288,7 +291,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         className="rounded border-outline-variant text-secondary focus:ring-secondary"
-                        type="checkbox"
+                        type="checkbox" onChange={() => handleFilterChange("category", "OTHER")}
                       />
                       <span className="font-body-sm text-on-surface">
                         Other
@@ -325,7 +328,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
               <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {companyData.map((company: Company) => (
                   <div
-                    key={company.name}
+                    key={company.id}
                     className="company-card bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group"
                     onMouseEnter={(e) =>
                       gsap.to(e.currentTarget, { y: -4, duration: 0.25, ease: "power2.out" })
@@ -344,18 +347,17 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                           src={company.logo}
                         />
                       </div>
-                      <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                        Fintech
+                      <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps tracking-wider">
+                        {AlphaCase(company.category)}
                       </span>
                     </div>
                     <h3 className="font-h3 text-h3 text-primary mb-xs">{company.name}</h3>
                     <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">
-                      Financial infrastructure for the internet. Millions of
-                      businesses of all sizes use Stripe's software and APIs.
+                      {company.description}
                     </p>
                     <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
                       <span className="font-label-strong text-label-strong text-secondary">
-                        42 Open Roles
+                        {company._count.jobs} Open Roles
                       </span>
                       <div
                         onClick={() => navigate(`/company/${company.name}`, { state: company })}

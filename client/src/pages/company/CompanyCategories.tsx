@@ -6,8 +6,10 @@ import { useCompanySearch } from '../../hooks/CompSearch';
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AlphaCase from "../../../utils/AlphaCase";
 
 interface Company {
+  id: number;
   name: string;
     logo: string;
     category: string;
@@ -18,6 +20,7 @@ interface Company {
     updatedAt: string;
     companyStatus: string;
     jobs: { title: string};
+    _count: {jobs: number};
 }
 
 export default function CompanyCategories() {
@@ -27,7 +30,7 @@ export default function CompanyCategories() {
   
   const searchName = searchParams.get("c") || "";
   const searchLocation = searchParams.get("location") || "";
-  const searchCategory = searchParams.get("category") || "";
+  const searchCategory = searchParams.getAll("category") || "";
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -37,7 +40,11 @@ export default function CompanyCategories() {
 
         if (searchName) params.set("c", searchName);
         if (searchLocation) params.set("location", searchLocation);
-        if (searchCategory) params.set("category", searchCategory);
+        if (searchCategory) {
+          searchCategory.forEach((category) => {
+            params.append("category", category);
+          });
+        }
 
         const response = await axios.get(`/api/companies/search?${params.toString()}`);
         setCompanies(response.data);
@@ -52,15 +59,85 @@ export default function CompanyCategories() {
     
     fetchCompanies();
   }, [searchName, searchLocation, searchCategory]);
+
+  interface Filters{
+        category: string[];
+      }
+      
+      const [filters, setFilters] = useState<Filters>({
+        category: [],
+      })
+    
+  
+    // Small helper for the button press/hover micro-interaction
+   const handleSearchClick = () => {
+    if (!selectedCompany && query.trim()) {
+      toast.error("Please enter a company name or industry");
+      return;
+    }
+  
+    if (!selectedLocation && location.trim()) {
+      toast.error("Please enter a valid location");
+      return;
+    }
+  
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("c", query);
+    if (location.trim()) params.set("location", location);
+  
+    if (!query.trim() && !location.trim()) {
+      toast.error("Please enter either company name or location");
+      return;
+    };
+  }
+  type filterName = keyof Filters;
+  const handleFilterChange =  ( name: filterName, value: string ) => {
+      setFilters(prev => ({ 
+        ...prev,
+        [name]: prev[name].includes(value) ? prev[name].filter(item => item !== value) : [...prev[name], value]
+      }))
+    };
+    
+  
+    const applyFilters = async () => {
+      try {
+          const params = new URLSearchParams();
+  
+          filters.category.forEach(category => {
+              params.append("category", category);
+          });
+           console.log("Filters:", filters);
+          console.log("Query:", params.toString());
+                  const res = await axios.get(
+              `/api/companies/search?${params.toString()}`,
+              {
+                  withCredentials: true
+              }
+          );
+  
+          console.log("Filtered companies:", res.data);
+  
+          setCompanies(res.data);
+  
+           navigate(`/companies/search?${params.toString()}`);
+  
+      } catch (error) {
+          console.error(error);
+          if(axios.isAxiosError(error)) {
+              console.error(error.response?.data);
+          }
+      }
+    };
   
   const filteredCompanies = companies.filter((company: Company) => {
     return (
       company.name?.toLowerCase().includes(searchName?.toLowerCase() || "") &&
       company.location?.toLowerCase().includes(searchLocation?.toLowerCase() || "") &&
-      company.category?.toLowerCase().includes(searchCategory?.toLowerCase() || "") &&
+      searchCategory.some((cat) => company.category?.includes(cat)) &&
       company.companyStatus === "ACTIVE"
     )
   });
+
   console.log(filteredCompanies.map((company: Company) => company.name));
   const companyCount = filteredCompanies.length;
   const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedCompany, setSelectedCompany, selectedLocation, setSelectedLocation, canSearch} = useCompanySearch();
@@ -184,238 +261,90 @@ export default function CompanyCategories() {
         <section className="max-w-7xl mx-auto px-6 py-xl">
           <div className="flex flex-col lg:flex-row gap-gutter">
             {/* Filters Sidebar */}
-            <aside className="w-full lg:w-64 flex-shrink-0 space-y-lg">
-              <div>
-                <h4 className="font-label-strong text-label-strong text-primary mb-sm">
-                  Industry
-                </h4>
-                <div className="space-y-xs">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      defaultChecked={true}
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Tech &amp; Software
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Finance
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Healthcare
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Design
-                    </span>
-                  </label>
+            <aside className="md:col-span-3 space-y-8">
+            <div>
+              <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
+              <button className="text-sm text-secondary hover:underline mb-4 block">
+                Clear All
+              </button>
+              <div className="space-y-4">
+                
+                <div>
+                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                    Category
+                  </span>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary "
+                        type="checkbox" onChange={() => handleFilterChange("category", "TECHNOLOGY_SOFTWARE")}
+                      />
+                      <span className="font-body-sm text-on-surface" >
+                        Software Engineering
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "CREATIVE_DESIGN")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Design
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "MARKETING")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Marketing
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Healthcare
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Business Operations
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox" onChange={() => handleFilterChange("category", "FINANCE")}
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Finance
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        type="checkbox"
+                      />
+                      <span className="font-body-sm text-on-surface">
+                        Other
+                      </span>
+                    </label>
+                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-primary-container text-white cursor-pointer hover:opacity-90 mt-4">
+                      Apply Changes
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div>
-                <h4 className="font-label-strong text-label-strong text-primary mb-sm">
-                  Job Role
-                </h4>
-                <div className="space-y-xs">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Engineering
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Design
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Marketing
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Sales
-                    </span>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-label-strong text-label-strong text-primary mb-sm">
-                  Job Type
-                </h4>
-                <div className="space-y-xs">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Full-time
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Part-time
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Internship
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="rounded border-outline-variant text-secondary focus:ring-secondary/20"
-                      type="checkbox"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      Contract
-                    </span>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-label-strong text-label-strong text-primary mb-sm">
-                  Company Size
-                </h4>
-                <div className="space-y-xs">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="size"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      1-50 employees
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="size"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      51-200 employees
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      defaultChecked={true}
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="size"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      201-1000 employees
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="size"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      1000+ employees
-                    </span>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-label-strong text-label-strong text-primary mb-sm">
-                  Salary Range
-                </h4>
-                <div className="space-y-xs">
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="salary"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      $50k - $80k
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="salary"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      $80k - $120k
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="salary"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      $120k - $160k
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer group">
-                    <input
-                      className="border-outline-variant text-secondary focus:ring-secondary/20"
-                      name="salary"
-                      type="radio"
-                    />
-                    <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">
-                      $160k+
-                    </span>
-                  </label>
-                </div>
-              </div>
-              <div className="pt-sm border-t border-slate-200">
-                <button className="text-secondary font-label-strong text-label-strong hover:underline flex items-center">
-                  Clear all filters
-                </button>
-              </div>
-            </aside>
+            </div>
+          </aside>
             {/* Grid Section */}
             <div className="flex-1">
               <div className="flex justify-between items-center mb-md">
@@ -439,7 +368,7 @@ export default function CompanyCategories() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 {/* Stripe Card */}
                     {filteredCompanies.map((company : Company) => (
-                      <div key={company.name} className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
+                      <div key={company.id} className="bg-white p-6 rounded-xl company-card-shadow border border-slate-100 flex flex-col hover:border-secondary transition-colors group">
                   {company.name}
                   <div className="flex items-start justify-between mb-sm">
 
@@ -451,8 +380,8 @@ export default function CompanyCategories() {
                         src={company.logo}
                       />
                     </div>
-                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase tracking-wider">
-                      Fintech
+                    <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps tracking-wider">
+                      {AlphaCase(company.category)}
                     </span>
                   </div>
                   <h3 className="font-h3 text-h3 text-primary mb-xs">{company.name}</h3>
@@ -462,7 +391,7 @@ export default function CompanyCategories() {
                   </p>
                   <div className="mt-auto pt-md flex items-center justify-between border-t border-slate-50">
                     <span className="font-label-strong text-label-strong text-secondary">
-                      42 Open Roles
+                      {company._count.jobs} Open Roles
                     </span>
                     <div onClick={() => navigate(`/company/${company.name}`, { state : company })} className="text-primary font-label-strong text-label-strong border cursor-pointer border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
                       View Profile

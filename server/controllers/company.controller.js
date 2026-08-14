@@ -5,22 +5,35 @@ const prisma = new PrismaClient();
 
 export const searchCompanies = async (req, res) => {
   try {
+    console.log(req.query);
     const c = (req.query.c || "").toLowerCase();
     const location = (req.query.location || "").toLowerCase();
-    const category = (req.query.category || "").toLowerCase();
-    if (!c && !location && !category) return res.json([]);
+const category = Array.isArray(req.query.category)
+  ? req.query.category
+  : req.query.category
+    ? [req.query.category]
+    : [];
+        if (!c && !location && category.length === 0) {
+      return res.json([]);
+    }
     const companies = await prisma.company.findMany({
-      where: {
-        AND: [
-          c
+        where: {
+          AND: [
+            c
+              ? {
+                  OR: [{ name: { contains: c } }],
+                }
+              : {},
+            location ? { location: { contains: location } } : {},
+            category.length > 0 
             ? {
-                OR: [{ name: { contains: c } }],
-              }
+              category: {
+                in: category,
+              },
+            }
             : {},
-          location ? { location: { contains: location } } : {},
-          category ? { category: { contains: category } } : {},
-        ],
-      },
+          ],
+        },
       take: 15,
       select: {
         id: true,
@@ -48,11 +61,7 @@ export const searchCompanies = async (req, res) => {
         companies.location?.toLowerCase().includes(location),
       );
     }
-    if (category) {
-      results = results.filter((companies) =>
-        companies.category?.toLowerCase().includes(category),
-      );
-    }
+    
     const uniqueResults = Array.from(
       new Map(results.map((j) => [j.id, j])).values(),
     );
@@ -60,7 +69,7 @@ export const searchCompanies = async (req, res) => {
     res.json(uniqueResults);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to search companies" });
+    res.status(500).json({ error: "Failed to search companies" , message: err.message });
   }
 };
 
