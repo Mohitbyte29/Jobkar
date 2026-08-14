@@ -1,10 +1,41 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import { Link, useLocation } from "react-router-dom";
+import { useJobs } from "@/context/JobsContext";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import AlphaCase from "../../../utils/AlphaCase";
+import { useCompany } from "@/context/CompanyContext";
+
+interface Company {
+  id: number;
+  name: string;
+  logo: string;
+  category: string;
+  description: string;
+  website: string;
+  location: string;
+  createdAt: string;
+  updatedAt: string;
+  companyStatus: string;
+  jobs: { title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
+  _count: { jobs: number };
+}
+
+interface Job {
+  id: number;
+  title: string;
+  tags: string[];
+  location: string;
+  type: string;
+  salaryMin: number;
+  salaryMax: number;
+}
 
 const CompanyPage = () => {
-    const address = useLocation();
-    const company = address.state;
+    const location = useLocation();
+    const company = location.state;
+    const {companyData} = useCompany();
+    const navigate = useNavigate();
+    console.log(company)
   return (
     <>
       <div>
@@ -22,7 +53,7 @@ const CompanyPage = () => {
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqBgyjyvHtxw_Hs_gqwibBG07gIEQfVY6iasCnhwEmBt6HaLX3FirjMfvt199yvtoQXpYic9uxgg_R8AjQN_vQkhp3M79SNyjLh9Ao-kCGzslGnr1-VU1tk6VxkwjFfU8ugKHrfr_CjSCWlFlmrlLHUva2svd1ymyVBIZsmoujEQTuP6gmTCQJkeWYDy_RULXZv2eD0JImYWf0tzZHlOOOLUuJwC6hSYZTEh7o4FUoqTpQj0U4CVXkIfSlymrOLO0gQx6PBA_5bXs"
       />
     </div>
-    <div className="relative -mt-20 px-md z-20 flex flex-col md:flex-row items-end justify-between gap-md">
+    <div className="relative -mt-15 px-md z-20 flex flex-col md:flex-row items-end justify-between gap-md">
       <div className="flex items-end gap-md">
         <div className="w-32 h-32 md:w-40 md:h-40 bg-white rounded-xl shadow-lg p-base flex items-center justify-center border-4 border-surface-container-lowest">
           <img
@@ -31,9 +62,9 @@ const CompanyPage = () => {
             src={company?.logo}
           />
         </div>
-        <div className="mb-2">
+        <div className="mt-4">
           <div className="flex items-center gap-xs">
-            <h1 className="font-display text-[2rem] text-white md:text-on-surface font-bold">
+            <h1 className="text-amber-800 text-[2rem] font-bold">
               {company?.name}
             </h1>
             <span
@@ -44,7 +75,7 @@ const CompanyPage = () => {
             </span>
           </div>
           <p className="text-body-lg text-white/90 md:text-on-surface-variant">
-            Software Company
+            {AlphaCase(company?.category)} Company
           </p>
           <div className="flex items-center gap-sm mt-xs">
             <span className="flex items-center gap-base text-white md:text-on-surface-variant text-body-sm">
@@ -273,7 +304,7 @@ const CompanyPage = () => {
       {/* Open Jobs */}
       <section className="bg-surface-container-lowest p-md rounded-xl card-shadow">
         <div className="flex items-center justify-between mb-md">
-          <h2 className="font-h2 text-h2">Active Job Openings (5)</h2>
+          <h2 className="font-h2 text-h2">Active Job Openings ({company?._count.jobs})</h2>
           <a
             className="text-secondary font-label-strong hover:underline"
             href="#"
@@ -283,8 +314,10 @@ const CompanyPage = () => {
         </div>
         <div className="space-y-md">
           {/* Job Item 1 */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between p-md border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors group">
-            <div className="flex gap-md">
+          {company?.jobs.map((job: Job) => {
+            return (
+              <div key={job.id} className="flex flex-col md:flex-row md:items-center justify-between p-md border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors group">
+              <div className="flex gap-md">
               <div className="w-12 h-12 bg-primary-fixed/50 rounded-lg flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-primary">
                   code
@@ -292,116 +325,39 @@ const CompanyPage = () => {
               </div>
               <div>
                 <h3 className="font-h3 text-h3 group-hover:text-secondary transition-colors">
-                  Frontend Developer
+                  {job.title}
                 </h3>
                 <p className="text-body-sm text-on-surface-variant mb-xs">
-                  React, JavaScript, Tailwind CSS
+                  {job.tags.join(", ")}
                 </p>
                 <div className="flex items-center gap-sm text-body-sm text-on-surface-variant">
                   <span className="flex items-center gap-base">
                     <span className="material-symbols-outlined text-[16px]">
                       location_on
                     </span>{" "}
-                    Bangalore, India
+                    {job.location}
                   </span>
                   <span className="flex items-center gap-base">
                     <span className="material-symbols-outlined text-[16px]">
                       work
                     </span>{" "}
-                    Full-time
+                    {AlphaCase(job.type)}
                   </span>
                 </div>
               </div>
             </div>
             <div className="mt-md md:mt-0 flex items-center justify-between md:justify-end gap-lg">
               <span className="text-secondary font-bold font-h3">
-                ₹10 - 20 LPA
+                ₹{job.salaryMin/100000} - ₹{job.salaryMax/100000} LPA
               </span>
               <button className="bg-[#4285F4] text-white px-md py-2 rounded-lg font-label-strong hover:opacity-90">
                 Apply Now
               </button>
             </div>
           </div>
-          {/* Job Item 2 */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between p-md border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors group">
-            <div className="flex gap-md">
-              <div className="w-12 h-12 bg-secondary-container/50 rounded-lg flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-secondary">
-                  dns
-                </span>
-              </div>
-              <div>
-                <h3 className="font-h3 text-h3 group-hover:text-secondary transition-colors">
-                  Backend Developer
-                </h3>
-                <p className="text-body-sm text-on-surface-variant mb-xs">
-                  Node.js, Express, MongoDB
-                </p>
-                <div className="flex items-center gap-sm text-body-sm text-on-surface-variant">
-                  <span className="flex items-center gap-base">
-                    <span className="material-symbols-outlined text-[16px]">
-                      location_on
-                    </span>{" "}
-                    Bangalore, India
-                  </span>
-                  <span className="flex items-center gap-base">
-                    <span className="material-symbols-outlined text-[16px]">
-                      work
-                    </span>{" "}
-                    Full-time
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-md md:mt-0 flex items-center justify-between md:justify-end gap-lg">
-              <span className="text-secondary font-bold font-h3">
-                ₹15 - 25 LPA
-              </span>
-              <button className="bg-[#4285F4] text-white px-md py-2 rounded-lg font-label-strong hover:opacity-90">
-                Apply Now
-              </button>
-            </div>
-          </div>
-          {/* Job Item 3 */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between p-md border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors group">
-            <div className="flex gap-md">
-              <div className="w-12 h-12 bg-error-container/20 rounded-lg flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-error">
-                  edit_square
-                </span>
-              </div>
-              <div>
-                <h3 className="font-h3 text-h3 group-hover:text-secondary transition-colors">
-                  UI/UX Designer
-                </h3>
-                <p className="text-body-sm text-on-surface-variant mb-xs">
-                  Figma, Adobe XD, Prototyping
-                </p>
-                <div className="flex items-center gap-sm text-body-sm text-on-surface-variant">
-                  <span className="flex items-center gap-base">
-                    <span className="material-symbols-outlined text-[16px]">
-                      location_on
-                    </span>{" "}
-                    Bangalore, India
-                  </span>
-                  <span className="flex items-center gap-base">
-                    <span className="material-symbols-outlined text-[16px]">
-                      work
-                    </span>{" "}
-                    Full-time
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-md md:mt-0 flex items-center justify-between md:justify-end gap-lg">
-              <span className="text-secondary font-bold font-h3">
-                ₹8 - 15 LPA
-              </span>
-              <button className="bg-[#4285F4] text-white px-md py-2 rounded-lg font-label-strong hover:opacity-90">
-                Apply Now
-              </button>
-            </div>
-          </div>
+            )
+          })}
+            
         </div>
         <button className="w-full mt-md py-3 text-secondary font-label-strong flex items-center justify-center gap-xs hover:bg-surface-container-low rounded-xl transition-all">
           View all 5 open positions{" "}
@@ -549,21 +505,23 @@ const CompanyPage = () => {
   <section className="mt-xl">
     <div className="flex items-center justify-between mb-md px-base">
       <h2 className="font-h2 text-h2">Similar Companies</h2>
-      <a className="text-secondary font-label-strong hover:underline" href="#">
+      <Link to="/companies" className="text-secondary font-label-strong hover:underline" href="#">
         View All Companies
-      </a>
+      </Link>
     </div>
-    <div className="grid grid-cols-2 md:grid-cols-6 gap-gutter">
+    <div className="grid grid-cols-2 md:grid-cols-6 gap-gutter" >
       {/* Microsoft */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
+      {companyData.slice(0, 6).map((company : Company) => {
+        return (
+          <div key={company.id} onClick={() => navigate(`/company/${company.id}`, { state: company })} className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
         <div className="w-12 h-12 mb-sm flex items-center justify-center">
           <img
             className="w-full h-full object-contain"
             data-alt="Microsoft corporate logo, the four-colored square windows icon, rendered as a clean, high-resolution vector for a business directory grid."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB87ldK8mto87IkBzrO82sOKvSXqvb5cq0cq4lm_0t3-nZYWKqtmu8ySXohftILxA7nxcKHvx2CjddLopwug7KAVZ-CN-1aheDPKoDubXUsLoA71NrELPL8S-u-OQwkeHisqCoClyAfUXPyKVHVP188VSSvutF0_4VB1mxWljg9SLYi2DhGns-wn2U2KwXwsuwfZOeqZO4snv-sT-as3LeH85b45PHNsmQvKSuqzsga8ZG5jksJYEOVT6G-VLm_SnaEFCGzk_MLu7Y"
+            src={company.logo}
           />
         </div>
-        <p className="font-label-strong">Microsoft</p>
+        <p className="font-label-strong">{company.name}</p>
         <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
           <span
             className="material-symbols-outlined text-[14px] text-[#FBBC05]"
@@ -574,106 +532,11 @@ const CompanyPage = () => {
           4.4
         </div>
       </div>
-      {/* Amazon */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
-        <div className="w-12 h-12 mb-sm flex items-center justify-center">
-          <img
-            className="w-full h-full object-contain"
-            data-alt="The Amazon 'a-to-z' logo with the yellow smile arrow, formatted for a professional company card display."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD87jjNQG-MiblgxuR3few4WdZd2O7UNtZcT2EWOfzNdadJ6zP8Kr-ycg5r28sKyXYm2QfUDYzqOYSWKC8kPdDB3aQbsJrS5aYwEhBtImPXOuUsUH7Wj1adcDdmMaqrUFrIUELwzMfxNIFoWdrTclMqMA6ruAyMFhtM9v4Vk0cZl5afBwB2-tg3KiqihpiieccusnLP-u17z92UGr6Sn353jYLfGwqj_s4grisVnp7BqcmyLhVJ-_OWq-vCui-WssKFP68tRCLA7Ug"
-          />
-        </div>
-        <p className="font-label-strong">Amazon</p>
-        <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
-          <span
-            className="material-symbols-outlined text-[14px] text-[#FBBC05]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            star
-          </span>{" "}
-          4.2
-        </div>
-      </div>
-      {/* Meta */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
-        <div className="w-12 h-12 mb-sm flex items-center justify-center">
-          <img
-            className="w-full h-full object-contain"
-            data-alt="The Meta infinity loop logo in a vibrant blue, rendered cleanly for a modern career portal interface."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmY8WSlHAWd70lCmPAtGyekcau9zIpfwj9FRa2Hky5CTfXcP-jFckwXVyLomrBXJzxr_pDgELTMPmCIcZHU6Adzbnqj4ZYjZTkmmhl05Oj_a3mJbDZS_xxFrpAk4hNkMaEQ6zmCct290OkTImuPixOz3iiS75eqK_GAIgQnvMHPQjR1AzCg7uO54aYnlmllfJ_4p_SRrUn2xQwfCzRVP1PwCdGu3pPzLoqvWHwHI4jwP8ljQ59qJmP1k421r9w4CDLCAumGp8lMEg"
-          />
-        </div>
-        <p className="font-label-strong">Meta</p>
-        <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
-          <span
-            className="material-symbols-outlined text-[14px] text-[#FBBC05]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            star
-          </span>{" "}
-          4.3
-        </div>
-      </div>
-      {/* Apple */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
-        <div className="w-12 h-12 mb-sm flex items-center justify-center">
-          <img
-            className="w-full h-full object-contain"
-            data-alt="The minimalist Apple logo in solid black, presented as a high-quality icon for a tech company listing."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkTf-dsUT6ydvuId-cobrj8SBoNqwOw2M6MYv9WGo1V66zD5nzI2wzWlMsi9Tsipx5C0pSZd2eyBuJDqUtV5BiUbr9Yra68z-PKaG3TKlJYSuR5mSG-v9IY47zjfOhPpW0OFgiTdTzz3faWS75bd2qQm-emp3pfj8YlJMRQCZ84N4bW5kiaWEPxRkHaoKWP246KjbBUtYEsXRchbF5ppTQuBRpmlb98icIXY41nxVuFXBDjQYiM2Qwxzxy9uNzo2HsmaJgmC2dZqg"
-          />
-        </div>
-        <p className="font-label-strong">Apple</p>
-        <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
-          <span
-            className="material-symbols-outlined text-[14px] text-[#FBBC05]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            star
-          </span>{" "}
-          4.6
-        </div>
-      </div>
-      {/* Netflix */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
-        <div className="w-12 h-12 mb-sm flex items-center justify-center">
-          <img
-            className="w-full h-full object-contain"
-            data-alt="The Netflix 'N' logo in bold red, presented cleanly as a professional brand icon for an employer grid."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvffyf16oaWSzyEFhEKMVoawkhvuwa4D3WrOBtv95y2Mg8tw-52VuKYSiDomUsIBmOx5XRRmAAp9U_NyfWnk7wT3go9pveqxm-zNOBppJ3Mo7X9MeIPWyAyGCeFCYKaw9Az6d1TF1xRRaLYkoMm7tjivwQKa-aq84tZLbx3uwf_jm9FIl1FOkU6sdlKyf5BuO-9B2w-pQM6iGCj3EKq4yRT8CANbYBCFJj5qOHfpbmQ-rOKcczq6BSIRPKkptrzD5mDe6net_jCEI"
-          />
-        </div>
-        <p className="font-label-strong">Netflix</p>
-        <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
-          <span
-            className="material-symbols-outlined text-[14px] text-[#FBBC05]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            star
-          </span>{" "}
-          4.1
-        </div>
-      </div>
-      {/* Adobe */}
-      <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-transparent hover:border-secondary transition-all flex flex-col items-center cursor-pointer">
-        <div className="w-12 h-12 mb-sm flex items-center justify-center">
-          <img
-            className="w-full h-full object-contain"
-            data-alt="The Adobe 'A' logo in white on a red square background, rendered for a professional company listing grid."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH7DLcC6exjqqaUEfbxDa0_0kBMktfsuDVEXvdNZWxqIVqNKh5OFGyl7bTxsC7ugFbDcxipxOQjNXRxNvB85FTHSH4YebRhbUFQMV-SVokVTDqXAY0qR4qlr92t121Khbvvp9kojxd2eu8Vmni0W7cbzIsc9rPgYH3DBFdX_dZrz52SdLrZ3MEjpArJUA_JVdNhvSKYLIrgL77-gMlU2Pl3Vsrqq1scx7Bhw6prSSyCbB3XOMfLZ39CjeLocl-FeiT5SWbg4iO7mQ"
-          />
-        </div>
-        <p className="font-label-strong">Adobe</p>
-        <div className="flex items-center gap-base text-body-sm text-on-surface-variant">
-          <span
-            className="material-symbols-outlined text-[14px] text-[#FBBC05]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            star
-          </span>{" "}
-          4.3
-        </div>
-      </div>
+        )
+      })}
+          
+      
+      
     </div>
   </section>
 </main>

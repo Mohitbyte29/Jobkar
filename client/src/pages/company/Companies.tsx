@@ -22,10 +22,9 @@ interface Company {
   createdAt: string;
   updatedAt: string;
   companyStatus: string;
-  jobs: { title: string};
+  jobs: { id: number, title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
   _count: { jobs: number };
 }
-
 export default function Companies() {
   const { companyData, total } = useCompany();
   const {
@@ -360,7 +359,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                         {company._count.jobs} Open Roles
                       </span>
                       <div
-                        onClick={() => navigate(`/company/${company.name}`, { state: company })}
+                        onClick={() => navigate(`/company/${company.id}`, { state: company })}
                         className="text-primary font-label-strong text-label-strong border cursor-pointer border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all"
                       >
                         View Profile

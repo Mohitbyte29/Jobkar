@@ -12,7 +12,7 @@ interface Company{
     createdAt: string;
     updatedAt: string;
     companyStatus: string;
-    jobs: { title: string};
+    jobs: {id: number, title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
     UserId: number;
     _count: { jobs: number };
 }

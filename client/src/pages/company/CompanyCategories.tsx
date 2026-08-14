@@ -19,7 +19,7 @@ interface Company {
     createdAt: string;
     updatedAt: string;
     companyStatus: string;
-    jobs: { title: string};
+    jobs: { title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
     _count: {jobs: number};
 }
 
@@ -48,7 +48,7 @@ export default function CompanyCategories() {
 
         const response = await axios.get(`/api/companies/search?${params.toString()}`);
         setCompanies(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       } catch (error) {
         console.error("Failed to fetch companies:", error);
         setCompanies([]);
@@ -138,7 +138,7 @@ export default function CompanyCategories() {
     )
   });
 
-  console.log(filteredCompanies.map((company: Company) => company.name));
+  // console.log(filteredCompanies.map((company: Company) => company.name));
   const companyCount = filteredCompanies.length;
   const {handleChange, handleLocationChange, handleCategoryChange, query, setQuery, results, setResults, location, setLocation, setLocationResults, locationResults, category, setCategory, setCategoryResults, selectedCompany, setSelectedCompany, selectedLocation, setSelectedLocation, canSearch} = useCompanySearch();
   const navigate = useNavigate();
@@ -393,7 +393,7 @@ export default function CompanyCategories() {
                     <span className="font-label-strong text-label-strong text-secondary">
                       {company._count.jobs} Open Roles
                     </span>
-                    <div onClick={() => navigate(`/company/${company.name}`, { state : company })} className="text-primary font-label-strong text-label-strong border cursor-pointer border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
+                    <div onClick={() => navigate(`/company/${company.id}`, { state : company })} className="text-primary font-label-strong text-label-strong border cursor-pointer border-outline px-4 py-2 rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-all">
                       View Profile
                     </div>
                   </div>

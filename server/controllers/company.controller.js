@@ -46,6 +46,17 @@ const category = Array.isArray(req.query.category)
         companyStatus: true,
         createdAt: true,
         _count: { select: { jobs: true } },
+        jobs: {
+          select: {
+            id: true,
+            title: true,
+            tags: true, 
+            location: true,
+            type: true,
+            salaryMin: true,
+            salaryMax: true,
+          },
+        },
       },
     });
     let results = companies;
@@ -88,7 +99,18 @@ export const getCompanies = async (req, res) => {
         location: true,
         createdAt: true,
         _count: { select: { jobs: true } },
-      },
+        jobs: {
+          select: {
+            id: true,
+            title: true,
+            tags: true, 
+            location: true,
+            type: true,
+            salaryMin: true,
+            salaryMax: true,
+          },
+        },
+      },    
     });
 
     res.json({ companies, count: companies.length });
@@ -113,12 +135,14 @@ export const getCompanyById = async (req, res) => {
           select: {
             id: true,
             title: true,
+            tags: true, 
             location: true,
             type: true,
-            createdAt: true,
+            salaryMin: true,
+            salaryMax: true,
           },
         },
-      },
+    }
     });
     if (!company) {
       return res.status(404).json({ error: "Company not found" });
