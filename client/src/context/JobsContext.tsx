@@ -7,6 +7,8 @@ interface Job {
   company: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
   location: string;
+  status: string;
+  perks: JSON;
   mode: string;
   salaryMin: number;
   salaryMax: number;

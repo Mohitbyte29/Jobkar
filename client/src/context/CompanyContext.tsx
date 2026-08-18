@@ -7,8 +7,11 @@ interface Company{
     logo: string;
     category: string;
     description: string;
+    foundedYear: number;
+    companySize: string;
     website: string;
     location: string;
+    perks: JSON;
     createdAt: string;
     updatedAt: string;
     companyStatus: string;

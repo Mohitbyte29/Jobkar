@@ -19,7 +19,7 @@ interface Application {
 
 const AdminDashboard = () => {
     const {companyData, setCompanyData} = useCompany();
-    const {userData, setUserData} = useJobs();
+    const {jobData, setJobData} = useJobs();
     const {internshipData, setInternshipData} = useInternships();
     const [users, setUsers] = useState<User[]>([]);
     const [applications, setApplications] = useState<Application[]>([]);
@@ -137,7 +137,7 @@ const AdminDashboard = () => {
           <p className="text-on-surface-variant font-label-strong mb-xs">
             Active Jobs
           </p>
-          <p className="font-h1 text-on-surface">{userData.length}</p>
+          <p className="font-h1 text-on-surface">{jobData.length}</p>
         </div>
       </div>
       <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-tertiary-container" />
-                <span className="text-on-surface">Software Eng.</span>
+                <span className="text-on-surface">Software</span>
               </div>
               <span className="font-label-strong text-on-surface-variant">
                 60%
@@ -328,6 +328,42 @@ const AdminDashboard = () => {
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
                 <span className="text-on-surface">Marketing</span>
+              </div>
+              <span className="font-label-strong text-on-surface-variant">
+                10%
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-body-sm">
+              <div className="flex items-center gap-xs">
+                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
+                <span className="text-on-surface">Finance</span>
+              </div>
+              <span className="font-label-strong text-on-surface-variant">
+                10%
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-body-sm">
+              <div className="flex items-center gap-xs">
+                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
+                <span className="text-on-surface">Finance</span>
+              </div>
+              <span className="font-label-strong text-on-surface-variant">
+                10%
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-body-sm">
+              <div className="flex items-center gap-xs">
+                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
+                <span className="text-on-surface">Finance</span>
+              </div>
+              <span className="font-label-strong text-on-surface-variant">
+                10%
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-body-sm">
+              <div className="flex items-center gap-xs">
+                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
+                <span className="text-on-surface">Finance</span>
               </div>
               <span className="font-label-strong text-on-surface-variant">
                 10%
@@ -356,18 +392,20 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody className="text-body-sm">
+            {jobData.slice(0, 3).map((job) => {
+              return (
             <tr className="group hover:bg-surface-container-low transition-colors">
               <td className="py-sm">
                 <p className="font-label-strong text-on-surface">
-                  Senior Frontend Developer
+                  {job.title}
                 </p>
-                <p className="text-on-surface-variant text-xs">Remote, US</p>
+                <p className="text-on-surface-variant text-xs">{job.mode}, {job.location}</p>
               </td>
-              <td className="py-sm">TechCorp Inc.</td>
+              <td className="py-sm">{job.company.name}</td>
               <td className="py-sm text-on-surface-variant">Oct 24, 2023</td>
               <td className="py-sm">
                 <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-full text-xs font-label-strong">
-                  Active
+                  {job.status}
                 </span>
               </td>
               <td className="py-sm text-right">
@@ -378,74 +416,9 @@ const AdminDashboard = () => {
                 </button>
               </td>
             </tr>
-            <tr className="group hover:bg-surface-container-low transition-colors">
-              <td className="py-sm">
-                <p className="font-label-strong text-on-surface">
-                  Product Designer
-                </p>
-                <p className="text-on-surface-variant text-xs">New York, NY</p>
-              </td>
-              <td className="py-sm">Creative Studio</td>
-              <td className="py-sm text-on-surface-variant">Oct 23, 2023</td>
-              <td className="py-sm">
-                <span className="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded-full text-xs font-label-strong">
-                  Pending
-                </span>
-              </td>
-              <td className="py-sm text-right">
-                <button className="text-on-surface-variant hover:text-on-surface p-1 rounded-md hover:bg-surface-container">
-                  <span className="material-symbols-outlined text-[20px]">
-                    more_vert
-                  </span>
-                </button>
-              </td>
-            </tr>
-            <tr className="group hover:bg-surface-container-low transition-colors">
-              <td className="py-sm">
-                <p className="font-label-strong text-on-surface">
-                  Data Analyst Internship
-                </p>
-                <p className="text-on-surface-variant text-xs">London, UK</p>
-              </td>
-              <td className="py-sm">Finance Group</td>
-              <td className="py-sm text-on-surface-variant">Oct 23, 2023</td>
-              <td className="py-sm">
-                <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-full text-xs font-label-strong">
-                  Active
-                </span>
-              </td>
-              <td className="py-sm text-right">
-                <button className="text-on-surface-variant hover:text-on-surface p-1 rounded-md hover:bg-surface-container">
-                  <span className="material-symbols-outlined text-[20px]">
-                    more_vert
-                  </span>
-                </button>
-              </td>
-            </tr>
-            <tr className="group hover:bg-surface-container-low transition-colors">
-              <td className="py-sm">
-                <p className="font-label-strong text-on-surface">
-                  Backend Engineer
-                </p>
-                <p className="text-on-surface-variant text-xs">
-                  San Francisco, CA
-                </p>
-              </td>
-              <td className="py-sm">StartupX</td>
-              <td className="py-sm text-on-surface-variant">Oct 22, 2023</td>
-              <td className="py-sm">
-                <span className="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded-full text-xs font-label-strong">
-                  Pending
-                </span>
-              </td>
-              <td className="py-sm text-right">
-                <button className="text-on-surface-variant hover:text-on-surface p-1 rounded-md hover:bg-surface-container">
-                  <span className="material-symbols-outlined text-[20px]">
-                    more_vert
-                  </span>
-                </button>
-              </td>
-            </tr>
+              )
+            })}
+            
           </tbody>
         </table>
       </div>
@@ -498,62 +471,7 @@ const AdminDashboard = () => {
                 2m ago
               </span>
             </div>
-            <div className="flex items-center gap-sm">
-              <div className="w-10 h-10 rounded-full bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <span className="material-symbols-outlined text-primary-container text-[20px]">
-                  domain
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-label-strong text-on-surface truncate">
-                  Acme Corp
-                </p>
-                <p className="text-[12px] text-on-surface-variant truncate">
-                  Employer
-                </p>
-              </div>
-              <span className="text-[11px] text-on-surface-variant whitespace-nowrap">
-                15m ago
-              </span>
-            </div>
-            <div className="flex items-center gap-sm">
-              <div className="w-10 h-10 rounded-full bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <img
-                  className="w-full h-full object-cover"
-                  data-alt="Candid headshot of a man with glasses looking thoughtful, soft natural light"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6QiRmbtgSQyezGTil5leoQWXXJCqqnNSZ0QrJMpRlYTVkGfVSWmHoj77g382_nAsC8AdnjLHsOww_DNBP1vDWD--BoPXKzJoVfWErKa5C09OGico4i6fdDzlXr2a-RYUwOIcU80vUZd2IZs0OI_DB5vrIuwVeHB4H23hkt8tkCPXamepkVfxRn5cqfZ6W0d-SI7VLce_-zCOUJly3ni0ZSxAOWZflQqdJtMkStTll3yzDz36IEH5E"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-label-strong text-on-surface truncate">
-                  David Chen
-                </p>
-                <p className="text-[12px] text-on-surface-variant truncate">
-                  Job Seeker
-                </p>
-              </div>
-              <span className="text-[11px] text-on-surface-variant whitespace-nowrap">
-                1h ago
-              </span>
-            </div>
-            <div className="flex items-center gap-sm">
-              <div className="w-10 h-10 rounded-full bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <span className="material-symbols-outlined text-primary-container text-[20px]">
-                  domain
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-label-strong text-on-surface truncate">
-                  Globex Inc
-                </p>
-                <p className="text-[12px] text-on-surface-variant truncate">
-                  Employer
-                </p>
-              </div>
-              <span className="text-[11px] text-on-surface-variant whitespace-nowrap">
-                2h ago
-              </span>
-            </div>
+            
           </div>
         </div>
       </div>

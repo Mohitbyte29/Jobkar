@@ -112,8 +112,11 @@ model Company {
   logo          String?
   description   String        @db.Text
   website       String        @db.VarChar(255)
+  foundedYear   Int?
+  companySize   String?
   location      String        @db.VarChar(255)
   createdAt     DateTime      @default(now())
+  perks        Json?
   updatedAt     DateTime      @updatedAt
   companyStatus companyStatus @default(ACTIVE)
   UserId        Int
@@ -138,6 +141,7 @@ model Job {
   tags         Json
   salaryMin    Int?
   salaryMax    Int?
+  perks        Json?
   remote       Boolean       @default(false)
   type         JobType
   status       JobStatus     @default(ACTIVE)

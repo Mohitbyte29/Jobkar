@@ -9,7 +9,7 @@ import { Link } from "react-router";
           JobKar
         </span>
         <p className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
-          Elevating the standard of hiring since 2024. Your gateway to elite
+          Elevating the standard of hiring since 2026. Your gateway to elite
           professional opportunities.
         </p>
         <div className="flex gap-4">

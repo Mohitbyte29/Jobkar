@@ -206,6 +206,7 @@ export const getJobs = async (req, res) => {
           location: true,
           type: true,
           mode: true,
+          status: true,
           salaryMin: true,
           salaryMax: true,
           createdAt: true,

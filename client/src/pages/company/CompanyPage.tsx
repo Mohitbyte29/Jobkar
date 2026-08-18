@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import { useJobs } from "@/context/JobsContext";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AlphaCase from "../../../utils/AlphaCase";
 import { useCompany } from "@/context/CompanyContext";
 
@@ -10,11 +9,14 @@ interface Company {
   name: string;
   logo: string;
   category: string;
+  companySize: string;
+  foundedYear: number;
   description: string;
   website: string;
   location: string;
   createdAt: string;
   updatedAt: string;
+  perks: JSON;
   companyStatus: string;
   jobs: { title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
   _count: { jobs: number };
@@ -25,6 +27,7 @@ interface Job {
   title: string;
   tags: string[];
   location: string;
+  perks: JSON;
   type: string;
   salaryMin: number;
   salaryMax: number;
@@ -35,6 +38,7 @@ const CompanyPage = () => {
     const company = location.state;
     const {companyData} = useCompany();
     const navigate = useNavigate();
+    console.log(company)
     console.log(company)
   return (
     <>
@@ -117,7 +121,7 @@ const CompanyPage = () => {
       </div>
       <div>
         <p className="text-body-sm text-on-surface-variant">Founded</p>
-        <p className="font-h3 text-h3">1998</p>
+        <p className="font-h3 text-h3">{company.foundedYear}</p>
       </div>
     </div>
     <div className="bg-surface-container-lowest p-md rounded-xl card-shadow flex items-center gap-md">
@@ -126,7 +130,7 @@ const CompanyPage = () => {
       </div>
       <div>
         <p className="text-body-sm text-on-surface-variant">Employees</p>
-        <p className="font-h3 text-h3">10,000+</p>
+        <p className="font-h3 text-h3">{Math.floor(company.companySize / 100) * 100}+</p>
       </div>
     </div>
     <div className="bg-surface-container-lowest p-md rounded-xl card-shadow flex items-center gap-md">
@@ -137,7 +141,7 @@ const CompanyPage = () => {
       </div>
       <div>
         <p className="text-body-sm text-on-surface-variant">Industry</p>
-        <p className="font-h3 text-h3">Technology</p>
+        <p className="font-h3 text-h3">{AlphaCase(company.category)}</p>
       </div>
     </div>
     <div className="bg-surface-container-lowest p-md rounded-xl card-shadow flex items-center gap-md">
@@ -170,132 +174,18 @@ const CompanyPage = () => {
           </span>
         </button>
       </section>
-      {/* Tech Stack */}
-      <section className="bg-surface-container-lowest p-md rounded-xl card-shadow">
-        <h2 className="font-h2 text-h2 mb-md">Tech Stack</h2>
-        <div className="grid grid-cols-4 gap-md">
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The React.js logo, a cyan atomic symbol, presented as a clean vector graphic on a light neutral background. Minimalist design consistent with a professional tech stack listing."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrRDINu25Uva5C_2x76SpX6Hzfy3Ls-HYFy_7fKZHcvkrMtX0l19-NOpxz3CCnZgeLAuknnzEtLyb4ITD6F6CT7oUFMFJv_A387XhZ7g8u5V79nQMfZiy0n3mDcU9x0Jcla0rGKwLzKJSKvbo75sVbIkqdHGruGrEQ1uJcqoldyRu4hirR8n843wtdpC6DsmoMZ6pAicAQJu8BHSYg_ufyAJQs0Ke5c0BwpHbfB7x3udSVvKTNfmgHieDDvKhIQemtgDeSTQU77p4"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">React</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Node.js logo, a green hexagonal icon, presented as a clean vector graphic on a light neutral background. Part of a set of technology icons."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAXUsFYq2NNvnGExBm5q3wyIS93o-_uEV5F-DTQOmmK5-nWlX-mH3Skf7UTOx1r0-rUkmoFIAhwOrcZCTytswUW7WaCjeoO0ulppThJCghEwSKWBOVVAuXPBG_BcPca4Xr37dwSgtpgyTy2adH7t_HkO6uQjUYmpqKdnJwD8pl0N4V3SgXmFekaGLe8P_kKaNgXdl6gByi7ZkrIx3AU38j0IfRLQjSsFhXQZiA6-Q1C5fuLGJjmUgQ1LIEgP5MWgK0mPtkt6iMpko"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">Node.js</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Python programming language logo, blue and yellow intertwined snakes, presented as a high-quality icon."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMnOgV6BUn-6jqi_guHQf6I8DQT_zYJib2KsjoWZnk0TlNaLFgM-yOgrjnhACV88e1VU73zKZGUfe4B8X3ca22yTUiC6Z3eZZqTSEn2n9xIp-26U8J9NMB1uzXmbWCOuAS6osYnKxm4p4zTdHvs93XZZKgerJbTMuAcSfip-1xkmpwBcPScU6DXr4uYW_2aSQEmwLxN6g01x5FYc2CeYacL1iogxTIAzTRiRf53AJueFUzc115qJva4Qf_F36ZqI6UKngHowtuPUw"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">Python</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Java logo, a steaming coffee cup icon in red and blue tones, rendered cleanly for a UI tech stack grid."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlRegBWcYaChnQ9BZD3ZT5PyiU3gQLyMVazavL4i-ZAoqMFiDZxfhIo3PXJzMb9fBUpqY8DS6p4rU7-1cfjmX-aYaTRWTtHY_ZqwO8UFAcUIndbKfIaDAuE25lE6YaJycERuBaEc-8rrM-dtpkS1l0CEeeghHOH7iKaJNCxM_3Nr_s6chy5yQ9mrPX80yprqeAxBHKVu_MkxzaouPxNwXu-x_ZzEyw28pieSrzmUzNZfxT-ss16S5e7_1M-zNvYk422Z6bXEhnidY"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">Java</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Amazon Web Services AWS logo in black with a yellow orange arrow, formatted for a professional tech stack display."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXp588rlIR2T5Qpz96HEMrVW0mas_OkyYs_Yd7Z57Bf2E2evIOT9Ot0i9G7v1AVrGnGSk4ORmZZslwchjC4K-mhLt7gO4xuUVykN44TaWrpPn7mYAV-XEdL4Y37_gfteyHyhUy1PfbZhP5EhyCuWpMqsqPQi3OpqFt0tY_wqKADS1MydD9wTaL1EhHaBP8ViDf-mt_XugMYuIsBDRWmV0Uq7NJPKV_1ji0kDp9zFyxORcpVtSb6Ns7y9enApd_drE0s7TMG7f55vQ"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">AWS</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Google Cloud Platform logo, a multi-colored cloud icon, rendered for a professional dashboard listing."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTm4UClVQ0XmhniKEKG7l4IBwL4IJOseotqHP5JtCKtPWKl3bmBfutExzuBtRwBq6KX2h2kCR53_xTqaiN9AduKpgHQ2N1m6RAUHLbe5E3YCn2kjDHOAU54wDiTSNmkHcAhT-MblhGDiPsztHapBl8rqlJF7hOflNJqUl-CdOJfnFRFW9oJvrvqzhfBF6rSrlT_JAnm6CDtpB5pP4vtP4eUOAw5xbyxSZlaAQwKKOtlIbDOm-hc9eOON1GPccqZpWmFgwLW588xkA"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">GCP</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Docker logo, a blue whale carrying containers, presented as a clean graphic icon."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4NGEDIU6-RbToTQIgdNjfZmTbrKWXcVSrSth8RhWymLJEbVXpBJjLkCjeEzOwfECm1gw9XZDq2lXJLKfV1egT55VDPoLIGRT3QZMw7bTzSAoNH8wcvD7GrE5uffcrl9o_QfRNV5N-R434d-4S3-DIdL4__HXSQGN7j6aNrqMrd922flgDrI4N8QO7VncjJIN-Lby0qZnoKXj2I5owFiSBDqDnS0HB3U_vKJG8odfHT5UQoLnoBbjmd6PkdGbaGV8MZndXlZS5iaw"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">Docker</span>
-          </div>
-          <div className="flex flex-col items-center gap-xs">
-            <div className="w-12 h-12 p-2 bg-surface-container-low rounded-lg flex items-center justify-center">
-              <img
-                className="w-full h-full object-contain"
-                data-alt="The Kubernetes logo, a blue heptagon wheel, presented for a technology stack overview."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMxYLoq03s67T_zNzyLikyrGn4i0z2r60UhAml-DdCinkAvf8T5mJkTTv8Oe7oFhw5_00cLiTd1gBrvPMA61lNTiNYhqw1WGaIg2fH_ecgESfWFPainnzICYpS3KjHwclgell7SvjcWibDn926jj1UQxOw17yzP8WE9slkTXb32BtSXQSizaxhiZzljfGXxChVHT4kMLGZcj3dADP4Ka30BKddbm-MFFS-0osvdrGvAMg2zX3w79NXQtZW0AxxuSdZ0Kx8l9DcSRQ"
-              />
-            </div>
-            <span className="text-label-caps font-label-caps">Kubernetes</span>
-          </div>
-        </div>
-      </section>
       {/* Benefits */}
       <section className="bg-surface-container-lowest p-md rounded-xl card-shadow">
         <h2 className="font-h2 text-h2 mb-md">Benefits &amp; Perks</h2>
         <ul className="space-y-sm">
-          <li className="flex items-center gap-md">
+          {company.perks?.map((perk: string, index: number) => (
+              <li key={index} className="flex items-center gap-md">
             <span className="material-symbols-outlined text-secondary">
               schedule
             </span>
-            <span className="text-body-md">Flexible Work Hours</span>
+            <span className="text-body-md">{perk}</span>
           </li>
-          <li className="flex items-center gap-md">
-            <span className="material-symbols-outlined text-secondary">
-              home_work
-            </span>
-            <span className="text-body-md">Remote Work</span>
-          </li>
-          <li className="flex items-center gap-md">
-            <span className="material-symbols-outlined text-secondary">
-              health_and_safety
-            </span>
-            <span className="text-body-md">Health Insurance</span>
-          </li>
-          <li className="flex items-center gap-md">
-            <span className="material-symbols-outlined text-secondary">
-              school
-            </span>
-            <span className="text-body-md">Learning &amp; Development</span>
-          </li>
-          <li className="flex items-center gap-md">
-            <span className="material-symbols-outlined text-secondary">
-              restaurant
-            </span>
-            <span className="text-body-md">Free Food &amp; Snacks</span>
-          </li>
-          <li className="flex items-center gap-md">
-            <span className="material-symbols-outlined text-secondary">
-              payments
-            </span>
-            <span className="text-body-md">Annual Bonus</span>
-          </li>
+          ))}
         </ul>
       </section>
     </div>
@@ -505,7 +395,7 @@ const CompanyPage = () => {
   <section className="mt-xl">
     <div className="flex items-center justify-between mb-md px-base">
       <h2 className="font-h2 text-h2">Similar Companies</h2>
-      <Link to="/companies" className="text-secondary font-label-strong hover:underline" href="#">
+      <Link to="/companies" className="text-secondary font-label-strong hover:underline">
         View All Companies
       </Link>
     </div>
