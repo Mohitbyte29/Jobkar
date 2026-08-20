@@ -1,53 +1,30 @@
 import AdminNav from '@/components/AdminNav'
+import AdminUpperNav from './AdminUpperNav'
+import { useJobs } from '@/context/JobsContext';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Analytics = () => {
+  const {jobData} = useJobs();
+  const [users, setUsers] = useState("");
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const {data} = await axios.get('/api/users');
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    }
+    fetchUsers();
+  }, []);
   return (
     <div>
       <>
   {/* SideNavBar */}
     <AdminNav />
   {/* TopAppBar */}
-  <header className="fixed top-0 right-0 left-64 h-16 px-6 flex justify-between items-center z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
-    <div className="flex items-center gap-md w-full max-w-xl">
-      <div className="relative w-full">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">
-          search
-        </span>
-        <input
-          className="w-full pl-10 pr-4 py-2 bg-surface-container rounded-lg border-none focus:ring-2 focus:ring-secondary/20 font-body-sm text-body-sm"
-          placeholder="Search analytics..."
-          type="text"
-        />
-      </div>
-    </div>
-    <div className="flex items-center gap-sm">
-      <div className="flex items-center gap-xs pr-sm mr-sm border-r border-slate-200">
-        <button className="p-2 hover:text-secondary transition-colors">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-        <button className="p-2 hover:text-secondary transition-colors">
-          <span className="material-symbols-outlined">settings</span>
-        </button>
-        <button className="p-2 hover:text-secondary transition-colors">
-          <span className="material-symbols-outlined">help</span>
-        </button>
-      </div>
-      <div className="flex items-center gap-sm">
-        <div className="text-right">
-          <p className="font-label-strong text-label-strong">Admin User</p>
-          <p className="text-[10px] text-outline uppercase tracking-wider">
-            Super Admin
-          </p>
-        </div>
-        <img
-          alt="Administrator"
-          className="w-10 h-10 rounded-full object-cover"
-          data-alt="A professional studio portrait of a corporate male administrator in a tailored dark suit. He has a confident, approachable expression against a clean, softly lit gray background. The lighting is high-key and professional, embodying a corporate modern aesthetic with sharp focus and high contrast, consistent with a premium enterprise dashboard interface."
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeiisg1XlPBkvhm2oVUMxMUgDDi9Z5sxWV1m9lBbOOdRXP3yCz9D2mjxOtKoelxh7D-1S4dXYSVcfEKkNNc5phDWYD1t4dnk5E75AK_yit5D9MtvwRAm6_JuVpDQOmzs0uO6R0Kj2khshuabmMR5gDwxsBMYSmbOLymyW7QmJ5s28QzXt62_KJEKSI_Qe_eonNqUbAVh8kqPsgEgA5J-ucPTPyrPrHwOY1lMB64l7sny4R9o2W4bbrCB8F_yHHdLv0dzv-5ikIHD8"
-        />
-      </div>
-    </div>
-  </header>
+  <AdminUpperNav/>
   {/* Main Content */}
   <main className="ml-64 mt-16 p-margin max-w-max_width mx-auto">
     {/* Dashboard Header */}
@@ -74,7 +51,7 @@ const Analytics = () => {
         <p className="text-on-primary-container font-label-caps text-label-caps mb-xs">
           TOTAL USERS
         </p>
-        <h3 className="font-h2 text-h2 text-on-surface">124.8k</h3>
+        <h3 className="font-h2 text-h2 text-on-surface">{users.length}</h3>
       </div>
       {/* KPI 2 */}
       <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-transparent hover:border-secondary transition-all">
@@ -89,7 +66,7 @@ const Analytics = () => {
         <p className="text-on-primary-container font-label-caps text-label-caps mb-xs">
           ACTIVE JOBS
         </p>
-        <h3 className="font-h2 text-h2 text-on-surface">12,450</h3>
+        <h3 className="font-h2 text-h2 text-on-surface">{jobData.length}</h3>
       </div>
       {/* KPI 3 */}
       <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-transparent hover:border-secondary transition-all">

@@ -1,4 +1,5 @@
 import AdminNav from '@/components/AdminNav'
+import AdminUpperNav from './AdminUpperNav'
 
 const Payment = () => {
   return (
@@ -7,46 +8,7 @@ const Payment = () => {
   {/* SideNavBar Shell */}
   <AdminNav />
   {/* TopAppBar Shell */}
-  <header className="fixed top-0 right-0 left-64 h-16 px-6 flex justify-between items-center z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 font-manrope text-sm">
-    <div className="flex items-center gap-4">
-      <span className="text-lg font-black text-slate-900 uppercase tracking-tight">
-        JobBoard Admin
-      </span>
-      <div className="relative ml-4">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
-          search
-        </span>
-        <input
-          className="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full w-64 text-xs focus:ring-1 focus:ring-teal-600"
-          placeholder="Search transactions..."
-          type="text"
-        />
-      </div>
-    </div>
-    <div className="flex items-center gap-5">
-      <span className="material-symbols-outlined text-slate-600 cursor-pointer hover:text-teal-600 transition-colors">
-        notifications
-      </span>
-      <span className="material-symbols-outlined text-slate-600 cursor-pointer hover:text-teal-600 transition-colors">
-        settings
-      </span>
-      <span className="material-symbols-outlined text-slate-600 cursor-pointer hover:text-teal-600 transition-colors">
-        help
-      </span>
-      <div className="flex items-center gap-3 ml-2 pl-4 border-l border-slate-200">
-        <div className="text-right">
-          <p className="font-bold text-xs">Administrator</p>
-          <p className="text-[10px] text-slate-500">Super Admin</p>
-        </div>
-        <img
-          alt="Administrator"
-          className="w-8 h-8 rounded-full object-cover border border-slate-200"
-          data-alt="A professional headshot of a senior male executive in a sharp navy suit, smiling confidently. The lighting is soft and corporate, with a clean, brightly lit modern office background in light blue and white tones. The overall aesthetic is professional, reliable, and corporate-modern."
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJHxOJCRZ1p-HOOcEvd-tbWXyxfgX00YQjxmshlSFw86x2p4r-PF1_VkuWJQUkRMN28t0cXhpEBuknYPxZsBE0MVf18i92rIrAMimpFSpz4W0o9egomKKGBGki2psnnz19vESrK1znU4z9oGOtZvwIvtE4OpaWjBxBs2on08nSaJtC9BpOJwlsgPROXqaQJhz7FyLJrXudbvKeRlSLFgNRNYZUPflwMaa41ZYsnqx9WnoKdaVvwGYXyLN_u52V_uqCCmWlqp1nV5E"
-        />
-      </div>
-    </div>
-  </header>
+  <AdminUpperNav/>
   {/* Main Content Canvas */}
   <main className="pl-64 pt-16 min-h-screen">
     <div className="max-w-[1280px] mx-auto p-margin">
@@ -341,46 +303,6 @@ const Payment = () => {
             </button>
           </div>
         </div>
-      </div>
-      {/* Trust Verification Banner */}
-      <div className="mt-lg p-6 bg-primary-container rounded-xl text-white flex items-center justify-between overflow-hidden relative">
-        <div className="relative z-10">
-          <h4 className="font-h3 text-h3 mb-2">Enterprise Security Active</h4>
-          <p className="font-body-sm text-body-sm opacity-80 max-w-xl">
-            All transactions are processed using AES-256 encryption. Our system
-            monitors for fraudulent activity 24/7. Recent audit completed on Oct
-            15, 2023.
-          </p>
-          <div className="mt-4 flex gap-4">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-teal-400">
-                verified_user
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">
-                PCI Compliant
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-teal-400">
-                lock
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">
-                Secure Protocol
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 flex items-center justify-center">
-          <span
-            className="material-symbols-outlined text-[160px]"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            shield
-          </span>
-        </div>
-        <button className="relative z-10 px-6 py-2 bg-on-secondary-container text-white text-label-strong font-label-strong rounded-full hover:opacity-90 transition-all">
-          Security Dashboard
-        </button>
       </div>
     </div>
   </main>

@@ -1,13 +1,14 @@
 import AdminNav from '@/components/AdminNav'
-import { useJobs } from '@/context/JobsContext';
 import AlphaCase from '../../../utils/AlphaCase';
 import { IndianRupee } from 'lucide-react';
+import { useInternships } from '@/context/InternshipsContext';
 import AdminUpperNav from './AdminUpperNav';
-import { usejobSearch } from '@/hooks/JobSearch';
+import { useInternshipsearch } from '@/hooks/InternshipSearch';
 
-const JobManagement = () => {
-  const {jobData, setJobData} = useJobs();
-  const jobSearch = usejobSearch();
+const InternshipManagement = () => {
+  const {internshipData, setInternshipData} = useInternships();
+    const internshipSearch = useInternshipsearch();
+  console.log(internshipData)
   return (
     <div>
       <>
@@ -15,15 +16,15 @@ const JobManagement = () => {
   <AdminNav />
   {/* Top App Bar */}
   <AdminUpperNav 
-    searchType="jobs"
-    search={jobSearch}
+    searchType="internships"
+    search={internshipSearch}
   />
   {/* Main Content Canvas */}
   <main className="ml-64 mt-16 p-margin max-w-max_width mx-auto">
     {/* Header Section */}
     <div className="flex justify-between items-end mb-md">
       <div>
-        <h2 className="font-h1 text-h1 text-on-surface">Job Moderation</h2>
+        <h2 className="font-h1 text-h1 text-on-surface">Internship Moderation</h2>
         <p className="font-body-md text-on-surface-variant mt-xs">
           Manage and approve pending job listings to ensure platform quality.
         </p>
@@ -52,7 +53,7 @@ const JobManagement = () => {
     {/* Moderation Queue */}
     <div className=" grid grid-cols-1 gap-md">
       {/* Job Moderation Card 1 */}
-      {jobData.map((job) => {
+      {internshipData.map((internship) => {
         return (
       <div className="bg-white rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
           <>
@@ -75,23 +76,30 @@ const JobManagement = () => {
               </span>
             </div>
             <h3 className="font-h3 text-h3 text-on-surface">
-              {job.title}
+              {internship.title}
             </h3>
             <p className="font-body-md text-on-surface-variant">
-              {job.company.name} • {job.location} (Remote)
+              {internship.companies.name} • {internship.location} (Remote)
             </p>
             <div className="flex gap-2 mt-sm">
               <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
-                {AlphaCase(job.status)}
+                {AlphaCase(internship.internshipStatus)}
               </span>
               <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
+              {internship.type === "paid" ? (
                 <span className="flex items-center gap-1">
                   <IndianRupee size={16} />
-                  {job.salaryMin / 1000}k - <IndianRupee size={16}/>{job.salaryMax / 1000}k
+                  {internship.salaryMin / 1000}k - <IndianRupee size={16}/>{internship.salaryMax / 1000}k
                 </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  Unpaid
+                </span>
+              )
+                }
               </span>
               <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
-                {AlphaCase(job.category)}
+                {AlphaCase(internship.category)}
               </span>
             </div>
           </div>
@@ -139,4 +147,4 @@ const JobManagement = () => {
   )
 }
 
-export default JobManagement
+export default InternshipManagement

@@ -18,6 +18,7 @@ import { InternshipsCategory } from './pages/internships/InternshipsCategory';
 import InternshipPage from './pages/internships/InternshipPage';
 import CompanyCategories from './pages/company/CompanyCategories';
 import JobManagement from './pages/admin/JobManagement';
+import InternshipManagement from './pages/admin/InternshipManagement';
 import CompanyManagement from './pages/admin/CompanyManagement';
 import Analytics from './pages/admin/Analytics';
 import Payment from './pages/admin/Payment';
@@ -72,6 +73,7 @@ const App = () => {
         <Route path='/saved-jobs' element={<SavedJob/>} />
         <Route path='/admin/dashboard' element={<AdminDashboard/>} />
         <Route path='/admin/jobs' element={<JobManagement/>} />
+        <Route path='/admin/internships' element={<InternshipManagement/>} />
         <Route path='/admin/companies' element={<CompanyManagement/>} />
         <Route path='/admin/analytics' element={<Analytics/>} />
         <Route path='/admin/payments' element={<Payment/>} />

@@ -4,12 +4,16 @@ import { useInternships } from '@/context/InternshipsContext';
 import { useJobs } from '@/context/JobsContext';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import timeAgo from '../../../utils/timeAgo';
+import AdminUpperNav from './AdminUpperNav';
 
 interface User {
   id: string;
   name: string;
   email: string;
   role: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Application {
@@ -24,12 +28,23 @@ const AdminDashboard = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [applications, setApplications] = useState<Application[]>([]);
 
+    const formatDate = (date: string): string => {
+      const newDate = new Date(date);
+      const formattedDate = newDate.toLocaleDateString("en-us", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+      return formattedDate;
+    }
+
     const fetchUsers = async() => {
       try {
         const {data} = await axios.get('/api/users', {withCredentials: true});
         const response = await axios.get('/api/applications', {withCredentials: true});
         setUsers(data);
         console.log(response.data)
+        console.log(users)
         setApplications(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -44,6 +59,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
+      <AdminUpperNav search={null} searchType={null} />
       <AdminNav />
       <main className="ml-64 relative pt-20 min-h-screen bg-surface">
   <div className="flex flex-col w-full px-lg py-md gap-lg bg-surface min-h-[calc(100vh-80px)]">
@@ -345,7 +361,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Finance</span>
+                <span className="text-on-surface">Healthcare</span>
               </div>
               <span className="font-label-strong text-on-surface-variant">
                 10%
@@ -354,7 +370,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Finance</span>
+                <span className="text-on-surface">Education</span>
               </div>
               <span className="font-label-strong text-on-surface-variant">
                 10%
@@ -363,7 +379,16 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Finance</span>
+                <span className="text-on-surface">Business</span>
+              </div>
+              <span className="font-label-strong text-on-surface-variant">
+                10%
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-body-sm">
+              <div className="flex items-center gap-xs">
+                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
+                <span className="text-on-surface">Other</span>
               </div>
               <span className="font-label-strong text-on-surface-variant">
                 10%
@@ -402,7 +427,7 @@ const AdminDashboard = () => {
                 <p className="text-on-surface-variant text-xs">{job.mode}, {job.location}</p>
               </td>
               <td className="py-sm">{job.company.name}</td>
-              <td className="py-sm text-on-surface-variant">Oct 24, 2023</td>
+              <td className="py-sm text-on-surface-variant">{formatDate(`${job.createdAt}`)}</td>
               <td className="py-sm">
                 <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-full text-xs font-label-strong">
                   {job.status}
@@ -451,7 +476,9 @@ const AdminDashboard = () => {
             Recent Registrations
           </h2>
           <div className="space-y-sm">
-            <div className="flex items-center gap-sm">
+            {users.slice(0, 3).map((user: User) => {
+              return (
+              <div key={user.id} className="flex items-center gap-sm">
               <div className="w-10 h-10 rounded-full bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden">
                 <img
                   className="w-full h-full object-cover"
@@ -461,16 +488,18 @@ const AdminDashboard = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-label-strong text-on-surface truncate">
-                  Sarah Jenkins
+                  {user.name}
                 </p>
                 <p className="text-[12px] text-on-surface-variant truncate">
-                  Job Seeker
+                  {user.role}
                 </p>
               </div>
               <span className="text-[11px] text-on-surface-variant whitespace-nowrap">
-                2m ago
+                {timeAgo(user.createdAt)} 
               </span>
-            </div>
+                </div>
+              )
+            })}
             
           </div>
         </div>

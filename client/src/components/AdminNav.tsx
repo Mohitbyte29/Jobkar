@@ -1,11 +1,11 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const AdminNav = () => {
+  const navigate = useNavigate();
   return (
     <div>
        <aside className="fixed left-0 top-0 h-screen w-64 z-40 flex flex-col bg-white border-r border-slate-200 shadow-sm">
-    <div className="p-md">
+    <div onClick={() => navigate('/')} className="p-md">
       <h1 className="text-xl font-bold text-slate-900">Admin Console</h1>
       <p className="text-on-primary-container text-xs">Manage Enterprise</p>
     </div>
@@ -34,6 +34,15 @@ const AdminNav = () => {
           <span className="material-symbols-outlined">rule</span>
           <span className="font-label-strong text-label-strong">
             Job Moderation
+          </span>
+        </Link>
+        <Link
+          className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 transition-colors"
+          to="/admin/internships"
+        >
+          <span className="material-symbols-outlined">rule</span>
+          <span className="font-label-strong text-label-strong">
+            Internship Moderation
           </span>
         </Link>
         <Link

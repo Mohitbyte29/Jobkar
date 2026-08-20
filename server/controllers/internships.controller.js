@@ -146,6 +146,7 @@ export const getInternships = async(req, res) => {
                     type: true, 
                     salaryMin: true,
                     salaryMax: true,
+                    internshipStatus: true,
                     createdAt: true,
                     updatedAt: true, 
                     category: true,

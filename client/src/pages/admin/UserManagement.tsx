@@ -1,6 +1,7 @@
 import AdminNav from '@/components/AdminNav'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import AdminUpperNav from './AdminUpperNav';
 
 interface User {
   id: number;
@@ -36,63 +37,7 @@ const UserManagement = () => {
   {/* SideNavBar Shell */}
   <AdminNav />
   {/* TopAppBar Shell */}
-  <header className="fixed top-0 right-0 left-64 h-16 px-6 flex justify-between items-center z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 font-manrope text-sm shadow-none">
-    <div className="flex items-center gap-4 flex-1">
-      <span className="text-lg font-black text-slate-900 dark:text-slate-50">
-        JobBoard Admin
-      </span>
-      <div className="relative w-full max-w-md ml-8">
-        <span
-          className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg"
-          data-icon="search"
-        >
-          search
-        </span>
-        <input
-          className="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-colors font-body-sm"
-          placeholder="Search users, roles, or status..."
-          type="text"
-        />
-      </div>
-    </div>
-    <div className="flex items-center gap-6">
-      <div className="flex items-center gap-4">
-        <span
-          className="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-teal-500 cursor-pointer"
-          data-icon="notifications"
-        >
-          notifications
-        </span>
-        <span
-          className="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-teal-500 cursor-pointer"
-          data-icon="settings"
-        >
-          settings
-        </span>
-        <span
-          className="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-teal-500 cursor-pointer"
-          data-icon="help"
-        >
-          help
-        </span>
-      </div>
-      <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-      <div className="flex items-center gap-3">
-        <div className="text-right">
-          <p className="font-label-strong text-on-surface">Admin User</p>
-          <p className="text-[10px] text-on-primary-container uppercase tracking-wider">
-            Super Admin
-          </p>
-        </div>
-        <img
-          alt="Administrator"
-          className="w-10 h-10 rounded-full border-2 border-secondary-container object-cover"
-          data-alt="A professional headshot of a corporate administrator in a modern office environment. The person is smiling confidently, wearing business casual attire. The background is a soft-focus tech office with warm sunlight streaming through large windows, maintaining a clean and professional aesthetic."
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi-CPNAwLqWl-3nR6stl5iGJkuQVW_d7XZSFDbmeV4HEduD2rTi_K54RRaouacfZCttdSkIXydBsfj32W-mag8gGfRx3qeXOa2dEHItTwEX57QfTxNK8CdAqNGg_FJdNPlKJ4D67itQ-BN7bDESIhRglul3QmrJXxzS88ow-K0MBtBZ9m8NIsC4JD0B7YUy_KUZiteZFcxM-7eIHjrf18wfBGn_Iss2zbw8oZDNNIkY_RJXFQRB7y720o9ShsxGSKAWx77BJ_aTEk"
-        />
-      </div>
-    </div>
-  </header>
+  <AdminUpperNav searchType={null} search={null} />
   {/* Main Content Canvas */}
   <main className="ml-64 mt-16 p-8 min-h-screen">
     <div className="max-w-max_width mx-auto">
@@ -134,7 +79,6 @@ const UserManagement = () => {
           </p>
           <div className="flex items-baseline gap-xs">
             <span className="font-h2 text-h2 text-on-surface">{users.length}</span>
-            <span className="text-secondary text-xs font-bold">+12%</span>
           </div>
         </div>
         <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
@@ -143,7 +87,6 @@ const UserManagement = () => {
           </p>
           <div className="flex items-baseline gap-xs">
             <span className="font-h2 text-h2 text-on-surface">{users.filter((u) => u.role === 'EMPLOYER').length}</span>
-            <span className="text-secondary text-xs font-bold">+4%</span>
           </div>
         </div>
         <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
@@ -151,7 +94,7 @@ const UserManagement = () => {
             NEW SEEKERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">843</span>
+            <span className="font-h2 text-h2 text-on-surface">{users.length}</span>
             <span className="text-tertiary-fixed-dim text-xs font-bold">
               This month
             </span>

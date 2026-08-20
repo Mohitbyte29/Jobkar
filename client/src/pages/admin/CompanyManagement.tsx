@@ -1,45 +1,25 @@
 import AdminNav from '@/components/AdminNav'
 import { useCompany } from '@/context/CompanyContext';
 import toTitleCase from '../../../utils/titleCase'
+import AdminUpperNav from './AdminUpperNav';
+import { useCompanySearch } from '@/hooks/CompSearch';
+
 
 const CompanyManagement = () => {
   const { companyData, setCompanyData } = useCompany();
+  const companySearch = useCompanySearch();
   return (
     <div>
       <>
   {/* Sidebar Navigation Shell */}
-  <AdminNav />
+  <AdminNav/>
   {/* Top App Bar */}
-  <header className="fixed top-0 right-0 left-64 h-16 px-6 flex justify-between items-center z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 font-manrope text-sm">
-    <div className="flex items-center gap-4 flex-1">
-      <div className="relative w-full max-w-md">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
-          search
-        </span>
-        <input
-          className="w-full pl-10 pr-4 py-2 bg-slate-100 border-transparent focus:border-secondary focus:ring-0 rounded-lg text-sm transition-all"
-          placeholder="Search companies, admins, or sectors..."
-          type="text"
-        />
-      </div>
-    </div>
-    <div className="flex items-center gap-4">
-      <button className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-secondary transition-colors relative">
-        <span className="material-symbols-outlined">notifications</span>
-        <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white" />
-      </button>
-      <button className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-secondary transition-colors">
-        <span className="material-symbols-outlined">help</span>
-      </button>
-      <div className="h-8 w-[1px] bg-slate-200 mx-2" />
-      <button className="flex items-center gap-2 px-3 py-1.5 bg-secondary text-white font-semibold rounded-lg hover:bg-secondary/90 transition-all active:scale-95 shadow-sm">
-        <span className="material-symbols-outlined text-sm">add</span>
-        <span className="text-xs">Add New Company</span>
-      </button>
-    </div>
-  </header>
+  <AdminUpperNav 
+    searchType="companies"
+    search={companySearch}
+  />
   {/* Main Content */}
-  <main className="ml-64 pt-16 min-h-screen p-8 max-w-[1440px] mx-auto">
+  <main className="ml-64 mt-5 pt-16 min-h-screen p-8 max-w-[1440px] mx-auto">
     {/* Page Header */}
     <div className="flex justify-between items-end mb-8">
       <div>

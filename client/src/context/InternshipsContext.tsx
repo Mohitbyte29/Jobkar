@@ -6,6 +6,7 @@ interface Internship {
   title: string;
   companies: { name: string, description: string, location: string, website: string, companyStatus: string, logo: string };
   category: string;
+  internshipStatus: string;
   location: string;
   salaryMin: number;
   salaryMax: number;

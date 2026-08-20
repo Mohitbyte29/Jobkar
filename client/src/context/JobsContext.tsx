@@ -15,6 +15,7 @@ interface Job {
   updatedAt: string;
   type: string;
   tags: string;
+  createdAt: string;
 }
 
 interface JobsContextType {

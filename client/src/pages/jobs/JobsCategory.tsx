@@ -181,7 +181,6 @@ const filteredJobs = jobs.filter((job: Job) => {
     job.location?.toLowerCase().includes(searchLocation.toLowerCase()) 
   );
 });
-
   
   const jobCount = filteredJobs.length;     
     return (
@@ -238,7 +237,7 @@ const filteredJobs = jobs.filter((job: Job) => {
                       return;
                     }
                     if (query.trim() && location.trim()) {
-                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      window.location.href = `/jobs/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (query.trim()) {
