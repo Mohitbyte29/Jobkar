@@ -4,10 +4,33 @@ import toTitleCase from '../../../utils/titleCase'
 import AdminUpperNav from './AdminUpperNav';
 import { useCompanySearch } from '@/hooks/CompSearch';
 
+type CompanyWithOptionalCount = {
+  _count?: { jobs: number };
+  jobs?: unknown;
+};
 
 const CompanyManagement = () => {
   const { companyData, setCompanyData } = useCompany();
   const companySearch = useCompanySearch();
+  const normalizedQuery = companySearch.query.trim().toLowerCase();
+  const companies = normalizedQuery
+    ? companySearch.results.length > 0
+      ? companySearch.results
+      : companyData.filter((company) =>
+          company.name.toLowerCase().includes(normalizedQuery)
+        )
+    : companyData;
+
+  const getJobsCount = (company: CompanyWithOptionalCount): number => {
+    if (company._count?.jobs !== undefined) {
+      return company._count.jobs;
+    }
+    if (Array.isArray(company.jobs)) {
+      return company.jobs.length;
+    }
+    return 0;
+  };
+
   return (
     <div>
       <>
@@ -143,9 +166,10 @@ const CompanyManagement = () => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {/* Table Row 1 */}
-            {companyData.map((company) => {
+            
+            {companies && companies.map((company) => {
               return (
-                <tr className="hover:bg-slate-50/30 transition-colors group">
+                <tr key={company.id} className="hover:bg-slate-50/30 transition-colors group">
               <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded border border-slate-100 bg-white p-1 flex items-center justify-center overflow-hidden">
@@ -159,7 +183,7 @@ const CompanyManagement = () => {
                     <div className="font-label-strong text-slate-900">
                       {company.name}
                     </div>
-                    <div className="text-xs text-slate-500">nexapath.io</div>
+                    <div className="text-xs text-slate-500">{company.website}</div>
                   </div>
                 </div>
               </td>
@@ -175,7 +199,7 @@ const CompanyManagement = () => {
               </td>
               <td className="px-6 py-4">
                 <span className="text-body-sm font-semibold text-slate-700">
-                  {company._count.jobs}
+                  {getJobsCount(company as CompanyWithOptionalCount)}
                 </span>
               </td>
               <td className="px-6 py-4 text-right">

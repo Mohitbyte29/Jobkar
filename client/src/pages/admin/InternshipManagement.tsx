@@ -8,7 +8,14 @@ import { useInternshipsearch } from '@/hooks/InternshipSearch';
 const InternshipManagement = () => {
   const {internshipData, setInternshipData} = useInternships();
     const internshipSearch = useInternshipsearch();
-  console.log(internshipData)
+  const normalizedQuery = internshipSearch.query.trim().toLowerCase();
+  const internships = normalizedQuery
+    ? internshipSearch.results.length > 0
+      ? internshipSearch.results
+      : internshipData.filter((internship) =>
+          internship.title.toLowerCase().includes(normalizedQuery)
+        )
+    : internshipData;
   return (
     <div>
       <>
@@ -53,7 +60,7 @@ const InternshipManagement = () => {
     {/* Moderation Queue */}
     <div className=" grid grid-cols-1 gap-md">
       {/* Job Moderation Card 1 */}
-      {internshipData.map((internship) => {
+      {internships.map((internship) => {
         return (
       <div className="bg-white rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
           <>

@@ -55,6 +55,7 @@ export const searchInternships = async (req, res) => {
         },
         category: true,
         location: true,
+        internshipStatus: true,
         salaryMin: true,
         salaryMax: true,
         updatedAt: true,

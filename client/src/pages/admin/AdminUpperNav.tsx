@@ -1,6 +1,7 @@
 import type { useCompanySearch } from '@/hooks/CompSearch';
 import type { useInternshipsearch } from '@/hooks/InternshipSearch';
 import { usejobSearch } from '@/hooks/JobSearch';
+import { useNavigate } from 'react-router';
 
 interface AdminUpperNavProps{
   searchType?: "jobs" | "internships" | "companies" | null;
@@ -25,6 +26,7 @@ const AdminUpperNav = ({
   const results = search?.results ?? [];
   const setQuery = search?.setQuery;
   const setResults = search?.setResults;
+  const navigate = useNavigate();
 
     const getItemLabel = (item: SearchResultItem): string => {
       if (searchType === "companies" && "name" in item) {
@@ -69,7 +71,7 @@ const AdminUpperNav = ({
           type="text"
           onChange={handleChange}
           value={query}
-          disabled={!search}
+          disabled={!search} 
         />
       </div>
 
@@ -95,6 +97,7 @@ const AdminUpperNav = ({
         </ul>
       )}
     </div>
+
 
   <div className="flex items-center gap-md">
     <button className="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">

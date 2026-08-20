@@ -8,6 +8,14 @@ import { usejobSearch } from '@/hooks/JobSearch';
 const JobManagement = () => {
   const {jobData, setJobData} = useJobs();
   const jobSearch = usejobSearch();
+  const normalizedQuery = jobSearch.query.trim().toLowerCase();
+  const jobs = normalizedQuery
+    ? jobSearch.results.length > 0
+      ? jobSearch.results
+      : jobData.filter((job) =>
+          job.title.toLowerCase().includes(normalizedQuery)
+        )
+    : jobData;
   return (
     <div>
       <>
@@ -52,9 +60,9 @@ const JobManagement = () => {
     {/* Moderation Queue */}
     <div className=" grid grid-cols-1 gap-md">
       {/* Job Moderation Card 1 */}
-      {jobData.map((job) => {
+      {jobs && jobs.map((job) => {
         return (
-      <div className="bg-white rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
+      <div key={job.id} className="bg-white rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
           <>
           <div className="flex items-center gap-md mb-8">
           <div className="w-16 h-16 rounded-lg bg-surface-container-low flex items-center justify-center p-3">

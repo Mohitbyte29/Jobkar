@@ -28,9 +28,8 @@ interface Company {
 export default function Companies() {
   const { companyData, total } = useCompany();
   const {
-    handleChange, handleLocationChange, handleCategoryChange, query, setQuery,
-    results, setResults, location, setLocation, setLocationResults, locationResults,
-    category, setCategory, setCategoryResults, selectedCompany, setSelectedCompany,
+    handleChange, handleLocationChange, query, setQuery,
+    results, setResults, location, setLocation, setLocationResults, locationResults, selectedCompany, setSelectedCompany,
     selectedLocation, setSelectedLocation, canSearch
   } = useCompanySearch();
   const navigate = useNavigate();
@@ -108,7 +107,6 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
         console.error(error);
     }
   };
-  console.log(AlphaCase("TECHNOLOGY_SOFTWARE"))
   return (
     <>
       <Toaster />
@@ -163,14 +161,32 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
                       ? "bg-primary-container text-white cursor-pointer hover:opacity-90"
                       : "bg-gray-400 text-white cursor-not-allowed opacity-50"
                   }`}
-                  onMouseEnter={(e) =>
-                    canSearch &&
-                    gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2, ease: "power1.out" })
-                  }
-                  onMouseLeave={(e) =>
-                    gsap.to(e.currentTarget, { scale: 1, duration: 0.2, ease: "power1.out" })
-                  }
-                  onClick={handleSearchClick}
+                  onClick={() => {
+                    if (!selectedCompany && query.trim()) {
+                      toast.error("Please enter a company name or industry");
+                      return;
+                    }
+
+                    if (!selectedLocation && location.trim()) {
+                      toast.error("Please enter a valid location");
+                      return;
+                    }
+                    if (query.trim() && location.trim()) {
+                      navigate(`/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (query.trim()) {
+                      navigate(`/companies/search?c=${encodeURIComponent(query)}`);
+                      setResults([]);
+                      setLocationResults([]);
+                    } else if (location.trim()) {
+                      navigate(`/companies/search?location=${encodeURIComponent(location)}`);
+                      setResults([]);
+                      setLocationResults([]);
+                    } else {
+                      toast.error("Please enter either company name or location");
+                    }
+                  }}
                 >
                   Search
                 </button>

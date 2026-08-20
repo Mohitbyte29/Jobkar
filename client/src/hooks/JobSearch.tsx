@@ -1,12 +1,12 @@
-import { useJobs } from '@/context/JobsContext';
 import axios from 'axios';
-import React, { useState, type ChangeEvent } from 'react'
+import  { useState, type ChangeEvent } from 'react'
 
 interface Job{
     id: number;
     title: string;
     company: {name: string, description: string, location: string, website: string, companyStatus: string, logo: string};
     category: string;
+    status: string;
     location: string;
     salaryMin: number;
     salaryMax: number;

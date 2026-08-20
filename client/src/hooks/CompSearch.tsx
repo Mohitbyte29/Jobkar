@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, type ChangeEvent } from 'react'
 
 interface Company{
+  id: number;
     name: string;
     logo: string;
     category: string;
@@ -38,6 +39,7 @@ export const useCompanySearch = () => {
       const res = await axios.get(
         `/api/companies/search?c=${encodeURIComponent(val)}`,
       );
+      
       setResults(res.data);
     } catch (err) {
       console.error("Search failed:", err);

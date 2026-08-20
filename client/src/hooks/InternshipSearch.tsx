@@ -8,6 +8,7 @@ interface Internship{
     category: string;
     location: string;
     salaryMin: number;
+    status: string;
     salaryMax: number;
     updatedAt: string;
     type: string;

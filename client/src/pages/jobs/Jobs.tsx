@@ -294,15 +294,15 @@ export function Jobs() {
                   return;
                 }
                 if (query.trim() && location.trim()) {
-                  window.location.href = `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                  navigate(`/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
                   setResults([]);
                   setLocationResults([]);
                 } else if (query.trim()) {
-                  window.location.href = `/jobs/search?q=${encodeURIComponent(query)}`;
+                  navigate(`/jobs/search?q=${encodeURIComponent(query)}`);
                   setResults([]);
                   setLocationResults([]);
                 } else if (location.trim()) {
-                  window.location.href = `/jobs/search?location=${encodeURIComponent(location)}`;
+                  navigate(`/jobs/search?location=${encodeURIComponent(location)}`);
                   setResults([]);
                   setLocationResults([]);
                 } else {

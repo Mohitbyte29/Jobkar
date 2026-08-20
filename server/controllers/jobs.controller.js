@@ -61,6 +61,7 @@ export const jobSearch = async (req, res) => {
         category: true,
         location: true,
         salaryMin: true,
+        status: true,
         salaryMax: true,
         updatedAt: true,
         type: true,

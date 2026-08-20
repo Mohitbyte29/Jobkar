@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const searchCompanies = async (req, res) => {
   try {
-    console.log(req.query);
+    // console.log(req.query);
     const c = (req.query.c || "").toLowerCase();
     const location = (req.query.location || "").toLowerCase();
 const category = Array.isArray(req.query.category)

@@ -31,7 +31,6 @@ export default function CompanyCategories() {
   const searchName = searchParams.get("c") || "";
   const searchLocation = searchParams.get("location") || "";
   const searchCategory = searchParams.getAll("category") || "";
-
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -58,7 +57,7 @@ export default function CompanyCategories() {
     };
     
     fetchCompanies();
-  }, [searchName, searchLocation, searchCategory]);
+  }, [searchName]);
 
   interface Filters{
         category: string[];
@@ -128,15 +127,14 @@ export default function CompanyCategories() {
           }
       }
     };
-  
   const filteredCompanies = companies.filter((company: Company) => {
-    return (
-      company.name?.toLowerCase().includes(searchName?.toLowerCase() || "") &&
-      company.location?.toLowerCase().includes(searchLocation?.toLowerCase() || "") &&
-      searchCategory.some((cat) => company.category?.includes(cat)) &&
-      company.companyStatus === "ACTIVE"
-    )
-  });
+  return (
+    company.name?.toLowerCase().includes(searchName?.toLowerCase() || "") &&
+    company.location?.toLowerCase().includes(searchLocation?.toLowerCase() || "") &&
+    (searchCategory.length === 0 || searchCategory.some((cat) => company.category?.includes(cat))) &&
+    company.companyStatus === "ACTIVE"
+  );
+});
 
   // console.log(filteredCompanies.map((company: Company) => company.name));
   const companyCount = filteredCompanies.length;
@@ -204,15 +202,15 @@ export default function CompanyCategories() {
                       return;
                     }
                     if (query.trim() && location.trim()) {
-                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      navigate(`/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
                       setResults([]);
                       setLocationResults([]);
                     } else if (query.trim()) {
-                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}`;
+                      navigate(`/companies/search?c=${encodeURIComponent(query)}`);
                       setResults([]);
                       setLocationResults([]);
                     } else if (location.trim()) {
-                      window.location.href = `/companies/search?location=${encodeURIComponent(location)}`;
+                      navigate(`/companies/search?location=${encodeURIComponent(location)}`);
                       setResults([]);
                       setLocationResults([]);
                     } else {
@@ -226,7 +224,7 @@ export default function CompanyCategories() {
                 
               {results.length > 0 && (
         <ul className="dropdown" style={{ color: "white", cursor: "pointer" }}>
-          {Array.from(new Set(results.map((company: Company) => company.name))).map((name: string) => (
+          {Array.from(new Set(results.map((company) => company.name))).map((name: string) => (
             <li key={name} onClick={() => {
               setQuery(name)
               setSelectedCompany(name);
