@@ -2,10 +2,10 @@ import { Link } from "react-router";
 
   export default function Footer() {
   return (
-  <footer className="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+  <footer className="bg-[#0d1c2d] dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 px-6 max-w-7xl mx-auto">
       <div className="col-span-1 md:col-span-1">
-        <span className="text-lg font-bold text-slate-900 dark:text-white block mb-4">
+        <span className="text-lg font-bold text-gray-200 dark:text-white block mb-4">
           JobKar
         </span>
         <p className="font-['Manrope'] text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">

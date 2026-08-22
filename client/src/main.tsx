@@ -8,10 +8,11 @@ import { CompanyProvider } from './context/CompanyContext.tsx'
 import { InternshipsProvider } from './context/InternshipsContext.tsx'
 import { UserProvider } from './context/UserContext.tsx'
 import { ThemeProvider } from './context/ThemeContext.tsx'
+import Background from './components/Background.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
-  
+  <>
   <BrowserRouter>
   <ThemeProvider>
   <UserProvider>
@@ -25,4 +26,5 @@ createRoot(document.getElementById('root')!).render(
     </UserProvider>
     </ThemeProvider>
   </BrowserRouter>
+  </>
 )

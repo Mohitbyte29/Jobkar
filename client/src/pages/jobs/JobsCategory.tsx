@@ -1,12 +1,13 @@
 import axios from "axios";
 import { IndianRupee } from "lucide-react";
-import { useState, useEffect, useContext, type ChangeEvent } from "react"
+import { useState, useEffect, useContext, useRef, type ChangeEvent } from "react"
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import timeAgo from '../../../utils/timeAgo';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import toast, { Toaster } from "react-hot-toast";
 import { usejobSearch } from "@/hooks/JobSearch";
+import gsap from "gsap";
 
 interface SavedJob {
   id: number;
@@ -38,6 +39,8 @@ interface Job{
   const [loading, setLoading] = useState(true);
   const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
   const navigate = useNavigate();
+  const pageRef = useRef<HTMLElement>(null);
+  const hasAnimatedRef = useRef(false);
 
   interface Filters{
     jobType: string[];
@@ -182,17 +185,43 @@ const filteredJobs = jobs.filter((job: Job) => {
   );
 });
   
-  const jobCount = filteredJobs.length;     
+  const jobCount = filteredJobs.length;
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !pageRef.current) return;
+
+    const context = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLElement>(".job-card");
+
+      if (!hasAnimatedRef.current) {
+        const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
+        timeline
+          .from(".jobs-hero", { y: 16, opacity: 0, duration: 0.35 })
+          .from(".jobs-search", { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
+          .from([".jobs-sidebar", ".jobs-toolbar"], { y: 12, opacity: 0, duration: 0.3, stagger: 0.05 }, "-=0.12")
+          .from(cards, { y: 12, opacity: 0, duration: 0.32, stagger: 0.035, clearProps: "transform,opacity" }, "-=0.1");
+        hasAnimatedRef.current = true;
+        return;
+      }
+
+      gsap.from(cards, { y: 8, opacity: 0, duration: 0.28, stagger: 0.03, ease: "power1.out", clearProps: "transform,opacity" });
+    }, pageRef);
+
+    return () => context.revert();
+  }, [jobCount]);
+
     return (
         <>
         <Toaster/>
             <Navbar />
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 mt-4">
+            <div className="listing-page pt-14">
+            <main ref={pageRef} className="grow max-w-7xl mx-auto w-full px-6 py-12 mt-4">
   <section className="mb-12">
-    <h1 className="font-bold text-[48px] text-on-surface mb-8">
+    <h1 className="jobs-hero listing-heading mb-8 max-w-2xl font-bold text-4xl leading-tight md:text-6xl">
       Find your next career move
     </h1>
-    <div className="bg-white p-2 rounded-xl job-card-shadow flex flex-col md:flex-row items-center gap-2 border border-slate-100">
+    <div className="jobs-search bg-white p-2 rounded-xl job-card-shadow flex flex-col md:flex-row items-center gap-2 border border-slate-100">
       <div className="grow flex items-center px-4 w-full">
         <span
           className="material-symbols-outlined text-outline"
@@ -237,7 +266,7 @@ const filteredJobs = jobs.filter((job: Job) => {
                       return;
                     }
                     if (query.trim() && location.trim()) {
-                      window.location.href = `/jobs/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+                      window.location.href = `/companies/search?c=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
                       setResults([]);
                       setLocationResults([]);
                     } else if (query.trim()) {
@@ -287,7 +316,7 @@ const filteredJobs = jobs.filter((job: Job) => {
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
-    <aside className="md:col-span-3 space-y-8">
+    <aside className="jobs-sidebar listing-filter md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto space-y-8 rounded-2xl p-6">
             <div>
               <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
               <button className="text-sm text-secondary hover:underline mb-4 block">
@@ -642,6 +671,7 @@ const filteredJobs = jobs.filter((job: Job) => {
   </div>
 </main>
       <Footer/>
+      </div>
         </>
     )
 }

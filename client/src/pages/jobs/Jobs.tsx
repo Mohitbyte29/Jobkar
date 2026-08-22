@@ -9,6 +9,7 @@ import toTitleCase from "../../../utils/titleCase.tsx";
 import toast, { Toaster } from "react-hot-toast";
 import { usejobSearch } from "@/hooks/JobSearch.tsx";
 import axios from "axios";
+import Footer from "@/components/Footer.tsx";
 
 interface SavedJob {
   id: number;
@@ -235,16 +236,25 @@ export function Jobs() {
     <>
       <Toaster />
       <Navbar />
+      <div className="listing-page pt-14">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-[#9ee8dc]/35 blur-3xl" />
+        <div className="absolute right-[-8rem] top-[-5rem] h-96 w-96 rounded-full bg-[#c8d8ff]/45 blur-3xl" />
+        <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(0,106,97,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(0,106,97,0.06)_1px,transparent_1px)] [background-size:36px_36px]" />
+      </div>
       <main
         ref={pageRef}
-        className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16"
+        className="relative z-10 mx-auto w-full max-w-7xl grow px-6 py-12 md:px-8 md:py-16 " 
       >
         <section className="mb-12">
-          <h1 className="jobs-hero font-bold text-[48px] text-on-surface mb-8">
-            Find your next career move
+          <p className="mb-3 font-label-caps tracking-[0.18em] text-secondary">
+            Curated opportunities
+          </p>
+          <h1 className="jobs-hero listing-heading mb-8 max-w-2xl font-bold text-4xl leading-tight md:text-6xl">
+            Find work that moves you forward
           </h1>
-          <div className="jobs-search bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2 transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]">
-            <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
+          <div className="jobs-search flex flex-col items-center gap-2 rounded-2xl border border-white/80 bg-white/85 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl transition-shadow duration-300 hover:shadow-[0_22px_55px_rgba(15,23,42,0.14)] md:flex-row">
+            <div className="flex w-full flex-1 items-center border-r border-outline-variant/30 px-4 py-2">
               <span
                 className="material-symbols-outlined text-outline mr-2"
                 data-icon="search"
@@ -260,7 +270,7 @@ export function Jobs() {
                 onClick={() => setLocationResults([])}
               />
             </div>
-            <div className="flex items-center px-4 py-2 flex-1 w-full">
+            <div className="flex w-full flex-1 items-center px-4 py-2">
               <span
                 className="material-symbols-outlined text-outline mr-2"
                 data-icon="location_on"
@@ -364,7 +374,7 @@ export function Jobs() {
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
           {/* Sidebar Filters */}
-          <aside className="md:col-span-3 space-y-8">
+          <aside className="jobs-sidebar listing-filter space-y-8 rounded-2xl p-6 md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto md:p-8">
             <div>
               <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
               <button className="text-sm text-secondary hover:underline mb-4 block">
@@ -581,7 +591,7 @@ export function Jobs() {
           </aside>
 
           {/* Job Feed */}
-          <div className="md:col-span-9 space-y-md">
+          <div className="space-y-md md:col-span-9">
             <div className="jobs-toolbar flex justify-between items-center mb-4">
               <span className="font-body-sm text-on-surface-variant">
                 Showing <strong>{total}</strong>
@@ -603,9 +613,9 @@ export function Jobs() {
             </div>
             {jobData.length > 0 &&
               getSortedJobs().map((job: Job) => (
-                <div key={job.id}>
-                  <div className="job-card will-change-transform bg-white p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] motion-reduce:hover:transform-none motion-reduce:transition-none transition-all duration-200 group">
-                    <div className="flex flex-col md:flex-row gap-6">
+                <div key={job.id} >
+                  <div className="job-card will-change-transform p-sm md:p-md rounded-xl job-card-shadow border border-slate-100 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] motion-reduce:hover:transform-none motion-reduce:transition-none transition-all duration-200 group">
+                    <div className="flex flex-col md:flex-row gap-6 ">
                       <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
                         <span
                           className="material-symbols-outlined text-3xl text-primary"
@@ -722,6 +732,8 @@ export function Jobs() {
           </div>
         </div>
       </main>
+      </div>
+      <Footer/>
     </>
   );
 }

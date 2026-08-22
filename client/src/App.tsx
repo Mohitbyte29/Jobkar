@@ -48,10 +48,15 @@ import AddCompany from './pages/employer/AddCompany';
 import PostInternship from './pages/internships/PostInternship';
 import ApplicationPage from './pages/application/ApplicationPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ScrollProgress from '../utils/ScrollProgress';
+import Background from './components/Background';
 
 const App = () => {
   return (
+    <>
+    <ScrollProgress />
     <div>
+    {/* <Background/> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/register' element={<Register />} />
@@ -108,6 +113,7 @@ const App = () => {
         <Route path='/jobs/application/success/:jobId' element={<Success/>} />
       </Routes>
     </div>
+    </> 
   )
 }
   

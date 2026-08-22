@@ -1,5 +1,5 @@
 import { IndianRupee } from "lucide-react";
-import { useEffect, useState, type ChangeEvent } from "react"
+import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import {useInternships} from "../../context/InternshipsContext.tsx";
 import timeAgo from '../../../utils/timeAgo.tsx';
 import Navbar from "@/components/Navbar.tsx";
@@ -8,6 +8,7 @@ import toTitleCase from '../../../utils/titleCase.tsx';
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
+import gsap from "gsap";
 
 interface Internship{
     id: number;
@@ -37,6 +38,8 @@ interface Internship{
     });
     const [sortBy, setSortBy] = useState<string>("recent");
     const navigate = useNavigate();
+    const pageRef = useRef<HTMLElement>(null);
+    const hasAnimatedRef = useRef(false);
 
     const searchTitle = searchParams.get("q") || "";
     const searchLocation = searchParams.get("location") || "";
@@ -51,6 +54,27 @@ interface Internship{
             );
           })
           const count = filteredInternships.length;
+
+    useEffect(() => {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion || !pageRef.current) return;
+
+      const context = gsap.context(() => {
+        const cards = gsap.utils.toArray<HTMLElement>(".internship-card");
+        if (!hasAnimatedRef.current) {
+          const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
+          timeline
+            .from(".internships-hero", { y: 16, opacity: 0, duration: 0.35 })
+            .from(".internships-search", { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
+            .from([".internships-sidebar", ".internships-toolbar"], { y: 12, opacity: 0, duration: 0.3, stagger: 0.05 }, "-=0.12")
+            .from(cards, { y: 12, opacity: 0, duration: 0.32, stagger: 0.035, clearProps: "transform,opacity" }, "-=0.1");
+          hasAnimatedRef.current = true;
+          return;
+        }
+        gsap.from(cards, { y: 8, opacity: 0, duration: 0.28, stagger: 0.03, ease: "power1.out", clearProps: "transform,opacity" });
+      }, pageRef);
+      return () => context.revert();
+    }, [sortBy, filteredInternships.length]);
           type filterName = keyof Filters;
    const handleFilterChange =  ( name: filterName, value: string ) => {
     setFilters(prev => ({ 
@@ -87,12 +111,18 @@ interface Internship{
         <>
             <Toaster/>
             <Navbar/>
-            <main className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
+            <main ref={pageRef} className="listing-page px-6 py-12 md:px-8 md:py-16">
+  <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-[#9ee8dc]/35 blur-3xl" />
+    <div className="absolute -right-32 -top-20 h-96 w-96 rounded-full bg-[#c8d8ff]/45 blur-3xl" />
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(0,106,97,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(0,106,97,0.06)_1px,transparent_1px)] bg-size-[36px_36px] opacity-40" />
+  </div>
+  <div className="relative z-10 mx-auto w-full max-w-7xl">
   <section className="mb-12">
-    <h1 className="font-bold text-[48px] text-on-surface mb-8">
+    <h1 className="internships-hero listing-heading font-bold text-4xl mb-8 md:text-6xl">
       Find your next career move
     </h1>
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
+    <div className="internships-search rounded-2xl border border-white/80 bg-white/85 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2">
             <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
               <span
                 className="material-symbols-outlined text-outline mr-2"
@@ -188,7 +218,7 @@ interface Internship{
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
-    <aside className="md:col-span-3 space-y-8">
+    <aside className="internships-sidebar listing-filter md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto space-y-8 rounded-2xl p-6">
             <div>
               <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
               <button className="text-sm text-secondary hover:underline mb-4 block">
@@ -425,7 +455,7 @@ interface Internship{
       {filteredInternships.length > 0 && (
         filteredInternships.map((internship) => (
             <div key={internship.id}>
-              <div className="bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
+              <div className="internship-card bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
                     <span
@@ -509,6 +539,7 @@ interface Internship{
       
     </div>
   </div>
+</div>
 </main>
         </>
     )

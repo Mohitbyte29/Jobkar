@@ -8,6 +8,7 @@ import toTitleCase from '../../../utils/titleCase.tsx';
 import toast, { Toaster } from "react-hot-toast";
 import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
 import gsap from "gsap";
+import Footer from "@/components/Footer.tsx";
 
 interface Internship{
     id: number;
@@ -136,12 +137,18 @@ interface Internship{
             <Navbar/>
             <main
             ref={pageRef}
-             className="grow max-w-7xl mx-auto w-full px-6 py-12 md:px-8 md:py-16">
+             className="listing-page px-6 py-12 md:px-8 md:py-16">
+  <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-[#9ee8dc]/35 blur-3xl" />
+    <div className="absolute -right-32 -top-20 h-96 w-96 rounded-full bg-[#c8d8ff]/45 blur-3xl" />
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(0,106,97,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(0,106,97,0.06)_1px,transparent_1px)] bg-size-[36px_36px] opacity-40" />
+  </div>
+  <div className="relative z-10 mx-auto w-full max-w-7xl">
   <section className="mb-12">
-    <h1 className="internships-hero font-bold text-[48px] text-on-surface mb-8">
-      Find your next career move
+    <h1 className="internships-hero listing-heading font-bold text-4xl mb-8 md:text-6xl">
+      Find your next Internship
     </h1>
-    <div className="internships-search bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-2 flex flex-col md:flex-row items-center gap-2">
+    <div className="internships-search rounded-2xl border border-white/80 bg-white/85 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2">
             <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
               <span
                 className="material-symbols-outlined text-outline mr-2"
@@ -240,7 +247,7 @@ interface Internship{
   {/* Content Grid */}
   <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
     {/* Sidebar Filters */}
-    <aside className="md:col-span-3 space-y-8">
+    <aside className="internships-sidebar listing-filter md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto space-y-8 rounded-2xl p-6">
             <div>
               <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
               <button className="text-sm text-secondary hover:underline mb-4 block">
@@ -562,7 +569,9 @@ interface Internship{
       
     </div>
   </div>
+</div>
 </main>
+<Footer/>
         </>
     )
 }

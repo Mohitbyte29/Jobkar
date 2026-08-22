@@ -10,6 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { IndianRupee } from "lucide-react";
 import AlphaCase  from "../../../utils/AlphaCase";
+import Background from "@/components/Background";
 
 interface Company {
   id: number;
@@ -25,6 +26,7 @@ interface Company {
   jobs: { id: number, title: string, tags: string[], location: string, type: string, salaryMin: number, salaryMax: number }[];
   _count: { jobs: number };
 }
+
 export default function Companies() {
   const { companyData, total } = useCompany();
   const {
@@ -49,6 +51,7 @@ export default function Companies() {
     const [filters, setFilters] = useState<Filters>({
       category: [],
     })
+    const hasAnimatedRef = useRef(false);
   
 
   // Small helper for the button press/hover micro-interaction
@@ -107,18 +110,44 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
         console.error(error);
     }
   };
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !pageRef.current) return;
+
+    const context = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLElement>(".company-card");
+      if (!hasAnimatedRef.current) {
+        const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
+        timeline
+          .from(heroRef.current, { y: 16, opacity: 0, duration: 0.35 })
+          .from(searchBarRef.current, { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
+          .from(".company-sidebar", { y: 12, opacity: 0, duration: 0.3 }, "-=0.12")
+          .from(cards, { y: 12, opacity: 0, duration: 0.32, stagger: 0.035, clearProps: "transform,opacity" }, "-=0.1");
+        hasAnimatedRef.current = true;
+        return;
+      }
+      gsap.from(cards, { y: 8, opacity: 0, duration: 0.28, stagger: 0.03, ease: "power1.out", clearProps: "transform,opacity" });
+    }, pageRef);
+    return () => context.revert();
+  }, [companyData.length]);
   return (
     <>
       <Toaster />
       <Navbar />
-      <main className="pt-16" ref={pageRef}>
-        <section className="bg-white border-b border-slate-200 pt-xl pb-lg">
+      <main className="listing-page pt-16" ref={pageRef}>
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-[#9ee8dc]/35 blur-3xl" />
+          <div className="absolute -right-32 -top-20 h-96 w-96 rounded-full bg-[#c8d8ff]/45 blur-3xl" />
+          <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(rgba(0,106,97,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,106,97,0.06) 1px,transparent 1px)", backgroundSize: "36px 36px" }} />
+        </div>
+        <section className="relative z-10 border-b border-white/10 bg-white/5 pt-xl pb-lg backdrop-blur-xl">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl" ref={heroRef}>
-              <h1 className="font-bold text-[48px] text-primary mb-md">
+              <h1 className="companies-hero listing-heading font-bold text-4xl mb-md md:text-6xl">
                 Explore Top Companies
               </h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg">
+              <p className="listing-subtitle font-body-lg text-body-lg mb-lg">
                 Discover your next career move by browsing the world's most
                 innovative organizations and their current openings.
               </p>
@@ -126,7 +155,7 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
               {/* Multi-Input Search Bar */}
               <div
                 ref={searchBarRef}
-                className="bg-white border border-outline-variant p-2 rounded-xl flex flex-col md:flex-row gap-2 shadow-lg items-center"
+                className="bg-white/85 border border-white/80 p-2 rounded-2xl flex flex-col md:flex-row gap-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl items-center"
               >
                 <div className="flex items-center flex-1 px-4 border-b md:border-b-0 md:border-r border-slate-100 py-2 w-full">
                   <span className="material-symbols-outlined text-outline mr-2" data-icon="search">
@@ -233,10 +262,10 @@ const handleFilterChange =  ( name: filterName, value: string ) => {
         </section>
 
         {/* Content Section */}
-        <section className="max-w-7xl mx-auto px-6 py-xl">
+        <section className="relative z-10 max-w-7xl mx-auto px-6 py-xl">
           <div className="flex flex-col lg:flex-row gap-gutter">
             {/* Filters Sidebar (unchanged) */}
-            <aside className="md:col-span-3 space-y-8">
+            <aside className="company-sidebar listing-filter md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto space-y-8 rounded-2xl p-6">
             <div>
               <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
               <button className="text-sm text-secondary hover:underline mb-4 block">

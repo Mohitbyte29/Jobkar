@@ -1,133 +1,152 @@
+import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { UserDropdown } from '@/components/account/UserDropdown';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
-  const {user, setUser} = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const handleLogout = async () => {
     if (!user) return;
     try {
-      // const token = localStorage.getItem('token');
-      // console.log(token);
-      // if (token) {
-      const res = await axios.post('/api/auth/logout',{}, {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // }
-        withCredentials: true,
-        }); 
-        if (res.data.success) {
-          // localStorage.removeItem('token');
-          setUser(null);
-          navigate('/');
-        }
-      // }
+      const res = await axios.post(
+        '/api/auth/logout',
+        {},
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        setUser(null);
+        navigate('/');
+      }
     } catch (err) {
       console.log(err);
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         console.log(err.response?.data);
       }
     }
   };
 
-  // console.log(user);
-    return (
-  <nav className="fixed top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
-    <div className="flex justify-between items-center h-16 px-6 max-w-7xl mx-auto">
-      <div className="flex items-center gap-8">
-        <Link to='/' className="text-xl font-extrabold tracking-tighter text-slate-900 dark:text-white">
-          JobKar
-        </Link>
-        <div className="hidden md:flex items-center gap-6">
-          {user && user.role === 'EMPLOYER' ? (
-            <>
-            <Link 
-              className="font-h3 text-sm cursor-pointer text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/postInternship"
-            >
-              Post Internship
+  const navLink =
+    'relative text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors duration-200 ' +
+    'after:content-[""] after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-emerald-400 ' +
+    'after:transition-all after:duration-200 hover:after:w-full';
+
+  return (
+    <nav
+      className={
+        'fixed top-0 w-full z-50 border-b backdrop-blur-md transition-all duration-300 ' +
+        (scrolled
+          ? 'bg-neutral-950/90 border-white/10 shadow-[0_4px_24px_-8px_rgba(16,185,129,0.15)]'
+          : 'bg-neutral-950/70 border-white/5 shadow-none')
+      }
+    >
+      <div className="flex justify-between items-center h-14 px-6 max-w-7xl mx-auto">
+        {/* Logo */}
+        <div className="flex items-center gap-10">
+          <Link to="/" className="flex items-center gap-1.5 shrink-0">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]" />
+            <span className="text-lg font-extrabold tracking-tight text-white">
+              Job<span className="text-emerald-400">kar</span>
+            </span>
+          </Link>
+
+          {/* Primary nav */}
+          <div className="hidden md:flex items-center gap-7">
+            {user && user.role === 'EMPLOYER' ? (
+              <>
+                <Link className={navLink} to="/postInternship">
+                  Post Internship
+                </Link>
+                <Link className={navLink} to="/postJob">
+                  Post Job
+                </Link>
+                <Link className={navLink} to="/employer/companies/add">
+                  Add Company
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className={navLink} to="/jobs">
+                  Find Jobs
+                </Link>
+                <Link className={navLink} to="/internships">
+                  Find Internships
+                </Link>
+              </>
+            )}
+            <Link className={navLink} to="/companies">
+              Explore Companies
             </Link>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/postJob"
-            >
-              Post Job
-            </Link>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/employer/companies/add"
-            >
-              Add Company 
-            </Link>
-            </>
-          ) : (
-            <>
-            <Link
-              className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-              to="/jobs"
-            >
-              Find Jobs
-          </Link>
-          <Link
-            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-            to="/internships"
-          >
-            Find Internships
-          </Link>
-          </>
-          )}
-          <Link
-            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-            to="/companies"
-          >
-            Companies
-          </Link>
-          
-          <Link
-            className="font-h3 text-sm text-slate-900 dark:text-slate-400 hover:text-teal-600 transition-colors duration-200"
-            to="/resources"
-          >
-            Resources
-          </Link>
+
+          </div>
         </div>
+
+        {/* Right side */}
+        {user ? (
+          <div className="flex items-center gap-3">
+            <button
+              aria-label="Notifications"
+              className="p-2 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/5 transition-colors duration-200 active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                notifications
+              </span>
+            </button>
+            <button
+              aria-label="Settings"
+              className="p-2 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/5 transition-colors duration-200 active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                settings
+              </span>
+            </button>
+
+            <div className="h-6 w-px bg-white/10 mx-1" />
+
+            {user.role === 'EMPLOYER' && (
+              <Link
+                to="/postJob"
+                className="hidden sm:inline-flex px-4 py-1.5 text-sm font-semibold rounded-lg bg-emerald-500 text-neutral-950 hover:bg-emerald-400 transition-all duration-200 active:scale-95"
+              >
+                Post a Job
+              </Link>
+            )}
+
+            <UserDropdown onLogout={handleLogout} />
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors duration-200"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/register"
+              className="px-4 py-1.5 text-sm font-medium rounded-lg border border-white/15 text-white hover:border-emerald-400/60 hover:text-emerald-400 transition-all duration-200 active:scale-95"
+            >
+              Register
+            </Link>
+            <Link
+              to="/postJob"
+              className="px-4 py-1.5 text-sm font-semibold rounded-lg bg-emerald-500 text-neutral-950 hover:bg-emerald-400 transition-all duration-200 active:scale-95"
+            >
+              Post a Job
+            </Link>
+          </div>
+        )}
       </div>
-      {user ? (
-        <>
-          <div className="flex items-center gap-4">
-      <ThemeToggle />
-      <div className="flex items-center gap-2">
-        <button className="p-2 text-slate-600 dark:text-slate-400 hover:bg-surface-container rounded-full transition-colors active:scale-95">
-          <span className="material-symbols-outlined" data-icon="notifications">
-            notifications
-          </span>
-        </button>
-        <button className="p-2 text-slate-600 dark:text-slate-400 hover:bg-surface-container rounded-full transition-colors active:scale-95">
-          <span className="material-symbols-outlined" data-icon="settings">
-            settings
-          </span>
-        </button>
-      </div>
-      <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
-      < UserDropdown />
-    </div>
-        </>
-      ) : (
-        <>
-        <div className="flex items-center gap-4">
-        <ThemeToggle />
-        <Link to="/register" className="px-4 py-2 text-sm font-label-strong bg-primary-container text-white rounded-lg active:scale-95 transitLion-all">
-          Sign In
-        </Link>
-        <Link className="px-4 py-2 text-sm font-label-strong bg-primary-container text-white rounded-lg active:scale-95 transitLion-all" to="/postJob">
-          Post a Job
-        </Link>
-      </div>
-      </>
-      ) }
-    </div>
-  </nav>
-    )
+    </nav>
+  );
 }
