@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import AlphaCase from "../../../utils/AlphaCase";
 import { motion } from "motion/react";
+import SplitText from "@/components/SplitText";
 
 interface Company {
   id: number;
@@ -190,10 +191,18 @@ export default function Companies() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#F1F5F2] mb-4">
-                Explore Top{" "}
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                  Tech Companies
-                </span>
+                <SplitText
+                              text = "Explore Top Tech Companies"
+                              delay={50}
+                                duration={1.25}
+                                ease="power3.out"
+                                splitType="chars"
+                                from={{ opacity: 0, y: 40 }}
+                                to={{ opacity: 1, y: 0 }}
+                                threshold={0.1}
+                                rootMargin="-100px"
+                                textAlign="left" 
+                                />
               </h1>
               <p className="text-[#9AAEA3] text-base sm:text-lg mb-8 max-w-2xl">
                 Discover innovative unicorns, premier tech giants, and visionary startups hiring world-class engineers,

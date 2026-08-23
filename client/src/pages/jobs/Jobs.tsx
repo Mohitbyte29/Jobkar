@@ -381,7 +381,7 @@ export function Jobs() {
 
           {/* Autocomplete Dropdowns */}
           {results.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full max-w-xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
+            <div className="absolute z-30 mt-2 w-full max-w-2xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
               {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
                 <div
                   key={title}
@@ -399,7 +399,7 @@ export function Jobs() {
           )}
 
           {locationResults.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full max-w-xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
+            <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
               {Array.from(new Set(locationResults.map((job: Job) => job.location))).map(
                 (loc: string) => (
                   <div

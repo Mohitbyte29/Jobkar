@@ -393,7 +393,7 @@ export default function CompanyCategories() {
                     <Building2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-[#F1F5F2] mb-2">No organizations match your query</h3>
-                  <p className="text-[#9AAEA3] text-sm max-w-md mx-auto mb-6">
+                  <p className="text-[#9AAEA3] text-sm max-w-3xl mx-auto mb-6">
                     Try adjusting your search terms or clearing industry filters to discover more tech companies.
                   </p>
                   <button

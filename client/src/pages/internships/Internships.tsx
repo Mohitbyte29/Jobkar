@@ -211,10 +211,18 @@ export function Internships() {
             </div>
 
             <h1 className="internships-hero text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#F1F5F2] leading-tight">
-              Launch Your Career With{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-                Elite Tech Teams
-              </span>
+              <SplitText
+              text = "Explore High-Growth Internships"
+              delay={50}
+                duration={1.25}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-100px"
+                textAlign="left" 
+                />
             </h1>
             <p className="text-[#9AAEA3] text-sm sm:text-base leading-relaxed">
               Explore high-growth internships, summer fellowships, and engineering roles offering direct mentorship, competitive stipends, and PPO pathways.
@@ -281,7 +289,7 @@ export function Internships() {
 
           {/* Autocomplete Dropdowns */}
           {results.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full max-w-xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
+            <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
               {Array.from(new Set(results.map((item) => item.title))).map((title) => (
                 <div
                   key={title}
@@ -295,6 +303,24 @@ export function Internships() {
                   {title}
                 </div>
               ))}
+            </div>
+          )}
+          {locationResults.length > 0 && (
+            <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#20352B] rounded-xl shadow-2xl p-2 space-y-1">
+              {Array.from(new Set(locationResults.map((item: any) => item.location))).map(
+                (loc: string) => (
+                  <div
+                    key={loc}
+                    onClick={() => {
+                      setLocation(loc);
+                      setLocationResults([]);
+                    }}
+                    className="px-4 py-2.5 rounded-lg hover:bg-[#22C55E]/15 text-[#F1F5F2] hover:text-[#34D399] text-sm font-semibold cursor-pointer transition-colors"
+                  >
+                    {loc}
+                  </div>
+                )
+              )}
             </div>
           )}
         </section>

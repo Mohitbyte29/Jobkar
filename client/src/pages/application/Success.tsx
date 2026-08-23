@@ -21,7 +21,7 @@ const Success = () => {
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-12 flex flex-col items-center">
         {/* Celebration Header */}
-        <div className="text-center max-w-2xl mb-12">
+        <div className="text-center mt-5 max-w-2xl mb-12">
           <div className="mb-6 flex justify-center">
             <div className="relative">
               <div className="absolute -inset-2 rounded-full bg-[#22C55E]/20 blur-xl animate-pulse" />
@@ -36,7 +36,7 @@ const Success = () => {
           <h1 className="text-3xl sm:text-4xl font-black text-[#F1F5F2] tracking-tight mb-3">
             Application Submitted Successfully!
           </h1>
-          <p className="text-sm text-[#9AAEA3] leading-relaxed max-w-lg mx-auto">
+          <p className="text-sm text-[#9AAEA3] leading-relaxed max-w-4xl mx-auto">
             Thank you for applying. Your profile, resume, and experience details have been delivered directly to the hiring team.
           </p>
         </div>
@@ -78,7 +78,7 @@ const Success = () => {
         </div>
 
         {/* Timeline & Actions Card */}
-        <div className="w-full max-w-xl bg-[#111F19] p-8 rounded-3xl border border-[#20352B] flex flex-col items-center text-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <div className="w-full max-w-4xl bg-[#111F19] p-8 rounded-3xl border border-[#20352B] flex flex-col items-center text-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
             <Clock className="w-4 h-4 text-[#22C55E]" />
             <span>Estimated Response Time</span>

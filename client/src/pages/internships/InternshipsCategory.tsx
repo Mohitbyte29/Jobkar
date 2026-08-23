@@ -335,19 +335,18 @@ export function InternshipsCategory() {
             </div>
 
             <h1 className="internships-hero text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#F1F5F2] leading-tight">
-              <SplitText
-                className="font-bold text-3xl sm:text-4xl md:text-5xl text-[#F1F5F2] inline-block"
-                delay={50}
-                duration={1.25}
-                ease="power3.out"
-                splitType="chars"
-                from={{ opacity: 0, y: 40 }}
-                to={{ opacity: 1, y: 0 }}
-                threshold={0.1}
-                rootMargin="-100px"
-                textAlign="left"
-                text="Explore Filtered Internships"
-              />
+                            <SplitText
+                            text = "Explore High-Growth Internships"
+                            delay={50}
+                              duration={1.25}
+                              ease="power3.out"
+                              splitType="chars"
+                              from={{ opacity: 0, y: 40 }}
+                              to={{ opacity: 1, y: 0 }}
+                              threshold={0.1}
+                              rootMargin="-100px"
+                              textAlign="left" 
+                              />
             </h1>
             <p className="text-[#9AAEA3] text-sm sm:text-base leading-relaxed">
               Discover verified student and early-career internship opportunities with top tech companies.
@@ -422,7 +421,7 @@ export function InternshipsCategory() {
 
           {/* Autocomplete Dropdowns */}
           {results.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full max-w-xl bg-[#0D1814] border border-[#20352B] rounded-xl shadow-2xl p-2 space-y-1">
+            <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#20352B] rounded-xl shadow-2xl p-2 space-y-1">
               {Array.from(new Set(results.map((item: any) => item.title))).map((title: string) => (
                 <div
                   key={title}
@@ -439,7 +438,7 @@ export function InternshipsCategory() {
           )}
 
           {locationResults.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full max-w-xl bg-[#0D1814] border border-[#20352B] rounded-xl shadow-2xl p-2 space-y-1">
+            <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#20352B] rounded-xl shadow-2xl p-2 space-y-1">
               {Array.from(new Set(locationResults.map((item: any) => item.location))).map(
                 (loc: string) => (
                   <div
