@@ -1,8 +1,20 @@
-import AdminNav from '@/components/AdminNav'
+import AdminNav from '@/components/AdminNav';
 import { useCompany } from '@/context/CompanyContext';
-import toTitleCase from '../../../utils/titleCase'
+import toTitleCase from '../../../utils/titleCase';
 import AdminUpperNav from './AdminUpperNav';
 import { useCompanySearch } from '@/hooks/CompSearch';
+import {
+  Building2,
+  ShieldCheck,
+  Briefcase,
+  Globe,
+  MoreVertical,
+  ChevronLeft,
+  ChevronRight,
+  TrendingUp,
+  Download,
+  AlertTriangle,
+} from 'lucide-react';
 
 type CompanyWithOptionalCount = {
   _count?: { jobs: number };
@@ -10,7 +22,7 @@ type CompanyWithOptionalCount = {
 };
 
 const CompanyManagement = () => {
-  const { companyData, setCompanyData } = useCompany();
+  const { companyData } = useCompany();
   const companySearch = useCompanySearch();
   const normalizedQuery = companySearch.query.trim().toLowerCase();
   const companies = normalizedQuery
@@ -32,313 +44,184 @@ const CompanyManagement = () => {
   };
 
   return (
-    <div>
-      <>
-  {/* Sidebar Navigation Shell */}
-  <AdminNav/>
-  {/* Top App Bar */}
-  <AdminUpperNav 
-    searchType="companies"
-    search={companySearch}
-  />
-  {/* Main Content */}
-  <main className="ml-64 mt-5 pt-16 min-h-screen p-8 max-w-[1440px] mx-auto">
-    {/* Page Header */}
-    <div className="flex justify-between items-end mb-8">
-      <div>
-        <h2 className="font-h1 text-h1 text-slate-200">Company Management</h2>
-        <p className="text-body-md text-slate-500 mt-1">
-          Review, verify, and monitor enterprise partnerships across the
-          platform.
-        </p>
-      </div>
-      <div className="flex gap-2">
-        <button className="px-4 py-2 bg-[#111827] border border-[#1E293B] text-slate-200 font-label-strong rounded-lg hover:bg-[#0F172A] transition-colors flex items-center gap-2">
-          <span className="material-symbols-outlined text-lg">filter_list</span>
-          Filters
-        </button>
-        <button className="px-4 py-2 bg-[#111827] border border-[#1E293B] text-slate-200 font-label-strong rounded-lg hover:bg-[#0F172A] transition-colors flex items-center gap-2">
-          <span className="material-symbols-outlined text-lg">download</span>
-          Export CSV
-        </button>
-      </div>
-    </div>
-    {/* Stats Overview */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-8">
-      <div className="bg-[#111827] p-6 rounded-xl card-shadow border border-[#1E293B] flex items-center gap-4">
-        <div className="w-12 h-12 bg-[#1E293B] rounded-lg flex items-center justify-center text-slate-200">
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: '"opsz" 32' }}
-          >
-            corporate_fare
-          </span>
-        </div>
-        <div>
-          <p className="text-label-caps text-slate-500 uppercase tracking-widest">
-            Total Companies
-          </p>
-          <h3 className="text-h1 font-bold text-slate-200 leading-none">
-            {companyData.length}
-          </h3>
-          <p className="text-xs text-blue-400 font-semibold mt-1">
-            ↑ 12% from last month
-          </p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-6 rounded-xl card-shadow border border-[#1E293B] flex items-center gap-4">
-        <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600">
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: '"opsz" 32' }}
-          >
-            verified_user
-          </span>
-        </div>
-        <div>
-          <p className="text-label-caps text-slate-500 uppercase tracking-widest">
-            Pending Verifications
-          </p>
-          <h3 className="text-h1 font-bold text-slate-200 leading-none">42</h3>
-          <p className="text-xs text-amber-600 font-semibold mt-1">
-            Average wait: 1.4 days
-          </p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-6 rounded-xl card-shadow border border-[#1E293B] flex items-center gap-4">
-        <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center text-blue-400">
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: '"opsz" 32' }}
-          >
-            list_alt
-          </span>
-        </div>
-        <div>
-          <p className="text-label-caps text-slate-500 uppercase tracking-widest">
-            Active Listings
-          </p>
-          <h3 className="text-h1 font-bold text-slate-200 leading-none">
-            8,921
-          </h3>
-          <p className="text-xs text-blue-400 font-semibold mt-1">
-            94% fill rate
-          </p>
-        </div>
-      </div>
-    </div>
-    {/* Data Table Container */}
-    <section className="bg-[#111827] rounded-xl card-shadow border border-[#1E293B] overflow-hidden">
-      <div className="px-6 py-4 border-b border-[#1E293B] flex justify-between items-center">
-        <h4 className="font-h3 text-h3 text-slate-200">Registered Companies</h4>
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-slate-400">Showing 1-10 of 1,284</span>
-          <div className="flex border border-[#1E293B] rounded-lg overflow-hidden">
-            <button className="p-2 bg-[#0F172A] text-slate-400 cursor-not-allowed border-r border-[#1E293B]">
-              <span className="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button className="p-2 hover:bg-[#0F172A] text-slate-300 transition-colors">
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans">
+      <AdminNav />
+      <AdminUpperNav searchType="companies" search={companySearch} />
+
+      <main className="ml-72 pt-20 min-h-screen p-8">
+        <div className="max-w-[1440px] mx-auto w-full space-y-8 pb-16">
+          
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <div>
+              <h1 className="text-3xl font-black text-[#F1F5F2] tracking-tight mb-1">
+                Company Management
+              </h1>
+              <p className="text-sm text-[#9AAEA3]">
+                Review, verify, and monitor enterprise partnerships across the platform.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button className="px-5 py-2.5 bg-[#111F19] hover:bg-[#162820] border border-[#20352B] text-[#F1F5F2] rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                <Download className="w-4 h-4 text-[#22C55E]" />
+                <span>Export CSV</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-[#0F172A]/50 border-b border-[#1E293B]">
-              <th className="px-6 py-4 font-label-caps text-slate-500 uppercase tracking-wider">
-                Company Name
-              </th>
-              <th className="px-6 py-4 font-label-caps text-slate-500 uppercase tracking-wider">
-                Industry
-              </th>
-              <th className="px-6 py-4 font-label-caps text-slate-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-4 font-label-caps text-slate-500 uppercase tracking-wider">
-                Total Jobs
-              </th>
-              <th className="px-6 py-4 font-label-caps text-slate-500 uppercase tracking-wider text-right">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {/* Table Row 1 */}
-            
-            {companies && companies.map((company) => {
-              return (
-                <tr key={company.id} className="hover:bg-[#0F172A]/30 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded border border-[#1E293B] bg-[#111827] p-1 flex items-center justify-center overflow-hidden">
-                    <img
-                      className="w-full h-full object-contain"
-                      data-alt="Minimalist geometric logo for a tech company named NexaPath, using deep slate and teal accents, vector style on white background."
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoCH-W_MoWLF_sdDLh1T-7q_u7lvu0XEOeF2zoUamD_8JhX7zqIvQp6xBtp_2VEoNOpHNcCU5sNOznYXkuTgtBDSxVX40UIsvbT8dXxuUtiAZZj1x3vDKo8r1MOkbyLoV9D4DjDtOs60RbxCaYRx55w7IVh1HYVSbWOi3dB_eCDqD0tlMk8bVbxm2DBMYOgI6u3GJ9mIBcQQpczZg0Cktk3HvEFMzN00P7ySbUgBBajcOVDbjiLHHoGfSq5Gdki3srB-AceO-ZdC0"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-label-strong text-slate-200">
-                      {company.name}
-                    </div>
-                    <div className="text-xs text-slate-500">{company.website}</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm text-slate-300">
-                  {`${toTitleCase(company.category)}`}
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider border border-green-100">
-                  Active
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                <span className="text-body-sm font-semibold text-slate-200">
-                  {getJobsCount(company as CompanyWithOptionalCount)}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button className="px-3 py-1.5 text-blue-400 font-semibold hover:bg-secondary/10 rounded transition-colors text-xs">
-                  Manage
+
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] shrink-0">
+                <Building2 className="w-7 h-7" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Total Companies
+                </p>
+                <h3 className="text-3xl font-black text-[#F1F5F2] mt-0.5">
+                  {companyData.length}
+                </h3>
+                <p className="text-xs text-[#22C55E] font-bold mt-1">
+                  ↑ 12% growth this month
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#F59E0B]/15 border border-[#F59E0B]/30 flex items-center justify-center text-[#F59E0B] shrink-0">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Pending Verifications
+                </p>
+                <h3 className="text-3xl font-black text-[#F1F5F2] mt-0.5">0</h3>
+                <p className="text-xs text-[#9AAEA3] mt-1">All queues cleared</p>
+              </div>
+            </div>
+
+            <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] shrink-0">
+                <Briefcase className="w-7 h-7" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Active Listings
+                </p>
+                <h3 className="text-3xl font-black text-[#F1F5F2] mt-0.5">
+                  {companyData.reduce((acc, curr) => acc + getJobsCount(curr as CompanyWithOptionalCount), 0)}
+                </h3>
+                <p className="text-xs text-[#22C55E] font-bold mt-1">
+                  Live openings
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Registered Companies Table */}
+          <section className="bg-[#111F19] rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden">
+            <div className="px-6 py-5 border-b border-[#20352B] flex justify-between items-center">
+              <div>
+                <h3 className="text-base font-bold text-[#F1F5F2]">
+                  Registered Companies
+                </h3>
+                <p className="text-xs text-[#9AAEA3]">
+                  Showing {companies.length} verified corporate accounts
+                </p>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#0D1814] border-b border-[#20352B]">
+                    <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Company Brand
+                    </th>
+                    <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Industry Category
+                    </th>
+                    <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Total Jobs
+                    </th>
+                    <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3] text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#20352B]">
+                  {companies.map((company) => (
+                    <tr key={company.id} className="hover:bg-[#0D1814]/70 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-2xl bg-[#162820] border border-[#20352B] flex items-center justify-center text-[#22C55E] font-bold text-xs shrink-0">
+                            {company.name ? company.name.charAt(0) : 'C'}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-[#F1F5F2]">{company.name}</p>
+                            <p className="text-[11px] text-[#9AAEA3]">{company.website}</p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 text-xs font-medium text-[#F1F5F2]">
+                        {toTitleCase(company.category || 'Technology')}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
+                          Active
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 text-xs font-bold text-[#F1F5F2]">
+                        {getJobsCount(company as CompanyWithOptionalCount)}
+                      </td>
+
+                      <td className="px-6 py-4 text-right">
+                        <button className="p-1.5 text-[#9AAEA3] hover:text-[#22C55E] hover:bg-[#162820] rounded-lg transition-colors cursor-pointer">
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {companies.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-xs text-[#9AAEA3]">
+                        No registered companies found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Footer */}
+            <div className="px-6 py-4 bg-[#0D1814] border-t border-[#20352B] flex items-center justify-between text-xs text-[#9AAEA3]">
+              <p>Showing {companies.length} of {companyData.length} records</p>
+              <div className="flex items-center gap-1.5">
+                <button className="p-1.5 border border-[#20352B] rounded-lg hover:bg-[#162820] disabled:opacity-40" disabled>
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
-              </td>
-            </tr>
-              )
-            })}
-            
-            
-          </tbody>
-        </table>
-      </div>
-      <div className="px-6 py-4 border-t border-[#1E293B] flex justify-between items-center bg-[#0F172A]/30">
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-slate-500 font-label-strong">
-            Items per page
-          </span>
-          <select className="bg-[#111827] border-[#1E293B] text-xs rounded-lg py-1 px-3 focus:ring-0 focus:border-secondary">
-            <option>10</option>
-            <option>25</option>
-            <option>50</option>
-          </select>
-        </div>
-        <div className="flex gap-2">
-          <button className="px-3 py-1.5 text-xs font-semibold bg-[#111827] border border-[#1E293B] rounded-lg hover:bg-[#0F172A] transition-colors">
-            Previous
-          </button>
-          <button className="px-3 py-1.5 text-xs font-semibold bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
-            1
-          </button>
-          <button className="px-3 py-1.5 text-xs font-semibold bg-[#111827] border border-[#1E293B] rounded-lg hover:bg-[#0F172A] transition-colors">
-            2
-          </button>
-          <button className="px-3 py-1.5 text-xs font-semibold bg-[#111827] border border-[#1E293B] rounded-lg hover:bg-[#0F172A] transition-colors">
-            3
-          </button>
-          <button className="px-3 py-1.5 text-xs font-semibold bg-[#111827] border border-[#1E293B] rounded-lg hover:bg-[#0F172A] transition-colors">
-            Next
-          </button>
-        </div>
-      </div>
-    </section>
-    {/* Dynamic Activity Overlay (Decorative/UI Hint) */}
-    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-[#111827] p-6 rounded-xl card-shadow border border-[#1E293B]">
-        <h4 className="font-h3 text-h3 text-slate-200 mb-6">
-          Recent Verifications
-        </h4>
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-secondary mt-1.5" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-200">
-                Quantix Labs was verified
-              </p>
-              <p className="text-xs text-slate-500">
-                By Admin Sarah J. • 2 hours ago
-              </p>
+                <button className="px-3 py-1 bg-[#22C55E] text-[#07110D] font-bold rounded-lg">
+                  1
+                </button>
+                <button className="p-1.5 border border-[#20352B] rounded-lg hover:bg-[#162820]">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-            <span className="text-xs font-bold text-blue-400">COMPLETE</span>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-amber-500 mt-1.5" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-200">
-                SkyLink Logistics uploaded documents
-              </p>
-              <p className="text-xs text-slate-500">
-                Pending review by moderation team • 5 hours ago
-              </p>
-            </div>
-            <span className="text-xs font-bold text-amber-600">
-              IN PROGRESS
-            </span>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="w-2 h-2 rounded-full bg-slate-300 mt-1.5" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-200">
-                Nexus Health rejected verification
-              </p>
-              <p className="text-xs text-slate-500">
-                Reason: Invalid business license • 1 day ago
-              </p>
-            </div>
-            <span className="text-xs font-bold text-error">REJECTED</span>
-          </div>
+          </section>
         </div>
-      </div>
-      {/* Quick Actions Bento */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-slate-900 text-white p-6 rounded-xl flex flex-col justify-between hover:scale-[1.02] transition-transform cursor-pointer">
-          <span className="material-symbols-outlined text-3xl opacity-50">
-            analytics
-          </span>
-          <div>
-            <h5 className="font-bold text-lg">Platform Growth</h5>
-            <p className="text-xs opacity-70">
-              View company onboarding metrics
-            </p>
-          </div>
-        </div>
-        <div className="bg-secondary text-white p-6 rounded-xl flex flex-col justify-between hover:scale-[1.02] transition-transform cursor-pointer">
-          <span className="material-symbols-outlined text-3xl opacity-50">
-            mail
-          </span>
-          <div>
-            <h5 className="font-bold text-lg">Broadcast</h5>
-            <p className="text-xs opacity-70">Message all company admins</p>
-          </div>
-        </div>
-        <div className="bg-[#111827] border border-[#1E293B] p-6 rounded-xl flex flex-col justify-between col-span-2 hover:bg-[#0F172A] transition-colors cursor-pointer group">
-          <div className="flex justify-between items-start">
-            <span className="material-symbols-outlined text-3xl text-blue-400">
-              security
-            </span>
-            <span className="material-symbols-outlined text-slate-400 group-hover:translate-x-1 transition-transform">
-              arrow_forward
-            </span>
-          </div>
-          <div>
-            <h5 className="font-bold text-lg text-slate-200">
-              Security Audit Logs
-            </h5>
-            <p className="text-xs text-slate-500">
-              Monitor sensitive administrative company changes
-            </p>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
-  </main>
-</>
+  );
+};
 
-    </div>
-  )
-}
-
-export default CompanyManagement
+export default CompanyManagement;

@@ -1,4 +1,4 @@
-import AdminNav from '@/components/AdminNav'
+import AdminNav from '@/components/AdminNav';
 import { useCompany } from '@/context/CompanyContext';
 import { useInternships } from '@/context/InternshipsContext';
 import { useJobs } from '@/context/JobsContext';
@@ -6,6 +6,21 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import timeAgo from '../../../utils/timeAgo';
 import AdminUpperNav from './AdminUpperNav';
+import {
+  Users,
+  Building2,
+  Briefcase,
+  GraduationCap,
+  FileText,
+  TrendingUp,
+  Download,
+  CheckCircle2,
+  Clock,
+  ChevronDown,
+  MoreVertical,
+  ShieldCheck,
+  AlertCircle,
+} from 'lucide-react';
 
 interface User {
   id: string;
@@ -22,494 +37,366 @@ interface Application {
 }
 
 const AdminDashboard = () => {
-    const {companyData, setCompanyData} = useCompany();
-    const {jobData, setJobData} = useJobs();
-    const {internshipData, setInternshipData} = useInternships();
-    const [users, setUsers] = useState<User[]>([]);
-    const [applications, setApplications] = useState<Application[]>([]);
+  const { companyData } = useCompany();
+  const { jobData } = useJobs();
+  const { internshipData } = useInternships();
+  const [users, setUsers] = useState<User[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [timeRange, setTimeRange] = useState('Last 30 Days');
 
-    const formatDate = (date: string): string => {
-      const newDate = new Date(date);
-      const formattedDate = newDate.toLocaleDateString("en-us", {
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      });
-      return formattedDate;
+  const formatDate = (date: string): string => {
+    const newDate = new Date(date);
+    return newDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const { data } = await axios.get('/api/users', { withCredentials: true });
+      const response = await axios.get('/api/applications', { withCredentials: true });
+      setUsers(data);
+      setApplications(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
     }
+  };
 
-    const fetchUsers = async() => {
-      try {
-        const {data} = await axios.get('/api/users', {withCredentials: true});
-        const response = await axios.get('/api/applications', {withCredentials: true});
-        setUsers(data);
-        console.log(response.data)
-        console.log(users)
-        setApplications(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        if(axios.isAxiosError(error)) {
-          console.error('Axios error response:', error.response?.data);
-        }
-      }
-    };
-    useEffect(() => {
-      fetchUsers();
-    }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans">
       <AdminUpperNav search={null} searchType={null} />
       <AdminNav />
-      <main className="ml-64 relative pt-20 min-h-screen bg-[#0A0F1A]">
-  <div className="flex flex-col w-full px-lg py-md gap-lg bg-[#0A0F1A] min-h-[calc(100vh-80px)]">
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
-      <div>
-        <h1 className="font-h1 text-slate-200">Overview</h1>
-        <p className="font-body-sm text-slate-200-variant mt-xs">
-          Welcome back, here's what's happening today.
-        </p>
-      </div>
-      <div className="flex items-center gap-sm">
-        <div className="relative">
-          <select className="appearance-none bg-[#0F172A] text-slate-200 font-label-strong px-md py-sm rounded-lg border-none shadow-sm pr-10 focus:ring-2 focus:ring-primary-container outline-none cursor-pointer">
-            <option>Last 30 Days</option>
-            <option>Last 7 Days</option>
-            <option>This Year</option>
-          </select>
-          <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-slate-200-variant pointer-events-none">
-            expand_more
-          </span>
-        </div>
-        <button className="bg-blue-600 hover:bg-blue-600/90 text-white font-label-strong px-md py-sm rounded-lg shadow-sm flex items-center gap-xs transition-colors">
-          <span className="material-symbols-outlined text-[18px]">
-            download
-          </span>
-          Export Report
-        </button>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-md">
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
-        <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
-            <span className="material-symbols-outlined text-tertiary-container">
-              group
-            </span>
-          </div>
-          <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-md font-label-caps flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              trending_up
-            </span>{" "}
-            12%
-          </span>
-        </div>
-        <div className="relative z-10">
-          <p className="text-slate-200-variant font-label-strong mb-xs">
-            Total Users
-          </p>
-          <p className="font-h1 text-slate-200">{users.length}</p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-600-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
-        <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
-            <span className="material-symbols-outlined text-slate-200-container">
-              domain
-            </span>
-          </div>
-          <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-md font-label-caps flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              trending_up
-            </span>{" "}
-            8%
-          </span>
-        </div>
-        <div className="relative z-10">
-          <p className="text-slate-200-variant font-label-strong mb-xs">
-            Total Companies
-          </p>
-          <p className="font-h1 text-slate-200">{companyData.length}</p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-secondary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
-        <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
-            <span className="material-symbols-outlined text-blue-400">
-              work
-            </span>
-          </div>
-          <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-md font-label-caps flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              trending_up
-            </span>{" "}
-            5%
-          </span>
-        </div>
-        <div className="relative z-10">
-          <p className="text-slate-200-variant font-label-strong mb-xs">
-            Active Jobs
-          </p>
-          <p className="font-h1 text-slate-200">{jobData.length}</p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
-        <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
-            <span className="material-symbols-outlined text-tertiary-container">
-              description
-            </span>
-          </div>
-          <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-md font-label-caps flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              trending_up
-            </span>{" "}
-            15%
-          </span>
-        </div>
-        <div className="relative z-10">
-          <p className="text-slate-200-variant font-label-strong mb-xs">
-            Total Applications
-          </p>
-          <p className="font-h1 text-slate-200">{applications.length}</p>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-600-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
-        <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
-            <span className="material-symbols-outlined text-slate-200-container">
-              school
-            </span>
-          </div>
-          <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-md font-label-caps flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              trending_up
-            </span>{" "}
-            10%
-          </span>
-        </div>
-        <div className="relative z-10">
-          <p className="text-slate-200-variant font-label-strong mb-xs">
-            Active Internships
-          </p>
-          <p className="font-h1 text-slate-200">{internshipData.length}</p>
-        </div>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-md">
-      <div className="lg:col-span-2 bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
-        <div className="flex justify-between items-center mb-md">
-          <h2 className="font-h3 text-slate-200">
-            User Growth &amp; Postings
-          </h2>
-          <div className="flex gap-sm">
-            <div className="flex items-center gap-xs">
-              <div className="w-3 h-3 rounded-full bg-tertiary-container" />
-              <span className="font-label-caps text-slate-200-variant">
-                Users
-              </span>
+
+      <main className="ml-72 pt-20 min-h-screen">
+        <div className="p-8 max-w-[1500px] mx-auto w-full space-y-8">
+          
+          {/* Header Row */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-black text-[#F1F5F2] tracking-tight mb-1">
+                Enterprise Overview
+              </h1>
+              <p className="text-sm text-[#9AAEA3]">
+                Live telemetry and moderation metrics across all platform entities.
+              </p>
             </div>
-            <div className="flex items-center gap-xs">
-              <div className="w-3 h-3 rounded-full bg-secondary" />
-              <span className="font-label-caps text-slate-200-variant">
-                Jobs
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 min-h-[300px] w-full relative flex items-end">
-          <svg
-            className="w-full h-[80%] mt-auto"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 50"
-          >
-            <path
-              d="M0,50 L0,40 Q10,35 20,42 T40,30 T60,25 T80,15 T100,5 L100,50 Z"
-              fill="rgba(7,0,108,0.05)"
-            />
-            <path
-              className="text-tertiary-container"
-              d="M0,40 Q10,35 20,42 T40,30 T60,25 T80,15 T100,5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.5"
-              vectorEffect="non-scaling-stroke"
-            />
-            <path
-              d="M0,50 L0,45 Q15,48 25,40 T45,35 T65,38 T85,28 T100,20 L100,50 Z"
-              fill="rgba(0,106,97,0.05)"
-            />
-            <path
-              className="text-blue-400"
-              d="M0,45 Q15,48 25,40 T45,35 T65,38 T85,28 T100,20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.5"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
-          <div className="absolute bottom-0 left-0 w-full flex justify-between text-[10px] text-slate-200-variant font-label-caps mt-2">
-            <span>Jan</span>
-            <span>Feb</span>
-            <span>Mar</span>
-            <span>Apr</span>
-            <span>May</span>
-            <span>Jun</span>
-            <span>Jul</span>
-          </div>
-        </div>
-      </div>
-      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
-        <h2 className="font-h3 text-slate-200 mb-md">Category Distribution</h2>
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="relative w-48 h-48 mb-md">
-            <svg
-              className="w-full h-full transform -rotate-90"
-              viewBox="0 0 100 100"
-            >
-              <circle
-                cx={50}
-                cy={50}
-                fill="none"
-                r={40}
-                stroke="rgba(19, 27, 46, 0.1)"
-                strokeWidth={20}
-              />
-              <circle
-                className="text-tertiary-container transition-all duration-1000 ease-out"
-                cx={50}
-                cy={50}
-                fill="none"
-                r={40}
-                stroke="currentColor"
-                strokeDasharray="251.2"
-                strokeDashoffset="100.48"
-                strokeWidth={20}
-              />
-              <circle
-                className="text-blue-400 transform origin-center rotate-[216deg] transition-all duration-1000 ease-out delay-100"
-                cx={50}
-                cy={50}
-                fill="none"
-                r={40}
-                stroke="currentColor"
-                strokeDasharray="251.2"
-                strokeDashoffset="175.84"
-                strokeWidth={20}
-              />
-              <circle
-                className="text-slate-200-fixed-dim transform origin-center rotate-[324deg] transition-all duration-1000 ease-out delay-200"
-                cx={50}
-                cy={50}
-                fill="none"
-                r={40}
-                stroke="currentColor"
-                strokeDasharray="251.2"
-                strokeDashoffset="200.96"
-                strokeWidth={20}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-h2 text-slate-200">100%</span>
-              <span className="font-label-caps text-slate-200-variant">
-                Active
-              </span>
-            </div>
-          </div>
-          <div className="w-full space-y-2">
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-tertiary-container" />
-                <span className="text-slate-200">Software</span>
+
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <select
+                  value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}
+                  className="px-4 py-2.5 bg-[#0D1814] text-[#F1F5F2] border border-[#20352B] rounded-xl text-xs font-bold focus:border-[#22C55E] outline-none cursor-pointer pr-10"
+                >
+                  <option className="bg-[#0D1814]">Last 30 Days</option>
+                  <option className="bg-[#0D1814]">Last 7 Days</option>
+                  <option className="bg-[#0D1814]">This Year</option>
+                </select>
+                <ChevronDown className="w-4 h-4 text-[#9AAEA3] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-              <span className="font-label-strong text-slate-200-variant">
-                60%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-secondary" />
-                <span className="text-slate-200">Design</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                30%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Marketing</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Finance</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Healthcare</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Education</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Business</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-body-sm">
-              <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
-                <span className="text-slate-200">Other</span>
-              </div>
-              <span className="font-label-strong text-slate-200-variant">
-                10%
-              </span>
+
+              <button className="px-5 py-2.5 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] text-xs font-extrabold rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                <Download className="w-4 h-4" />
+                <span>Export Report</span>
+              </button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-md">
-      <div className="lg:col-span-3 bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] overflow-x-auto">
-        <div className="flex justify-between items-center mb-md">
-          <h2 className="font-h3 text-slate-200">Recent Job Postings</h2>
-          <button className="text-tertiary-container font-label-strong hover:bg-tertiary-fixed/30 px-sm py-xs rounded-md transition-colors">
-            View All
-          </button>
-        </div>
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="text-label-caps text-slate-200-variant border-b border-surface-container-high">
-              <th className="pb-sm font-label-caps">Role</th>
-              <th className="pb-sm font-label-caps">Company</th>
-              <th className="pb-sm font-label-caps">Date Posted</th>
-              <th className="pb-sm font-label-caps">Status</th>
-              <th className="pb-sm font-label-caps text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-body-sm">
-            {jobData.slice(0, 3).map((job) => {
-              return (
-            <tr className="group hover:bg-[#0F172A] transition-colors">
-              <td className="py-sm">
-                <p className="font-label-strong text-slate-200">
-                  {job.title}
-                </p>
-                <p className="text-slate-200-variant text-xs">{job.mode}, {job.location}</p>
-              </td>
-              <td className="py-sm">{job.company.name}</td>
-              <td className="py-sm text-slate-200-variant">{formatDate(`${job.createdAt}`)}</td>
-              <td className="py-sm">
-                <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-full text-xs font-label-strong">
-                  {job.status}
-                </span>
-              </td>
-              <td className="py-sm text-right">
-                <button className="text-slate-200-variant hover:text-slate-200 p-1 rounded-md hover:bg-[#111827]">
-                  <span className="material-symbols-outlined text-[20px]">
-                    more_vert
-                  </span>
-                </button>
-              </td>
-            </tr>
-              )
-            })}
-            
-          </tbody>
-        </table>
-      </div>
-      <div className="flex flex-col gap-md">
-        <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col justify-between items-start relative overflow-hidden">
-          <div className="absolute -right-8 -bottom-8 opacity-5 text-tertiary-container">
-            <span className="material-symbols-outlined text-[120px]">
-              pending_actions
-            </span>
-          </div>
-          <div className="relative z-10 w-full">
-            <p className="text-slate-200-variant font-label-strong mb-sm">
-              Pending Approvals
-            </p>
-            <div className="flex items-end gap-sm mb-md">
-              <span className="font-display text-slate-200 leading-none">
-                42
-              </span>
-              <span className="text-body-sm text-slate-200-variant mb-1">
-                items require attention
-              </span>
-            </div>
-            <button className="w-full bg-tertiary-container hover:bg-tertiary-container/90 text-on-tertiary-container font-label-strong py-sm rounded-lg transition-colors">
-              Review Now
-            </button>
-          </div>
-        </div>
-        <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex-1">
-          <h2 className="font-h3 text-slate-200 mb-md">
-            Recent Registrations
-          </h2>
-          <div className="space-y-sm">
-            {users.slice(0, 3).map((user: User) => {
-              return (
-              <div key={user.id} className="flex items-center gap-sm">
-              <div className="w-10 h-10 rounded-full bg-[#111827] flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <img
-                  className="w-full h-full object-cover"
-                  data-alt="Professional headshot of a young woman smiling warmly in a well-lit office setting, modern corporate aesthetic"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNVuWQoZ4T1Oxqnl05SdX01jVF1_oRG6ioN190aEEdFWlal66z1HfCGnd-0UiKl9kwDYaSJCpw3vo_5GFjf0o6EIX3mNUf2334aaHjkCY1w0uwW_jE2TssVyyz0q-Vmk0IXCO4tb1ixcEdk--BnK8py21ZUImaZzPyjwU1vAEw-1MBUBUey47cpNEX6J4kJ8Htg8qRzbw7CYhUUzlC0QeSeX1ALH21vRuPvK1KzInkCfhCcJM37W_a"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-label-strong text-slate-200 truncate">
-                  {user.name}
-                </p>
-                <p className="text-[12px] text-slate-200-variant truncate">
-                  {user.role}
-                </p>
-              </div>
-              <span className="text-[11px] text-slate-200-variant whitespace-nowrap">
-                {timeAgo(user.createdAt)} 
-              </span>
+
+          {/* 5 Stat Bento Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+            {/* Total Users */}
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] group-hover:scale-105 transition-transform">
+                  <Users className="w-5 h-5" />
                 </div>
-              )
-            })}
+                <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +12%
+                </span>
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                Total Users
+              </p>
+              <p className="text-2xl font-black text-[#F1F5F2] mt-1">{users.length}</p>
+            </div>
+
+            {/* Total Companies */}
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] group-hover:scale-105 transition-transform">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +8%
+                </span>
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                Total Companies
+              </p>
+              <p className="text-2xl font-black text-[#F1F5F2] mt-1">{companyData.length}</p>
+            </div>
+
+            {/* Active Jobs */}
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] group-hover:scale-105 transition-transform">
+                  <Briefcase className="w-5 h-5" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +5%
+                </span>
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                Active Jobs
+              </p>
+              <p className="text-2xl font-black text-[#F1F5F2] mt-1">{jobData.length}</p>
+            </div>
+
+            {/* Total Applications */}
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] group-hover:scale-105 transition-transform">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +15%
+                </span>
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                Applications
+              </p>
+              <p className="text-2xl font-black text-[#F1F5F2] mt-1">{applications.length}</p>
+            </div>
+
+            {/* Active Internships */}
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] group-hover:scale-105 transition-transform">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +10%
+                </span>
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                Internships
+              </p>
+              <p className="text-2xl font-black text-[#F1F5F2] mt-1">{internshipData.length}</p>
+            </div>
+          </div>
+
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* User Growth Chart (2 cols) */}
+            <div className="lg:col-span-2 bg-[#111F19] p-6 sm:p-8 rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] flex flex-col justify-between">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-base font-bold text-[#F1F5F2]">
+                    Candidate & Posting Trajectory
+                  </h2>
+                  <p className="text-xs text-[#9AAEA3]">Monthly acquisition trends</p>
+                </div>
+                <div className="flex items-center gap-4 text-xs font-bold">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-[#22C55E]" />
+                    <span className="text-[#F1F5F2]">Users</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-[#34D399]" />
+                    <span className="text-[#9AAEA3]">Jobs</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Area SVG */}
+              <div className="h-64 w-full relative flex items-end">
+                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 50">
+                  <defs>
+                    <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#22C55E" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M0,50 L0,38 Q20,30 40,32 T70,18 T100,8 L100,50 Z"
+                    fill="url(#userGrad)"
+                  />
+                  <path
+                    d="M0,38 Q20,30 40,32 T70,18 T100,8"
+                    fill="none"
+                    stroke="#22C55E"
+                    strokeWidth="1.5"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <path
+                    d="M0,46 Q25,40 50,38 T75,28 T100,20"
+                    fill="none"
+                    stroke="#34D399"
+                    strokeWidth="1.5"
+                    strokeDasharray="2 2"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </div>
+              <div className="flex justify-between text-[11px] text-[#9AAEA3] font-bold mt-3 border-t border-[#20352B] pt-3">
+                <span>Jan</span>
+                <span>Feb</span>
+                <span>Mar</span>
+                <span>Apr</span>
+                <span>May</span>
+                <span>Jun</span>
+                <span>Jul</span>
+                <span>Aug</span>
+              </div>
+            </div>
+
+            {/* Category Breakdown (1 col) */}
+            <div className="bg-[#111F19] p-6 sm:p-8 rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] flex flex-col justify-between">
+              <h2 className="text-base font-bold text-[#F1F5F2] mb-1">
+                Category Distribution
+              </h2>
+              <p className="text-xs text-[#9AAEA3] mb-4">Postings by sector</p>
+
+              <div className="space-y-3.5">
+                {[
+                  { name: 'Software & Tech', pct: '55%', color: 'bg-[#22C55E]' },
+                  { name: 'Design & UX', pct: '20%', color: 'bg-[#34D399]' },
+                  { name: 'Marketing & Growth', pct: '12%', color: 'bg-[#10B981]' },
+                  { name: 'Finance & Operations', pct: '8%', color: 'bg-[#059669]' },
+                  { name: 'Healthcare / Other', pct: '5%', color: 'bg-[#047857]' },
+                ].map((item, idx) => (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-xs font-bold">
+                      <span className="text-[#F1F5F2]">{item.name}</span>
+                      <span className="text-[#22C55E]">{item.pct}</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-[#0D1814] overflow-hidden border border-[#20352B]">
+                      <div
+                        className={`h-full rounded-full ${item.color}`}
+                        style={{ width: item.pct }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Tables & Moderation Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
+            {/* Recent Postings Table (8 cols) */}
+            <div className="lg:col-span-8 bg-[#111F19] rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden">
+              <div className="px-6 py-5 border-b border-[#20352B] flex justify-between items-center">
+                <div>
+                  <h2 className="text-base font-bold text-[#F1F5F2]">
+                    Recent Open Requisitions
+                  </h2>
+                  <p className="text-xs text-[#9AAEA3]">Live job posts on platform</p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-[#0D1814] border-b border-[#20352B]">
+                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Role & Mode
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Company
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Posted
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#20352B]">
+                    {jobData.slice(0, 4).map((job) => (
+                      <tr key={job.id} className="hover:bg-[#0D1814]/60 transition-colors">
+                        <td className="px-6 py-4">
+                          <p className="text-xs font-bold text-[#F1F5F2]">{job.title}</p>
+                          <p className="text-[11px] text-[#9AAEA3]">
+                            {job.mode || 'Remote'} • {job.location}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4 text-xs font-medium text-[#F1F5F2]">
+                          {job.company?.name || 'Enterprise'}
+                        </td>
+                        <td className="px-6 py-4 text-xs text-[#9AAEA3]">
+                          {formatDate(String(job.createdAt))}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
+                            {job.status || 'Active'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Sidebar (4 cols): Pending Approvals + Registrations */}
+            <div className="lg:col-span-4 space-y-6">
+              
+              {/* Approvals */}
+              <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#F59E0B] uppercase tracking-wider">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>Pending Moderation</span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-3xl font-black text-[#F1F5F2]">18</span>
+                  <span className="text-xs text-[#9AAEA3]">items require review</span>
+                </div>
+                <button className="w-full py-2.5 bg-[#F59E0B]/15 hover:bg-[#F59E0B]/25 border border-[#F59E0B]/30 text-[#F59E0B] rounded-xl text-xs font-bold transition-all cursor-pointer">
+                  Review Pending Queue
+                </button>
+              </div>
+
+              {/* Registrations */}
+              <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] space-y-4">
+                <h3 className="text-xs font-bold text-[#F1F5F2] uppercase tracking-wider">
+                  Recent User Signups
+                </h3>
+
+                <div className="space-y-3">
+                  {users.slice(0, 4).map((u) => (
+                    <div key={u.id} className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-[#162820] border border-[#20352B] flex items-center justify-center text-xs font-bold text-[#22C55E] shrink-0">
+                          {u.name ? u.name.charAt(0) : 'U'}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-[#F1F5F2] truncate">{u.name}</p>
+                          <p className="text-[10px] text-[#9AAEA3] truncate">{u.role}</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-[#9AAEA3] shrink-0">
+                        {timeAgo(u.createdAt)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
-  </div>
-</main>
+  );
+};
 
-    </div>
-  )
-}
-
-export default AdminDashboard
+export default AdminDashboard;

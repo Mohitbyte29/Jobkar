@@ -1,294 +1,194 @@
+import UserNav from "@/components/UserNav";
+import {
+  FolderGit2,
+  Plus,
+  ExternalLink,
+  Eye,
+  TrendingUp,
+  Code2,
+  Layers,
+  Sparkles,
+} from "lucide-react";
 
 const Projects = () => {
+  const projects = [
+    {
+      id: 1,
+      title: "NexGen FinTrack Dashboard",
+      description:
+        "A comprehensive financial monitoring tool designed for modern SaaS businesses. Features real-time data visualization, multi-currency support, and automated reporting modules using high-performance state management.",
+      tags: ["React", "TypeScript", "Chart.js", "Tailwind CSS"],
+      github: "https://github.com",
+      live: "https://example.com",
+      status: "Production",
+    },
+    {
+      id: 2,
+      title: "SmartHome IoT Central",
+      description:
+        "An enterprise-grade IoT gateway facilitating seamless communication between residential smart devices. Focused on security and low-latency data transmission with a robust backend architecture.",
+      tags: ["Node.js", "MQTT", "GraphQL", "Docker"],
+      github: "https://github.com",
+      live: "https://example.com",
+      status: "Featured",
+    },
+    {
+      id: 3,
+      title: "LogiChain AI Optimizer",
+      description:
+        "Machine learning model for optimizing international shipping routes. Reduced fuel consumption by 18% in pilot tests by analyzing weather patterns and port congestion in real-time.",
+      tags: ["Python", "TensorFlow", "FastAPI", "PostgreSQL"],
+      github: "https://github.com",
+      live: "https://example.com",
+      status: "Production",
+    },
+    {
+      id: 4,
+      title: "CareSync Patient Portal",
+      description:
+        "Secure patient record management system compliant with health data regulations. Streamlines appointment scheduling and telemedicine consultations for multi-specialty clinics.",
+      tags: ["Next.js", "PostgreSQL", "Prisma", "Tailwind CSS"],
+      github: "https://github.com",
+      live: "https://example.com",
+      status: "Featured",
+    },
+  ];
+
   return (
-    <main className="grow w-full max-w-max_width mx-auto px-gutter py-xl">
-  {/* Page Header Section */}
-  <div className="flex flex-col md:flex-row md:items-end justify-between mb-lg gap-md">
-    <div>
-      <h1 className="font-h1 text-h1 text-[#F1F5F2]">My Projects</h1>
-      <p className="text-[#9AAEA3] font-body-lg text-body-lg mt-base">
-        Manage your professional portfolio and showcase your technical expertise
-        to potential employers.
-      </p>
-    </div>
-    <button className="inline-flex items-center gap-xs bg-secondary text-on-secondary px-md py-sm font-label-strong text-label-strong rounded-xl hover:opacity-90 transition-all shadow-sm">
-      <span className="material-symbols-outlined">add</span>
-      Add Project
-    </button>
-  </div>
-  {/* Dashboard Stats or Overview (Optional but adds high-fidelity feel) */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
-    <div className="bg-[#0D1814] p-md rounded-xl border border-[#20352B] flex items-center gap-md">
-      <div className="bg-[#22C55E]/15 p-sm rounded-lg">
-        <span className="material-symbols-outlined text-[#34D399]">
-          folder_shared
-        </span>
-      </div>
-      <div>
-        <span className="font-label-caps text-label-caps text-[#9AAEA3] block uppercase">
-          Total Projects
-        </span>
-        <span className="font-h2 text-h2 text-[#F1F5F2]">12</span>
-      </div>
-    </div>
-    <div className="bg-[#0D1814] p-md rounded-xl border border-[#20352B] flex items-center gap-md">
-      <div className="bg-tertiary-fixed p-sm rounded-lg">
-        <span className="material-symbols-outlined text-on-tertiary-fixed-variant">
-          visibility
-        </span>
-      </div>
-      <div>
-        <span className="font-label-caps text-label-caps text-[#9AAEA3] block uppercase">
-          Profile Views
-        </span>
-        <span className="font-h2 text-h2 text-[#F1F5F2]">842</span>
-      </div>
-    </div>
-    <div className="bg-[#0D1814] p-md rounded-xl border border-[#20352B] flex items-center gap-md">
-      <div className="bg-[#22C55E]-fixed p-sm rounded-lg">
-        <span className="material-symbols-outlined text-[#07110D]-fixed-variant">
-          trending_up
-        </span>
-      </div>
-      <div>
-        <span className="font-label-caps text-label-caps text-[#9AAEA3] block uppercase">
-          Engagement
-        </span>
-        <span className="font-h2 text-h2 text-[#F1F5F2]">+14%</span>
-      </div>
-    </div>
-  </div>
-  {/* Projects Grid */}
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
-    {/* Project Card 1 */}
-    <div className="bg-[#111F19] p-md rounded-xl border border-[#20352B] project-card-shadow flex flex-col gap-md transition-transform hover:-translate-y-1 duration-300">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-md">
-          <div className="w-16 h-16 bg-[#162820] rounded-lg overflow-hidden shrink-0">
-            <img
-              className="w-full h-full object-cover"
-              data-alt="A clean minimalist application icon for a financial technology project, featuring a geometric logo design with professional deep blue and teal accents on a crisp white background. The aesthetic is modern, corporate, and highly digital, conveying trust and efficiency."
-              src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
-            />
-          </div>
-          <div>
-            <h3 className="font-h3 text-h3 text-[#F1F5F2]">
-              NexGen FinTrack Dashboard
-            </h3>
-            <div className="flex flex-wrap gap-base mt-xs">
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                React
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                TypeScript
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Chart.js
-              </span>
-            </div>
-          </div>
-        </div>
-        <button className="text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors">
-          <span className="material-symbols-outlined">more_vert</span>
-        </button>
-      </div>
-      <p className="text-[#9AAEA3] font-body-md text-body-md">
-        A comprehensive financial monitoring tool designed for modern SaaS
-        businesses. Features real-time data visualization, multi-currency
-        support, and automated reporting modules using high-performance state
-        management.
-      </p>
-      <div className="flex items-center gap-md mt-auto pt-md border-t border-[#20352B]">
-        <a
-          className="flex items-center gap-xs text-[#F1F5F2] font-label-strong text-label-strong hover:text-[#22C55E] transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">code</span>
-          GitHub Repo
-        </a>
-        <a
-          className="flex items-center gap-xs text-[#22C55E] font-label-strong text-label-strong hover:opacity-80 transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">
-            open_in_new
-          </span>
-          Live Preview
-        </a>
-      </div>
-    </div>
-    {/* Project Card 2 */}
-    <div className="bg-[#111F19] p-md rounded-xl border border-[#20352B] project-card-shadow flex flex-col gap-md transition-transform hover:-translate-y-1 duration-300">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-md">
-          <div className="w-16 h-16 bg-[#162820] rounded-lg overflow-hidden shrink-0">
-            <img
-              className="w-full h-full object-cover"
-              data-alt="A high-end architectural visualization of a smart home mobile interface icon, emphasizing clean lines and a deep indigo color palette. The image feels technologically sophisticated and professional, with a soft ambient glow that highlights the user interface elements."
-              src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
-            />
-          </div>
-          <div>
-            <h3 className="font-h3 text-h3 text-[#F1F5F2]">
-              SmartHome IoT Central
-            </h3>
-            <div className="flex flex-wrap gap-base mt-xs">
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Node.js
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                MQTT
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                GraphQL
-              </span>
-            </div>
-          </div>
-        </div>
-        <button className="text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors">
-          <span className="material-symbols-outlined">more_vert</span>
-        </button>
-      </div>
-      <p className="text-[#9AAEA3] font-body-md text-body-md">
-        An enterprise-grade IoT gateway facilitating seamless communication
-        between residential smart devices. Focused on security and low-latency
-        data transmission with a robust backend architecture.
-      </p>
-      <div className="flex items-center gap-md mt-auto pt-md border-t border-[#20352B]">
-        <a
-          className="flex items-center gap-xs text-[#F1F5F2] font-label-strong text-label-strong hover:text-[#22C55E] transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">code</span>
-          GitHub Repo
-        </a>
-        <a
-          className="flex items-center gap-xs text-[#22C55E] font-label-strong text-label-strong hover:opacity-80 transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">
-            open_in_new
-          </span>
-          Live Preview
-        </a>
-      </div>
-    </div>
-    {/* Project Card 3 */}
-    <div className="bg-[#111F19] p-md rounded-xl border border-[#20352B] project-card-shadow flex flex-col gap-md transition-transform hover:-translate-y-1 duration-300">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-md">
-          <div className="w-16 h-16 bg-[#162820] rounded-lg overflow-hidden shrink-0">
-            <img
-              className="w-full h-full object-cover"
-              data-alt="A professional branding icon for an AI-powered logistics platform, featuring abstract connected nodes that suggest a neural network. The visual style uses a balanced palette of slate gray and vibrant teal, set against a sterile, high-end gallery-white background to evoke a sense of corporate stability and innovation."
-              src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
-            />
-          </div>
-          <div>
-            <h3 className="font-h3 text-h3 text-[#F1F5F2]">
-              LogiChain AI Optimizer
-            </h3>
-            <div className="flex flex-wrap gap-base mt-xs">
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Python
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                TensorFlow
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Docker
-              </span>
-            </div>
-          </div>
-        </div>
-        <button className="text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors">
-          <span className="material-symbols-outlined">more_vert</span>
-        </button>
-      </div>
-      <p className="text-[#9AAEA3] font-body-md text-body-md">
-        Machine learning model for optimizing international shipping routes.
-        Reduced fuel consumption by 18% in pilot tests by analyzing weather
-        patterns and port congestion in real-time.
-      </p>
-      <div className="flex items-center gap-md mt-auto pt-md border-t border-[#20352B]">
-        <a
-          className="flex items-center gap-xs text-[#F1F5F2] font-label-strong text-label-strong hover:text-[#22C55E] transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">code</span>
-          GitHub Repo
-        </a>
-        <a
-          className="flex items-center gap-xs text-[#22C55E] font-label-strong text-label-strong hover:opacity-80 transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">
-            open_in_new
-          </span>
-          Live Preview
-        </a>
-      </div>
-    </div>
-    {/* Project Card 4 */}
-    <div className="bg-[#111F19] p-md rounded-xl border border-[#20352B] project-card-shadow flex flex-col gap-md transition-transform hover:-translate-y-1 duration-300">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-md">
-          <div className="w-16 h-16 bg-[#162820] rounded-lg overflow-hidden shrink-0">
-            <img
-              className="w-full h-full object-cover"
-              data-alt="A minimalist UI kit icon for a healthcare management application, showcasing a clean medical cross symbol integrated into a modern digital layout. The lighting is soft and high-key, using shades of calm teal and white to represent trust, safety, and professional excellence in the medical software industry."
-              src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
-            />
-          </div>
-          <div>
-            <h3 className="font-h3 text-h3 text-[#F1F5F2]">
-              CareSync Patient Portal
-            </h3>
-            <div className="flex flex-wrap gap-base mt-xs">
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Next.js
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                PostgreSQL
-              </span>
-              <span className="bg-[#22C55E]/15 text-[#34D399] px-xs py-base font-label-caps text-label-caps rounded-full">
-                Prisma
-              </span>
-            </div>
-          </div>
-        </div>
-        <button className="text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors">
-          <span className="material-symbols-outlined">more_vert</span>
-        </button>
-      </div>
-      <p className="text-[#9AAEA3] font-body-md text-body-md">
-        Secure patient record management system compliant with health data
-        regulations. Streamlines appointment scheduling and telemedicine
-        consultations for multi-specialty clinics.
-      </p>
-      <div className="flex items-center gap-md mt-auto pt-md border-t border-[#20352B]">
-        <a
-          className="flex items-center gap-xs text-[#F1F5F2] font-label-strong text-label-strong hover:text-[#22C55E] transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">code</span>
-          GitHub Repo
-        </a>
-        <a
-          className="flex items-center gap-xs text-[#22C55E] font-label-strong text-label-strong hover:opacity-80 transition-colors"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[18px]">
-            open_in_new
-          </span>
-          Live Preview
-        </a>
-      </div>
-    </div>
-  </div>
-</main>
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] flex font-sans">
+      <UserNav />
 
-  )
-}
+      <main className="flex-1 ml-64 p-8 min-w-0">
+        <div className="max-w-[1360px] mx-auto w-full space-y-8 pb-16">
+          
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111F19] border border-[#20352B] text-[#22C55E] text-xs font-semibold uppercase tracking-wider mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Candidate Portfolio</span>
+              </div>
+              <h1 className="text-3xl font-black text-[#F1F5F2] tracking-tight">
+                Projects & Case Studies
+              </h1>
+              <p className="text-xs text-[#9AAEA3] mt-1">
+                Showcase your technical architecture, open-source work, and live web applications.
+              </p>
+            </div>
 
-export default Projects
+            <button className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+              <Plus className="w-4 h-4" />
+              <span>Add New Project</span>
+            </button>
+          </div>
+
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] shrink-0">
+                <FolderGit2 className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Total Projects
+                </p>
+                <p className="text-2xl font-black text-[#F1F5F2] mt-0.5">{projects.length}</p>
+              </div>
+            </div>
+
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#34D399]/15 border border-[#34D399]/30 flex items-center justify-center text-[#34D399] shrink-0">
+                <Eye className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Portfolio Views
+                </p>
+                <p className="text-2xl font-black text-[#F1F5F2] mt-0.5">842</p>
+              </div>
+            </div>
+
+            <div className="bg-[#111F19] p-5 rounded-3xl border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] shrink-0">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  Recruiter Inquiries
+                </p>
+                <p className="text-2xl font-black text-[#F1F5F2] mt-0.5">+14%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Projects Grid 2 Cols */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {projects.map((proj) => (
+              <div
+                key={proj.id}
+                className="bg-[#111F19] p-6 sm:p-7 rounded-3xl border border-[#20352B] shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:border-[#22C55E]/40 transition-all flex flex-col justify-between space-y-5 group"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-2xl bg-[#162820] border border-[#20352B] flex items-center justify-center text-[#22C55E] shrink-0 font-bold">
+                        <Code2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-[#F1F5F2] group-hover:text-[#22C55E] transition-colors">
+                          {proj.title}
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#22C55E] text-[10px] font-extrabold">
+                          {proj.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#9AAEA3] leading-relaxed mb-4">
+                    {proj.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {proj.tags.map((t) => (
+                      <span
+                        key={t}
+                        className="px-2.5 py-1 rounded-lg bg-[#0D1814] border border-[#20352B] text-[11px] font-semibold text-[#F1F5F2]"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-[#20352B] flex items-center justify-between">
+                  <a
+                    href={proj.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors"
+                  >
+                    {/* <Github className="w-4 h-4" /> */}
+                    <span>Source Code</span>
+                  </a>
+
+                  <a
+                    href={proj.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#22C55E] hover:text-[#34D399] transition-colors"
+                  >
+                    <span>Live Preview</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Projects;

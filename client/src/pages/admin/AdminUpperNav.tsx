@@ -1,129 +1,132 @@
 import type { useCompanySearch } from '@/hooks/CompSearch';
 import type { useInternshipsearch } from '@/hooks/InternshipSearch';
 import { usejobSearch } from '@/hooks/JobSearch';
-import { useNavigate } from 'react-router';
+import { Search, Bell, HelpCircle, Shield } from 'lucide-react';
 
-interface AdminUpperNavProps{
-  searchType?: "jobs" | "internships" | "companies" | null;
-  search?: 
+interface AdminUpperNavProps {
+  searchType?: 'jobs' | 'internships' | 'companies' | null;
+  search?:
     | ReturnType<typeof usejobSearch>
     | ReturnType<typeof useCompanySearch>
-  | ReturnType<typeof useInternshipsearch>
-  | null;
+    | ReturnType<typeof useInternshipsearch>
+    | null;
 }
 
 type SearchResultItem =
-  | ReturnType<typeof usejobSearch>["results"][number]
-  | ReturnType<typeof useCompanySearch>["results"][number]
-  | ReturnType<typeof useInternshipsearch>["results"][number];
+  | ReturnType<typeof usejobSearch>['results'][number]
+  | ReturnType<typeof useCompanySearch>['results'][number]
+  | ReturnType<typeof useInternshipsearch>['results'][number];
 
-const AdminUpperNav = ({ 
-    searchType,
-    search
- }: AdminUpperNavProps) => {
+const AdminUpperNav = ({ searchType, search }: AdminUpperNavProps) => {
   const handleChange = search?.handleChange;
-  const query = search?.query ?? "";
+  const query = search?.query ?? '';
   const results = search?.results ?? [];
   const setQuery = search?.setQuery;
   const setResults = search?.setResults;
-  const navigate = useNavigate();
 
-    const getItemLabel = (item: SearchResultItem): string => {
-      if (searchType === "companies" && "name" in item) {
-        return item.name;
-      }
-      if ("title" in item) {
-        return item.title;
-      }
-      return "";
-    };
+  const getItemLabel = (item: SearchResultItem): string => {
+    if (searchType === 'companies' && 'name' in item) {
+      return item.name;
+    }
+    if ('title' in item) {
+      return item.title;
+    }
+    return '';
+  };
 
-    const getItemKey = (item: SearchResultItem, index: number): string => {
-      if ("id" in item) {
-        return String(item.id);
-      }
-      if ("name" in item) {
-        return item.name;
-      }
-      return `result-${index}`;
-    };
+  const getItemKey = (item: SearchResultItem, index: number): string => {
+    if ('id' in item) {
+      return String(item.id);
+    }
+    if ('name' in item) {
+      return item.name;
+    }
+    return `result-${index}`;
+  };
 
-    const uniqueResults = Array.from(
-      new Map(
-        results
-          .map((item) => ({ item, label: getItemLabel(item) }))
-          .filter(({ label }) => label.trim().length > 0)
-          .map(({ item, label }) => [label, item] as const)
-      ).values()
-    );
+  const uniqueResults = Array.from(
+    new Map(
+      results
+        .map((item) => ({ item, label: getItemLabel(item) }))
+        .filter(({ label }) => label.trim().length > 0)
+        .map(({ item, label }) => [label, item] as const)
+    ).values()
+  );
 
   return (
-    <header className="fixed top-0 left-72 right-0 h-20 bg-[#0A0F1A]/80 backdrop-blur-xl border-b border-[#1E293B] z-40 px-md flex items-center justify-between">
-      <div className="flex-1 max-w-3xl relative">
-      <div className="relative flex items-center">
-        <span className="material-symbols-outlined absolute left-4 text-outline">
-          search
-        </span>
+    <header className="fixed top-0 left-72 right-0 h-20 bg-[#07110D]/90 backdrop-blur-xl border-b border-[#20352B] z-30 px-8 flex items-center justify-between">
+      {/* Search Input */}
+      <div className="flex-1 max-w-2xl relative">
+        <div className="relative flex items-center">
+          <Search className="w-4 h-4 absolute left-4 text-[#9AAEA3]" />
 
-        <input
-          className="w-full h-11 pl-12 pr-4 bg-[#111827] rounded-full border-none focus:ring-2 focus:ring-secondary/50 text-body-sm outline-none transition-all"
-          placeholder="Search records, users, jobs..."
-          type="text"
-          onChange={handleChange}
-          value={query}
-          disabled={!search} 
-        />
+          <input
+            className="w-full h-11 pl-11 pr-4 bg-[#0D1814] border border-[#20352B] focus:border-[#22C55E] focus:ring-1 focus:ring-[#22C55E] rounded-xl text-sm text-[#F1F5F2] placeholder:text-[#9AAEA3]/50 outline-none transition-all disabled:opacity-40"
+            placeholder={
+              search
+                ? `Search ${searchType || 'records, entities'}...`
+                : 'Global admin search (disabled on this view)...'
+            }
+            type="text"
+            onChange={handleChange}
+            value={query}
+            disabled={!search}
+          />
+        </div>
+
+        {/* Autocomplete Dropdown */}
+        {search && uniqueResults.length > 0 && (
+          <ul className="absolute top-full mt-2 left-0 right-0 z-50 max-h-80 overflow-y-auto rounded-2xl border border-[#20352B] bg-[#111F19] shadow-2xl p-1.5 space-y-1">
+            {uniqueResults.map((item, index) => {
+              const label = getItemLabel(item);
+              return (
+                <li
+                  key={getItemKey(item, index)}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setQuery?.(label);
+                    setResults?.([]);
+                  }}
+                >
+                  <div className="px-4 py-2.5 rounded-xl hover:bg-[#0D1814] text-[#F1F5F2] hover:text-[#22C55E] text-xs font-bold transition-colors">
+                    {label}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
-      {search && uniqueResults.length > 0 && (
-        <ul className="absolute top-full mt-2 left-0 right-0 z-50 max-h-80 overflow-y-auto rounded-xl border border-[#1E293B] bg-[#111827] shadow-lg">
-          {uniqueResults.map((item, index) => {
-            const label = getItemLabel(item);
-            return (
-            <li
-              key={getItemKey(item, index)}
-              className="cursor-pointer border-b border-[#1E293B] last:border-b-0"
-              onClick={() => {
-                setQuery?.(label);
-                setResults?.([]);
-              }}
-            >
-              <div className="bg-[#111827] text-gray-900 px-4 py-2 hover:bg-gray-100">
-                <strong>{label}</strong>
-              </div>
-            </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+      {/* Right Controls */}
+      <div className="flex items-center gap-4">
+        <button className="relative p-2.5 text-[#9AAEA3] hover:text-[#F1F5F2] hover:bg-[#111F19] rounded-xl transition-colors cursor-pointer">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-[#22C55E] rounded-full ring-2 ring-[#07110D]" />
+        </button>
 
+        <button className="p-2.5 text-[#9AAEA3] hover:text-[#F1F5F2] hover:bg-[#111F19] rounded-xl transition-colors cursor-pointer">
+          <HelpCircle className="w-5 h-5" />
+        </button>
 
-  <div className="flex items-center gap-md">
-    <button className="relative p-2 text-slate-200-variant hover:bg-[#111827]-high rounded-full transition-colors">
-      <span className="material-symbols-outlined">notifications</span>
-      <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
-    </button>
-    <button className="p-2 text-slate-200-variant hover:bg-[#111827]-high rounded-full transition-colors">
-      <span className="material-symbols-outlined">help</span>
-    </button>
-    <div className="flex items-center gap-sm pl-sm border-l border-[#1E293B]">
-      <div className="text-right hidden lg:block">
-        <p className="font-label-strong text-label-strong text-slate-200">
-          Admin User
-        </p>
+        <div className="h-6 w-px bg-[#20352B] mx-1" />
+
+        <div className="flex items-center gap-3">
+          <div className="text-right hidden sm:block">
+            <p className="text-xs font-bold text-[#F1F5F2] leading-tight">
+              Root Administrator
+            </p>
+            <p className="text-[10px] text-[#22C55E] uppercase tracking-wider font-extrabold">
+              Superadmin
+            </p>
+          </div>
+          <div className="w-9 h-9 rounded-full bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] font-bold text-xs">
+            <Shield className="w-4 h-4" />
+          </div>
+        </div>
       </div>
-      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-        <span className="material-symbols-outlined text-white text-[18px]">
-          person
-        </span>
-      </div>
-      
-    </div>
-  </div>
-</header>
+    </header>
+  );
+};
 
-  )
-}
-
-export default AdminUpperNav
+export default AdminUpperNav;

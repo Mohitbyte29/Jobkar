@@ -1,12 +1,13 @@
-import AdminNav from '@/components/AdminNav'
+import AdminNav from '@/components/AdminNav';
 import { useJobs } from '@/context/JobsContext';
 import AlphaCase from '../../../utils/AlphaCase';
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee, Briefcase, CheckCircle2, XCircle, ArrowRight, Building2, MapPin, Sparkles } from 'lucide-react';
 import AdminUpperNav from './AdminUpperNav';
 import { usejobSearch } from '@/hooks/JobSearch';
+import toast, { Toaster } from 'react-hot-toast';
 
 const JobManagement = () => {
-  const {jobData, setJobData} = useJobs();
+  const { jobData } = useJobs();
   const jobSearch = usejobSearch();
   const normalizedQuery = jobSearch.query.trim().toLowerCase();
   const jobs = normalizedQuery
@@ -16,135 +17,117 @@ const JobManagement = () => {
           job.title.toLowerCase().includes(normalizedQuery)
         )
     : jobData;
+
+  const handleApprove = (title: string) => {
+    toast.success(`Job "${title}" approved for publication!`);
+  };
+
+  const handleReject = (title: string) => {
+    toast.error(`Job "${title}" rejected.`);
+  };
+
   return (
-    <div>
-      <>
-  {/* Sidebar Navigation */}
-  <AdminNav />
-  {/* Top App Bar */}
-  <AdminUpperNav 
-    searchType="jobs"
-    search={jobSearch}
-  />
-  {/* Main Content Canvas */}
-  <main className="ml-64 mt-16 p-margin max-w-max_width mx-auto">
-    {/* Header Section */}
-    <div className="flex justify-between items-end mb-md">
-      <div>
-        <h2 className="font-h1 text-h1 text-slate-200">Job Moderation</h2>
-        <p className="font-body-md text-slate-200-variant mt-xs">
-          Manage and approve pending job listings to ensure platform quality.
-        </p>
-      </div>
-      <div className="flex gap-sm">
-        <div className="flex items-center gap-2 bg-[#111827] px-3 py-2 rounded-lg border border-[#1E293B] shadow-sm">
-          <span
-            className="material-symbols-outlined text-blue-400"
-            data-icon="pending_actions"
-          >
-            pending_actions
-          </span>
-          <span className="font-label-strong text-slate-200">24 Pending</span>
-        </div>
-        <div className="flex items-center gap-2 bg-[#111827] px-3 py-2 rounded-lg border border-[#1E293B] shadow-sm">
-          <span
-            className="material-symbols-outlined text-error"
-            data-icon="report"
-          >
-            report
-          </span>
-          <span className="font-label-strong text-slate-200">3 Reported</span>
-        </div>
-      </div>
-    </div>
-    {/* Moderation Queue */}
-    <div className=" grid grid-cols-1 gap-md">
-      {/* Job Moderation Card 1 */}
-      {jobs && jobs.map((job) => {
-        return (
-      <div key={job.id} className="bg-[#111827] rounded-xl p-md border border-[#1E293B] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
-          <>
-          <div className="flex items-center gap-md mb-8">
-          <div className="w-16 h-16 rounded-lg bg-[#0F172A] flex items-center justify-center p-3">
-            <img
-              alt="CloudScale Logo"
-              className="w-full h-full object-contain"
-              data-alt="A minimalist logo for a fictional tech company called CloudScale, featuring clean geometric shapes in a deep navy blue and teal color scheme. The aesthetic is professional and corporate, set against a pristine white background to reflect a modern software-as-a-service brand identity."
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHInkMswpB0HmVEWCdQPMFZFIYUkQtftknmGhmtoNqpH1jatOpuJo5EYUg0x6YR5jsiJ_O4QszDfXkZzj4EtMoR1458IBlKSeqsKm123r8JOiJDegDic98c9xE_CYPsZFlsI7umWsjY9L8AUOvjS3pndtbdjTcvNi_dZozzUGRwpZ7ZbZZiRDpItpHshJI0VNwtoiMpTDM3LFrtdj5alb1_zahRtkfp-6zx8tZk1ZvIr1fvqAugacoLpcp2DYywVK4qARPTYok5M8"
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-xs">
-              <span className="font-label-caps text-blue-400 bg-secondary/10 px-2 py-0.5 rounded">
-                NEW POST
-              </span>
-              <span className="font-body-sm text-slate-200-variant">
-                Posted 2h ago
-              </span>
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans">
+      <Toaster position="top-right" />
+      <AdminNav />
+      <AdminUpperNav searchType="jobs" search={jobSearch} />
+
+      <main className="ml-72 pt-20 min-h-screen p-8">
+        <div className="max-w-[1440px] mx-auto w-full space-y-8 pb-20">
+          
+          {/* Header Section */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <div>
+              <h1 className="text-3xl font-black text-[#F1F5F2] tracking-tight mb-1">
+                Job Listing Moderation
+              </h1>
+              <p className="text-sm text-[#9AAEA3]">
+                Review and approve incoming job submissions to ensure compliance and quality.
+              </p>
             </div>
-            <h3 className="font-h3 text-h3 text-slate-200">
-              {job.title}
-            </h3>
-            <p className="font-body-md text-slate-200-variant">
-              {job.company.name} • {job.location} (Remote)
-            </p>
-            <div className="flex gap-2 mt-sm">
-              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
-                {AlphaCase(job.status)}
-              </span>
-              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
-                <span className="flex items-center gap-1">
-                  <IndianRupee size={16} />
-                  {job.salaryMin / 1000}k - <IndianRupee size={16}/>{job.salaryMax / 1000}k
-                </span>
-              </span>
-              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
-                {AlphaCase(job.category)}
-              </span>
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#111F19] rounded-xl border border-[#20352B] text-xs">
+                <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+                <span className="text-[#F1F5F2] font-bold">{jobs.length} Active Listings</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex items-center gap-sm">
-          <button className="px-md py-sm font-label-strong text-blue-400 border border-secondary rounded-lg hover:bg-secondary/5 transition-colors">
-            Quick Approve
-          </button>
-          <button className="px-md py-sm font-label-strong bg-blue-600 text-white rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
-            <span>Review</span>
-            <span className="material-symbols-outlined text-sm">
-              arrow_forward
-            </span>
-          </button>
-        </div>
-        </>
-      </div>
-        )
-      })}
-    </div>
-    {/* Batch Actions Footer */}
-    <div className="fixed bottom-0 right-0 left-64 bg-gray-200 border-t border-[#1E293B] px-6 py-4 flex justify-between items-center z-20">
-      <div className="flex items-center gap-2">
-        <input
-          className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
-          type="checkbox"
-        />
-        <span className="text-sm font-medium text-slate-300">
-          Select All (24 items)
-        </span>
-      </div>
-      <div className="flex gap-3">
-        <button className="px-4 py-2 border border-error text-error font-label-strong rounded-lg hover:bg-red-500/5 transition-colors">
-          Reject Selected
-        </button>
-        <button className="px-4 py-2 bg-secondary text-white font-label-strong rounded-lg shadow-sm hover:opacity-90 transition-opacity">
-          Approve Selected
-        </button>
-      </div>
-    </div>
-  </main>
-</>
 
-    </div>
-  )
-}
+          {/* Moderation Queue List */}
+          <div className="space-y-4">
+            {jobs && jobs.length > 0 ? (
+              jobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-[#111F19] rounded-3xl p-6 sm:p-7 border border-[#20352B] shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:border-[#22C55E]/40 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+                >
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-14 h-14 rounded-2xl bg-[#162820] border border-[#20352B] flex items-center justify-center text-[#22C55E] font-bold text-xl shrink-0">
+                      <Briefcase className="w-6 h-6" />
+                    </div>
 
-export default JobManagement
+                    <div className="space-y-2 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#22C55E]/15 border border-[#22C55E]/30 text-[#22C55E] text-[10px] font-extrabold">
+                          {AlphaCase(job.status || 'Active')}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#0D1814] border border-[#20352B] text-[#9AAEA3] text-[10px] font-semibold">
+                          {AlphaCase(job.category || 'Engineering')}
+                        </span>
+                      </div>
+
+                      <h3 className="text-lg font-bold text-[#F1F5F2] tracking-tight">
+                        {job.title}
+                      </h3>
+
+                      <div className="flex items-center gap-2 text-xs text-[#9AAEA3]">
+                        <Building2 className="w-3.5 h-3.5 text-[#22C55E]" />
+                        <span className="font-semibold text-[#F1F5F2]">{job.company?.name || 'Enterprise'}</span>
+                        <span>•</span>
+                        <MapPin className="w-3.5 h-3.5 text-[#22C55E]" />
+                        <span>{job.location} ({job.mode || 'Remote'})</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1 text-xs">
+                        <span className="inline-flex items-center gap-1 text-[#22C55E] font-bold">
+                          <IndianRupee className="w-3.5 h-3.5" />
+                          {job.salaryMin / 1000}k - {job.salaryMax / 1000}k / yr
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-3 self-end md:self-center shrink-0">
+                    <button
+                      onClick={() => handleReject(job.title)}
+                      className="px-4 py-2.5 border border-[#EF4444]/30 hover:bg-[#EF4444]/15 text-[#EF4444] text-xs font-bold rounded-xl transition-all cursor-pointer"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      onClick={() => handleApprove(job.title)}
+                      className="px-5 py-2.5 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] text-xs font-extrabold rounded-xl shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Approve</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-12 text-center bg-[#111F19] rounded-3xl border border-[#20352B] space-y-2">
+                <Briefcase className="w-10 h-10 text-[#22C55E] mx-auto" />
+                <h3 className="text-base font-bold text-[#F1F5F2]">No jobs match criteria</h3>
+                <p className="text-xs text-[#9AAEA3]">Try clearing search filters.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default JobManagement;

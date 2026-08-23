@@ -378,7 +378,7 @@ const JobPage = () => {
               </div>
 
               <p className="text-xs text-[#9AAEA3] leading-relaxed pt-3 border-t border-[#20352B]">
-                {job?.company?.description ||
+                {job?.company.website ||
                   'Global leader in technology innovation, building cutting-edge engineering systems and intelligent software products.'}
               </p>
             </div>
