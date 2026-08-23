@@ -182,10 +182,16 @@ export function JobsCategory() {
         { withCredentials: true }
       );
       toast.success('Job saved successfully!', { icon: '✨' });
-      handlegetSavedJobs();
+      await handlegetSavedJobs();
     } catch (error) {
       console.error('Error saving job:', error);
       if (axios.isAxiosError(error) && error.response) {
+        const message = error.response?.data?.error || 'Failed to save job';
+        if (message.toLowerCase().includes('already saved')) {
+          toast.error('This job is already saved.');
+          await handlegetSavedJobs();
+          return;
+        }
         console.error('Error response data:', error.response.data);
       }
       toast.error('Failed to save job');
@@ -202,9 +208,10 @@ export function JobsCategory() {
         withCredentials: true,
       });
       toast.success('Job removed from saved list');
-      handlegetSavedJobs();
+      setsaveJob((prev) => prev.filter((saved) => saved.jobId !== jobId));
+      await handlegetSavedJobs();
     } catch (error) {
-      console.error('Error Removing job:', error);
+      console.error('Error removing job:', error);
       if (axios.isAxiosError(error) && error.response) {
         console.error('Error response data:', error.response.data);
       }

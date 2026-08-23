@@ -197,8 +197,16 @@ export function InternshipsCategory() {
         { withCredentials: true }
       );
       toast.success("Internship saved to your wishlist!", { icon: "✨" });
-      handleGetSavedInternships();
+      await handleGetSavedInternships();
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const message = error.response?.data?.error || "Failed to save internship";
+        if (message.toLowerCase().includes("already saved")) {
+          toast.error("This internship is already saved.");
+          await handleGetSavedInternships();
+          return;
+        }
+      }
       toast.error("Failed to save internship");
     }
   };
@@ -213,7 +221,8 @@ export function InternshipsCategory() {
         withCredentials: true,
       });
       toast.success("Internship removed from saved list");
-      handleGetSavedInternships();
+      setSavedInternships((prev) => prev.filter((saved) => saved.internshipId !== internshipId));
+      await handleGetSavedInternships();
     } catch (error) {
       toast.error("Failed to remove internship");
     }

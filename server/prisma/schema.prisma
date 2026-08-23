@@ -27,6 +27,7 @@ model User {
   education   Education?
   project     Project?
   savedJobs   SavedJobs[]
+  savedInternships SavedInternships[]
   Experience Experience[]
   Applicant Applicant? 
 
@@ -240,6 +241,7 @@ model Internship {
   applications     Application[]
   companies        Company                     @relation(fields: [CompanyId], references: [id], map: "Internship_CompanyId_fkey")
   employers        Employer                    @relation(fields: [employerId], references: [userId], map: "Internship_employerId_fkey")
+  savedInternships  SavedInternships[]
 
   @@index([CompanyId], map: "Internship_CompanyId_fkey")
   @@index([employerId], map: "Internship_employerId_fkey")
@@ -253,6 +255,16 @@ model SavedJobs {
   job Job @relation(fields: [jobId], references: [id])
   createdAt DateTime @default(now())
   @@unique([userId, jobId])
+}
+
+model SavedInternships {
+  id Int @id @default(autoincrement())
+  userId Int  
+  internshipId Int
+  user User @relation(fields: [userId], references: [id])
+  internship Internship @relation(fields: [internshipId], references: [id])
+  createdAt DateTime @default(now())
+  @@unique([userId, internshipId])
 }
 
 enum JobType {

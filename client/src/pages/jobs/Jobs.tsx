@@ -717,7 +717,7 @@ export function Jobs() {
                             className="h-11 px-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-[#34D399] hover:bg-[#EF4444]/15 hover:border-red-500/30 hover:text-[#EF4444]/80 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
                           >
                             <BookmarkCheck className="w-4 h-4 text-[#22C55E]" />
-                            <span className="md:hidden">Saved</span>
+                            <span>Saved</span>
                           </button>
                         ) : (
                           <button
@@ -726,7 +726,7 @@ export function Jobs() {
                             className="h-11 px-3.5 rounded-xl bg-[#111F19]/[0.03] hover:bg-[#22C55E]/15 border border-[#20352B] hover:border-[#22C55E]/30 text-[#9AAEA3] hover:text-[#34D399] transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
                           >
                             <Bookmark className="w-4 h-4" />
-                            <span className="md:hidden">Save</span>
+                            <span >Save</span>
                           </button>
                         )}
                       </div>

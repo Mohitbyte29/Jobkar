@@ -80,120 +80,6 @@ interface SavedInternshipItem {
   raw?: any;
 }
 
-// Demo fallback data if database is empty so UI looks alive and demonstrable
-const DEMO_SAVED_JOBS = [
-  {
-    id: 901,
-    userId: 1,
-    jobId: 101,
-    createdAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    job: {
-      title: 'Senior Full Stack Platform Architect',
-      category: 'Software Engineering',
-      type: 'Full-time',
-      salaryMin: 2800000,
-      salaryMax: 3800000,
-      company: {
-        name: 'Stripe Global',
-        location: 'Bangalore, India',
-        remote: true,
-        logo: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=150&q=80',
-        website: 'https://stripe.com',
-      },
-    },
-  },
-  {
-    id: 902,
-    userId: 1,
-    jobId: 102,
-    createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-    job: {
-      title: 'Principal Distributed Systems Engineer',
-      category: 'Backend & Cloud',
-      type: 'Full-time',
-      salaryMin: 3200000,
-      salaryMax: 4500000,
-      company: {
-        name: 'Razorpay Labs',
-        location: 'Bangalore, India',
-        remote: false,
-        logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=150&q=80',
-        website: 'https://razorpay.com',
-      },
-    },
-  },
-  {
-    id: 903,
-    userId: 1,
-    jobId: 103,
-    createdAt: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(),
-    job: {
-      title: 'Lead Product Designer (Design Systems)',
-      category: 'Design & Creative',
-      type: 'Full-time',
-      salaryMin: 2200000,
-      salaryMax: 3000000,
-      company: {
-        name: 'Atlassian Inc.',
-        location: 'Remote (APAC)',
-        remote: true,
-        logo: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&w=150&q=80',
-        website: 'https://atlassian.com',
-      },
-    },
-  },
-];
-
-const DEMO_SAVED_INTERNSHIPS: SavedInternshipItem[] = [
-  {
-    id: 801,
-    internshipId: 201,
-    title: 'AI Platform & Deep Learning Intern',
-    companyName: 'Insight AI Labs',
-    companyLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=150&q=80',
-    location: 'Bangalore, India',
-    stipendMin: 45000,
-    stipendMax: 60000,
-    duration: '6 Months',
-    type: 'Internship (PPO Offered)',
-    category: 'Artificial Intelligence',
-    remote: true,
-    createdAt: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(),
-    tags: ['PyTorch', 'LLMs', 'FastAPI', 'High Stipend'],
-  },
-  {
-    id: 802,
-    internshipId: 202,
-    title: 'Cloud Infrastructure & SRE Intern',
-    companyName: 'Swiggy Tech',
-    companyLogo: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=150&q=80',
-    location: 'Hyderabad, India',
-    stipendMin: 40000,
-    stipendMax: 55000,
-    duration: '3 Months',
-    type: 'Internship',
-    category: 'DevOps & Cloud',
-    remote: false,
-    createdAt: new Date(Date.now() - 4 * 24 * 3600 * 1000).toISOString(),
-    tags: ['Kubernetes', 'AWS', 'Go', 'Mentorship'],
-  },
-  {
-    id: 803,
-    internshipId: 203,
-    title: 'Frontend Engineering Intern (Next.js & WebGL)',
-    companyName: 'Vercel Ecosystem',
-    companyLogo: 'https://images.unsplash.com/photo-1534972195531-a756b1140f6c?auto=format&fit=crop&w=150&q=80',
-    location: 'Remote',
-    stipendMin: 50000,
-    stipendMax: 70000,
-    duration: '6 Months',
-    type: 'Internship',
-    category: 'Frontend Engineering',
-    remote: true,
-    createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
-    tags: ['Next.js', 'Tailwind', 'Three.js', 'Mentorship'],
-  },
-];
 
 interface SavedJobProps {
   defaultTab?: 'jobs' | 'internships';
@@ -221,11 +107,11 @@ const SavedJob: React.FC<SavedJobProps> = ({ defaultTab = 'jobs' }) => {
       if (resJobs.data && Array.isArray(resJobs.data) && resJobs.data.length > 0) {
         setSavedJobs(resJobs.data);
       } else {
-        setSavedJobs(DEMO_SAVED_JOBS as any);
+        setSavedJobs([]);
       }
     } catch (error) {
       console.warn('API error or unauthenticated, falling back to demo saved jobs:', error);
-      setSavedJobs(DEMO_SAVED_JOBS as any);
+      setSavedJobs([]);
     }
 
     try {
@@ -251,10 +137,10 @@ const SavedJob: React.FC<SavedJobProps> = ({ defaultTab = 'jobs' }) => {
         }));
         setSavedInternships(mapped);
       } else {
-        setSavedInternships(DEMO_SAVED_INTERNSHIPS);
+        setSavedInternships([]);
       }
     } catch {
-      setSavedInternships(DEMO_SAVED_INTERNSHIPS);
+      setSavedInternships([]);
     } finally {
       setIsLoading(false);
     }
@@ -283,6 +169,9 @@ const SavedJob: React.FC<SavedJobProps> = ({ defaultTab = 'jobs' }) => {
   };
 
   const handleRemoveSavedInternship = (internshipId: number, e?: React.MouseEvent) => {
+    axios.delete(`http://localhost:4000/api/internships/${internshipId}/save`, { withCredentials: true }).catch((error) => {
+      console.error('Error removing saved internship:', error);
+    });
     if (e) e.stopPropagation();
     setSavedInternships((prev) => prev.filter((item) => item.internshipId !== internshipId && item.id !== internshipId));
     toast.success('Internship removed from saved bookmarks');
@@ -669,7 +558,7 @@ const SavedJob: React.FC<SavedJobProps> = ({ defaultTab = 'jobs' }) => {
                     <Bookmark className="w-9 h-9" />
                   </div>
                   <h3 className="text-xl font-bold text-[#F1F5F2] mb-2">No saved jobs found</h3>
-                  <p className="text-[#9AAEA3] text-sm max-w-md mx-auto mb-6">
+                  <p className="text-[#9AAEA3] text-sm max-w-3xl mx-auto mb-6">
                     {searchQuery
                       ? `No saved jobs match your search "${searchQuery}". Try clearing filters.`
                       : 'You haven’t bookmarked any jobs yet. Explore open roles and click the bookmark icon to track them here.'}
@@ -860,7 +749,7 @@ const SavedJob: React.FC<SavedJobProps> = ({ defaultTab = 'jobs' }) => {
                     <GraduationCap className="w-9 h-9" />
                   </div>
                   <h3 className="text-xl font-bold text-[#F1F5F2] mb-2">No saved internships found</h3>
-                  <p className="text-[#9AAEA3] text-sm max-w-md mx-auto mb-6">
+                  <p className="text-[#9AAEA3] text-sm max-w-3xl mx-auto mb-6">
                     {searchQuery
                       ? `No saved internships match your search "${searchQuery}". Try clearing filters.`
                       : 'You haven’t bookmarked any internships yet. Explore internships offering high stipends and PPOs.'}

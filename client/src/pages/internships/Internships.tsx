@@ -15,6 +15,7 @@ import {
   Sparkles,
   SlidersHorizontal,
   ArrowUpRight,
+  BookmarkCheck,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useInternships } from '../../context/InternshipsContext.tsx';
@@ -27,6 +28,7 @@ import { useInternshipsearch } from '@/hooks/InternshipSearch.tsx';
 import gsap from 'gsap';
 import Footer from '@/components/Footer.tsx';
 import SplitText from '@/components/SplitText.tsx';
+import axios from 'axios';
 
 interface Internship {
   id: number;
@@ -48,9 +50,19 @@ interface Internship {
   tags: string;
 }
 
+interface SavedInternship {
+  id: number;
+  internshipId: number;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function Internships() {
   const { internshipData, total } = useInternships();
   const [sortBy, setSortBy] = useState<string>('recent');
+  const [saveInternships, setSaveInternships] = useState<SavedInternship[]>([]);
+
   const navigate = useNavigate();
   const {
     handleChange,
@@ -87,6 +99,24 @@ export function Internships() {
     mode: [],
   });
 
+  const isSaved = (internshipId: number) => {
+    return saveInternships.some((saved) => saved.internshipId === internshipId);
+  };
+
+  const handlegetSavedInternships = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/api/internships/saved`, {
+        withCredentials: true,
+      });
+      setSaveInternships(res.data);
+    } catch (error) {
+      console.error('Error fetching saved internships:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error response data:', error.response.data);
+      }
+    }
+  };
+
   const getSortedInternships = () => {
     const internships = [...internshipData];
     if (sortBy === 'recent') {
@@ -97,6 +127,41 @@ export function Internships() {
       return internships.sort((a, b) => b.salaryMax - a.salaryMax);
     }
     return internships;
+  };
+
+  const handleSaveInternship = async (internshipId: number) => {
+    try {
+      await axios.post(
+        `http://localhost:4000/api/internships/${internshipId}/save`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success('Internship saved to your wishlist!', { icon: '✨' });
+      handlegetSavedInternships();
+    } catch (error) {
+      console.error('Error saving internship:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error response data:', error.response.data);
+      }
+      toast.error('Failed to save internship');
+    }
+  };
+
+  const handleUnsaveInternship = async (internshipId: number) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/internships/${internshipId}/save`, {
+        withCredentials: true,
+      });
+      toast.success('Internship removed from saved list');
+      setSaveInternships((prev) => prev.filter((saved) => saved.internshipId !== internshipId));
+      await handlegetSavedInternships();
+    } catch (error) {
+      console.error('Error removing internship:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error response data:', error.response.data);
+      }
+      toast.error('Failed to remove internship');
+    }
   };
 
   type filterName = keyof Filters;
@@ -121,11 +186,10 @@ export function Internships() {
     }
   };
 
-  const handleBookmark = (internship: Internship) => {
-    toast.success(`Saved "${internship.title}" to your Wishlist!`, {
-      icon: '✨',
-    });
-  };
+
+  useEffect(() => {
+    void handlegetSavedInternships();
+  }, []);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -534,15 +598,33 @@ export function Internships() {
                           <span>Apply Now</span>
                           <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
                         </button>
-
-                        <button
+                          {isSaved(internship.id) ? (
+                                                    <button
+                                                      onClick={() => void handleUnsaveInternship(internship.id)}
+                                                      aria-label="Remove saved job"
+                                                      className="h-11 px-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-[#34D399] hover:bg-[#EF4444]/15 hover:border-red-500/30 hover:text-[#EF4444]/80 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
+                                                    >
+                                                      <BookmarkCheck className="w-4 h-4 text-[#22C55E]" />
+                                                      <span>Saved</span>
+                                                    </button>
+                                                  ) : (
+                                                    <button
+                                                      onClick={() => void handleSaveInternship(internship.id)}
+                                                      aria-label="Save job"
+                                                      className="h-11 px-3.5 rounded-xl bg-[#111F19]/[0.03] hover:bg-[#22C55E]/15 border border-[#20352B] hover:border-[#22C55E]/30 text-[#9AAEA3] hover:text-[#34D399] transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
+                                                    >
+                                                      <Bookmark className="w-4 h-4" />
+                                                      <span >Save</span>
+                                                    </button>
+                                                  )}
+                        {/* <button
                           onClick={() => handleBookmark(internship)}
                           aria-label="Save to wishlist"
                           className="h-11 px-3.5 rounded-xl bg-[#111F19]/[0.03] hover:bg-[#22C55E]/15 border border-[#20352B] hover:border-[#22C55E]/30 text-[#9AAEA3] hover:text-[#34D399] transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
                         >
                           <Bookmark className="w-4 h-4" />
                           <span className="md:hidden">Save</span>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </article>

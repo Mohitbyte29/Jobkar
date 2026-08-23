@@ -285,4 +285,87 @@ export const deleteInternship = async(req, res) => {
     }
 }
 
-    
+export const saveInternship = async (req, res) => {
+  const internshipId = parseInt(req.params.id);
+  const userId = req.user.id;
+  try {
+    const alreadySaved = await prisma.savedInternships.findUnique({
+      where: {
+        userId_internshipId: {
+          userId,
+          internshipId,
+        },
+      },
+    });
+
+    if (alreadySaved) {
+      return res.status(400).json({ error: "Internship already saved" });
+    }
+
+    const savedInternships = await prisma.savedInternships.create({
+      data: {
+        userId,
+        internshipId,
+      },
+    });
+
+    res.json(savedInternships);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to save internship", message: error.message });
+  }
+};
+export const getSavedInternships = async (req, res) => {
+  try {
+    const savedInternships = await prisma.savedInternships.findMany({
+      where: { userId: req.user.id },
+      include: {
+        internship: {
+          include: {
+            companies: true,
+          },
+        },
+      },
+    });
+
+    res.json(savedInternships);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to fetch saved internships", message: error.message });
+  }
+};
+
+export const removeSavedInternship = async (req, res) => {
+  const internshipId = parseInt(req.params.id);
+  const userId = req.user.id;
+  try {
+    const savedInternship = await prisma.savedInternships.findUnique({
+      where: {
+        userId_internshipId: {
+          userId,
+          internshipId: internshipId,
+        },
+      },
+    });
+
+    if (!savedInternship) {
+      return res.status(404).json({ error: "Saved internship not found" });
+    }
+
+    await prisma.savedInternships.delete({
+      where: {
+        userId_internshipId: {
+          userId,
+          internshipId: internshipId,
+        },
+      },
+    });
+    res.json({ message: "Internship removed from saved list" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to remove saved internship", message: error.message });
+  }
+};    
