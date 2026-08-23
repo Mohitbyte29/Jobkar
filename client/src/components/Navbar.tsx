@@ -37,7 +37,7 @@ export default function Navbar() {
   };
 
   const navLink =
-    'relative text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors duration-200 ' +
+    'relative text-sm font-medium text-[#9AAEA3] hover:text-[#22C55E] transition-colors duration-200 ' +
     'after:content-[""] after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-emerald-400 ' +
     'after:transition-all after:duration-200 hover:after:w-full';
 
@@ -56,7 +56,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-1.5 shrink-0">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]" />
             <span className="text-lg font-extrabold tracking-tight text-white">
-              Job<span className="text-emerald-400">kar</span>
+              Job<span className="text-[#22C55E]">kar</span>
             </span>
           </Link>
 
@@ -96,7 +96,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               aria-label="Notifications"
-              className="p-2 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/5 transition-colors duration-200 active:scale-95"
+              className="p-2 rounded-full text-[#9AAEA3] hover:text-[#22C55E] hover:bg-[#07110D]/5 transition-colors duration-200 active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">
                 notifications
@@ -104,14 +104,14 @@ export default function Navbar() {
             </button>
             <button
               aria-label="Settings"
-              className="p-2 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/5 transition-colors duration-200 active:scale-95"
+              className="p-2 rounded-full text-[#9AAEA3] hover:text-[#22C55E] hover:bg-[#07110D]/5 transition-colors duration-200 active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">
                 settings
               </span>
             </button>
 
-            <div className="h-6 w-px bg-white/10 mx-1" />
+            <div className="h-6 w-px bg-[#07110D]/10 mx-1" />
 
             {user.role === 'EMPLOYER' && (
               <Link
@@ -128,13 +128,13 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors duration-200"
+              className="text-sm font-medium text-slate-300 hover:text-[#22C55E] transition-colors duration-200"
             >
               Sign In
             </Link>
             <Link
               to="/register"
-              className="px-4 py-1.5 text-sm font-medium rounded-lg border border-white/15 text-white hover:border-emerald-400/60 hover:text-emerald-400 transition-all duration-200 active:scale-95"
+              className="px-4 py-1.5 text-sm font-medium rounded-lg border border-white/15 text-white hover:border-emerald-400/60 hover:text-[#22C55E] transition-all duration-200 active:scale-95"
             >
               Register
             </Link>

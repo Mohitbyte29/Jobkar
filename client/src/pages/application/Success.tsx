@@ -1,100 +1,117 @@
-import Footer from "@/components/Footer"
-import Navbar from "@/components/Navbar"
-import { useUser } from "@/context/UserContext";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom"
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import { useNavigate } from "react-router-dom";
+import {
+  CheckCircle2,
+  FileSearch,
+  Users,
+  Video,
+  Clock,
+  ArrowRight,
+  Compass,
+  LayoutDashboard,
+} from "lucide-react";
 
 const Success = () => {
   const navigate = useNavigate();
-  
-  return (
-    <div>
-      <Navbar/>
-        <main className="max-w-max_width mx-auto px-margin py-xl flex flex-col items-center">
-  {/* Celebration Header */}
-  <div className="text-center max-w-[720px] mb-lg animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <div className="mb-md flex justify-center">
-      <div className="w-20 h-20 rounded-full bg-secondary-container flex items-center justify-center success-check-pulse">
-        <span
-          className="material-symbols-outlined text-secondary text-[48px]"
-          style={{ fontVariationSettings: '"FILL" 1' }}
-        >
-          check_circle
-        </span>
-      </div>
-    </div>
-    <h1 className="font-h1 text-h1 text-primary mb-sm">
-      Application Submitted Successfully!
-    </h1>
-    <p className="font-body-lg text-body-lg text-on-surface-variant">
-      Thank you for applying to the{" "}
-      <span className="font-semibold text-primary">Senior UI/UX Designer</span>{" "}
-      role at{" "}
-      <span className="font-semibold text-primary">TechSphere Solutions</span>.
-      Your application has been sent to the hiring team.
-    </p>
-  </div>
-  {/* Success Details Layout (Bento Grid Style) */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-md w-full max-w-[1000px] mb-xl">
-    {/* Step 1 */}
-    <div className="bento-step bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm flex flex-col items-start gap-xs">
-      <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary-fixed flex items-center justify-center mb-xs">
-        <span className="material-symbols-outlined">description</span>
-      </div>
-      <h3 className="font-h3 text-h3 text-primary">Application Review</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant">
-        The hiring team will review your profile, experience, and portfolio for
-        alignment.
-      </p>
-    </div>
-    {/* Step 2 */}
-    <div className="bento-step bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm flex flex-col items-start gap-xs">
-      <div className="w-10 h-10 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center mb-xs">
-        <span className="material-symbols-outlined">filter_list</span>
-      </div>
-      <h3 className="font-h3 text-h3 text-primary">Shortlisting</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant">
-        If your profile matches, you'll be contacted via email for an initial
-        screening.
-      </p>
-    </div>
-    {/* Step 3 */}
-    <div className="bento-step bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm flex flex-col items-start gap-xs">
-      <div className="w-10 h-10 rounded-lg bg-tertiary-container text-on-tertiary-container flex items-center justify-center mb-xs">
-        <span className="material-symbols-outlined">video_chat</span>
-      </div>
-      <h3 className="font-h3 text-h3 text-primary">Interview</h3>
-      <p className="font-body-sm text-body-sm text-on-surface-variant">
-        Selected candidates will move on to the technical and cultural interview
-        rounds.
-      </p>
-    </div>
-  </div>
-  {/* Info & Actions Card */}
-  <div className="w-full max-w-[600px] bg-surface-container-low p-lg rounded-xl flex flex-col items-center text-center gap-md">
-    <div className="flex items-center gap-xs text-on-surface-variant">
-      <span className="material-symbols-outlined text-[20px]">schedule</span>
-      <span className="font-label-strong text-label-strong">
-        ESTIMATED TIME
-      </span>
-    </div>
-    <p className="font-body-md text-body-md text-on-surface-variant mb-xs">
-      Expect to hear back within{" "}
-      <span className="font-bold text-primary">5-7 business days</span>.
-    </p>
-    <div className="flex flex-col sm:flex-row gap-sm w-full">
-      <button className="flex-1 bg-primary text-on-primary font-label-strong text-label-strong py-md rounded-lg hover:opacity-90 active:scale-[0.98] transition-all" onClick={() => navigate('/')}>
-        Go to Dashboard
-      </button>
-      <button className="flex-1 border border-primary text-primary font-label-strong text-label-strong py-md rounded-lg hover:bg-surface-container-high active:scale-[0.98] transition-all" onClick={() => navigate('/jobs')}>
-        Explore More Jobs
-      </button>
-    </div>
-  </div>
-</main>
-    <Footer/>
-    </div>
-  )
-}
 
-export default Success
+  return (
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] flex flex-col selection:bg-[#22C55E]/30 selection:text-[#34D399]">
+      <Navbar />
+
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-12 flex flex-col items-center">
+        {/* Celebration Header */}
+        <div className="text-center max-w-2xl mb-12">
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-full bg-[#22C55E]/20 blur-xl animate-pulse" />
+              <div className="relative w-24 h-24 rounded-full bg-[#22C55E]/15 border-2 border-[#22C55E] flex items-center justify-center text-[#22C55E] shadow-[0_0_30px_rgba(34,197,94,0.4)]">
+                <CheckCircle2 className="w-14 h-14" />
+              </div>
+            </div>
+          </div>
+          <span className="inline-block text-xs font-extrabold uppercase tracking-widest text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/30 px-3 py-1 rounded-full mb-3">
+            Application Received
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-black text-[#F1F5F2] tracking-tight mb-3">
+            Application Submitted Successfully!
+          </h1>
+          <p className="text-sm text-[#9AAEA3] leading-relaxed max-w-lg mx-auto">
+            Thank you for applying. Your profile, resume, and experience details have been delivered directly to the hiring team.
+          </p>
+        </div>
+
+        {/* Bento Grid: Next Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full mb-10">
+          {/* Step 1 */}
+          <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] flex flex-col items-start gap-3 hover:border-[#22C55E]/40 transition-all">
+            <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 text-[#22C55E] flex items-center justify-center">
+              <FileSearch className="w-5 h-5" />
+            </div>
+            <h3 className="text-base font-bold text-[#F1F5F2]">1. Profile Review</h3>
+            <p className="text-xs text-[#9AAEA3] leading-relaxed">
+              The hiring team reviews your resume, code repositories, and work highlights.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] flex flex-col items-start gap-3 hover:border-[#22C55E]/40 transition-all">
+            <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 text-[#22C55E] flex items-center justify-center">
+              <Users className="w-5 h-5" />
+            </div>
+            <h3 className="text-base font-bold text-[#F1F5F2]">2. Shortlisting</h3>
+            <p className="text-xs text-[#9AAEA3] leading-relaxed">
+              If matched, the recruiter contacts you via email for an initial quick conversation.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="bg-[#111F19] p-6 rounded-3xl border border-[#20352B] flex flex-col items-start gap-3 hover:border-[#22C55E]/40 transition-all">
+            <div className="w-11 h-11 rounded-2xl bg-[#22C55E]/15 border border-[#22C55E]/30 text-[#22C55E] flex items-center justify-center">
+              <Video className="w-5 h-5" />
+            </div>
+            <h3 className="text-base font-bold text-[#F1F5F2]">3. Interviews</h3>
+            <p className="text-xs text-[#9AAEA3] leading-relaxed">
+              Shortlisted talent moves forward to technical rounds and team alignment discussions.
+            </p>
+          </div>
+        </div>
+
+        {/* Timeline & Actions Card */}
+        <div className="w-full max-w-xl bg-[#111F19] p-8 rounded-3xl border border-[#20352B] flex flex-col items-center text-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+            <Clock className="w-4 h-4 text-[#22C55E]" />
+            <span>Estimated Response Time</span>
+          </div>
+          <p className="text-sm text-[#9AAEA3]">
+            Most hiring teams respond within{" "}
+            <strong className="text-[#F1F5F2]">3–5 business days</strong>. You can track this application's real-time status in your dashboard.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <button
+              type="button"
+              onClick={() => navigate("/jobs")}
+              className="flex-1 px-6 py-3.5 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <Compass className="w-4 h-4" />
+              <span>Explore More Jobs</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="flex-1 px-6 py-3.5 border border-[#20352B] hover:border-[#22C55E]/40 text-[#F1F5F2] hover:text-[#22C55E] font-bold text-xs rounded-xl hover:bg-[#0D1814] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Go to Home</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Success;

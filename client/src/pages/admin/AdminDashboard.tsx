@@ -61,27 +61,27 @@ const AdminDashboard = () => {
     <div>
       <AdminUpperNav search={null} searchType={null} />
       <AdminNav />
-      <main className="ml-64 relative pt-20 min-h-screen bg-surface">
-  <div className="flex flex-col w-full px-lg py-md gap-lg bg-surface min-h-[calc(100vh-80px)]">
+      <main className="ml-64 relative pt-20 min-h-screen bg-[#0A0F1A]">
+  <div className="flex flex-col w-full px-lg py-md gap-lg bg-[#0A0F1A] min-h-[calc(100vh-80px)]">
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
       <div>
-        <h1 className="font-h1 text-on-surface">Overview</h1>
-        <p className="font-body-sm text-on-surface-variant mt-xs">
+        <h1 className="font-h1 text-slate-200">Overview</h1>
+        <p className="font-body-sm text-slate-200-variant mt-xs">
           Welcome back, here's what's happening today.
         </p>
       </div>
       <div className="flex items-center gap-sm">
         <div className="relative">
-          <select className="appearance-none bg-surface-container-low text-on-surface font-label-strong px-md py-sm rounded-lg border-none shadow-sm pr-10 focus:ring-2 focus:ring-primary-container outline-none cursor-pointer">
+          <select className="appearance-none bg-[#0F172A] text-slate-200 font-label-strong px-md py-sm rounded-lg border-none shadow-sm pr-10 focus:ring-2 focus:ring-primary-container outline-none cursor-pointer">
             <option>Last 30 Days</option>
             <option>Last 7 Days</option>
             <option>This Year</option>
           </select>
-          <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
+          <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-slate-200-variant pointer-events-none">
             expand_more
           </span>
         </div>
-        <button className="bg-primary hover:bg-primary/90 text-on-primary font-label-strong px-md py-sm rounded-lg shadow-sm flex items-center gap-xs transition-colors">
+        <button className="bg-blue-600 hover:bg-blue-600/90 text-white font-label-strong px-md py-sm rounded-lg shadow-sm flex items-center gap-xs transition-colors">
           <span className="material-symbols-outlined text-[18px]">
             download
           </span>
@@ -90,10 +90,10 @@ const AdminDashboard = () => {
       </div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-md">
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
         <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
         <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
             <span className="material-symbols-outlined text-tertiary-container">
               group
             </span>
@@ -106,17 +106,17 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="relative z-10">
-          <p className="text-on-surface-variant font-label-strong mb-xs">
+          <p className="text-slate-200-variant font-label-strong mb-xs">
             Total Users
           </p>
-          <p className="font-h1 text-on-surface">{users.length}</p>
+          <p className="font-h1 text-slate-200">{users.length}</p>
         </div>
       </div>
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
+        <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-600-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
         <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary-container">
+          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
+            <span className="material-symbols-outlined text-slate-200-container">
               domain
             </span>
           </div>
@@ -128,17 +128,17 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="relative z-10">
-          <p className="text-on-surface-variant font-label-strong mb-xs">
+          <p className="text-slate-200-variant font-label-strong mb-xs">
             Total Companies
           </p>
-          <p className="font-h1 text-on-surface">{companyData.length}</p>
+          <p className="font-h1 text-slate-200">{companyData.length}</p>
         </div>
       </div>
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
         <div className="absolute -right-4 -top-4 w-24 h-24 bg-secondary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
         <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-            <span className="material-symbols-outlined text-secondary">
+          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
+            <span className="material-symbols-outlined text-blue-400">
               work
             </span>
           </div>
@@ -150,16 +150,16 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="relative z-10">
-          <p className="text-on-surface-variant font-label-strong mb-xs">
+          <p className="text-slate-200-variant font-label-strong mb-xs">
             Active Jobs
           </p>
-          <p className="font-h1 text-on-surface">{jobData.length}</p>
+          <p className="font-h1 text-slate-200">{jobData.length}</p>
         </div>
       </div>
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
         <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
         <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
             <span className="material-symbols-outlined text-tertiary-container">
               description
             </span>
@@ -172,17 +172,17 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="relative z-10">
-          <p className="text-on-surface-variant font-label-strong mb-xs">
+          <p className="text-slate-200-variant font-label-strong mb-xs">
             Total Applications
           </p>
-          <p className="font-h1 text-on-surface">{applications.length}</p>
+          <p className="font-h1 text-slate-200">{applications.length}</p>
         </div>
       </div>
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
+        <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-600-fixed/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
         <div className="flex justify-between items-start mb-md relative z-10">
-          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary-container">
+          <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center">
+            <span className="material-symbols-outlined text-slate-200-container">
               school
             </span>
           </div>
@@ -194,29 +194,29 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="relative z-10">
-          <p className="text-on-surface-variant font-label-strong mb-xs">
+          <p className="text-slate-200-variant font-label-strong mb-xs">
             Active Internships
           </p>
-          <p className="font-h1 text-on-surface">{internshipData.length}</p>
+          <p className="font-h1 text-slate-200">{internshipData.length}</p>
         </div>
       </div>
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-md">
-      <div className="lg:col-span-2 bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
+      <div className="lg:col-span-2 bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
         <div className="flex justify-between items-center mb-md">
-          <h2 className="font-h3 text-on-surface">
+          <h2 className="font-h3 text-slate-200">
             User Growth &amp; Postings
           </h2>
           <div className="flex gap-sm">
             <div className="flex items-center gap-xs">
               <div className="w-3 h-3 rounded-full bg-tertiary-container" />
-              <span className="font-label-caps text-on-surface-variant">
+              <span className="font-label-caps text-slate-200-variant">
                 Users
               </span>
             </div>
             <div className="flex items-center gap-xs">
               <div className="w-3 h-3 rounded-full bg-secondary" />
-              <span className="font-label-caps text-on-surface-variant">
+              <span className="font-label-caps text-slate-200-variant">
                 Jobs
               </span>
             </div>
@@ -245,7 +245,7 @@ const AdminDashboard = () => {
               fill="rgba(0,106,97,0.05)"
             />
             <path
-              className="text-secondary"
+              className="text-blue-400"
               d="M0,45 Q15,48 25,40 T45,35 T65,38 T85,28 T100,20"
               fill="none"
               stroke="currentColor"
@@ -253,7 +253,7 @@ const AdminDashboard = () => {
               vectorEffect="non-scaling-stroke"
             />
           </svg>
-          <div className="absolute bottom-0 left-0 w-full flex justify-between text-[10px] text-on-surface-variant font-label-caps mt-2">
+          <div className="absolute bottom-0 left-0 w-full flex justify-between text-[10px] text-slate-200-variant font-label-caps mt-2">
             <span>Jan</span>
             <span>Feb</span>
             <span>Mar</span>
@@ -264,8 +264,8 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-      <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
-        <h2 className="font-h3 text-on-surface mb-md">Category Distribution</h2>
+      <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col">
+        <h2 className="font-h3 text-slate-200 mb-md">Category Distribution</h2>
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="relative w-48 h-48 mb-md">
             <svg
@@ -292,7 +292,7 @@ const AdminDashboard = () => {
                 strokeWidth={20}
               />
               <circle
-                className="text-secondary transform origin-center rotate-[216deg] transition-all duration-1000 ease-out delay-100"
+                className="text-blue-400 transform origin-center rotate-[216deg] transition-all duration-1000 ease-out delay-100"
                 cx={50}
                 cy={50}
                 fill="none"
@@ -303,7 +303,7 @@ const AdminDashboard = () => {
                 strokeWidth={20}
               />
               <circle
-                className="text-primary-fixed-dim transform origin-center rotate-[324deg] transition-all duration-1000 ease-out delay-200"
+                className="text-slate-200-fixed-dim transform origin-center rotate-[324deg] transition-all duration-1000 ease-out delay-200"
                 cx={50}
                 cy={50}
                 fill="none"
@@ -315,8 +315,8 @@ const AdminDashboard = () => {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-h2 text-on-surface">100%</span>
-              <span className="font-label-caps text-on-surface-variant">
+              <span className="font-h2 text-slate-200">100%</span>
+              <span className="font-label-caps text-slate-200-variant">
                 Active
               </span>
             </div>
@@ -325,72 +325,72 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-tertiary-container" />
-                <span className="text-on-surface">Software</span>
+                <span className="text-slate-200">Software</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 60%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
                 <div className="w-3 h-3 rounded-full bg-secondary" />
-                <span className="text-on-surface">Design</span>
+                <span className="text-slate-200">Design</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 30%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Marketing</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Marketing</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Finance</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Finance</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Healthcare</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Healthcare</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Education</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Education</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Business</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Business</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
             <div className="flex justify-between items-center text-body-sm">
               <div className="flex items-center gap-xs">
-                <div className="w-3 h-3 rounded-full bg-primary-fixed-dim" />
-                <span className="text-on-surface">Other</span>
+                <div className="w-3 h-3 rounded-full bg-blue-600-fixed-dim" />
+                <span className="text-slate-200">Other</span>
               </div>
-              <span className="font-label-strong text-on-surface-variant">
+              <span className="font-label-strong text-slate-200-variant">
                 10%
               </span>
             </div>
@@ -399,16 +399,16 @@ const AdminDashboard = () => {
       </div>
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-md">
-      <div className="lg:col-span-3 bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] overflow-x-auto">
+      <div className="lg:col-span-3 bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] overflow-x-auto">
         <div className="flex justify-between items-center mb-md">
-          <h2 className="font-h3 text-on-surface">Recent Job Postings</h2>
+          <h2 className="font-h3 text-slate-200">Recent Job Postings</h2>
           <button className="text-tertiary-container font-label-strong hover:bg-tertiary-fixed/30 px-sm py-xs rounded-md transition-colors">
             View All
           </button>
         </div>
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-label-caps text-on-surface-variant border-b border-surface-container-high">
+            <tr className="text-label-caps text-slate-200-variant border-b border-surface-container-high">
               <th className="pb-sm font-label-caps">Role</th>
               <th className="pb-sm font-label-caps">Company</th>
               <th className="pb-sm font-label-caps">Date Posted</th>
@@ -419,22 +419,22 @@ const AdminDashboard = () => {
           <tbody className="text-body-sm">
             {jobData.slice(0, 3).map((job) => {
               return (
-            <tr className="group hover:bg-surface-container-low transition-colors">
+            <tr className="group hover:bg-[#0F172A] transition-colors">
               <td className="py-sm">
-                <p className="font-label-strong text-on-surface">
+                <p className="font-label-strong text-slate-200">
                   {job.title}
                 </p>
-                <p className="text-on-surface-variant text-xs">{job.mode}, {job.location}</p>
+                <p className="text-slate-200-variant text-xs">{job.mode}, {job.location}</p>
               </td>
               <td className="py-sm">{job.company.name}</td>
-              <td className="py-sm text-on-surface-variant">{formatDate(`${job.createdAt}`)}</td>
+              <td className="py-sm text-slate-200-variant">{formatDate(`${job.createdAt}`)}</td>
               <td className="py-sm">
                 <span className="bg-secondary-fixed text-on-secondary-fixed-variant px-2 py-1 rounded-full text-xs font-label-strong">
                   {job.status}
                 </span>
               </td>
               <td className="py-sm text-right">
-                <button className="text-on-surface-variant hover:text-on-surface p-1 rounded-md hover:bg-surface-container">
+                <button className="text-slate-200-variant hover:text-slate-200 p-1 rounded-md hover:bg-[#111827]">
                   <span className="material-symbols-outlined text-[20px]">
                     more_vert
                   </span>
@@ -448,21 +448,21 @@ const AdminDashboard = () => {
         </table>
       </div>
       <div className="flex flex-col gap-md">
-        <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col justify-between items-start relative overflow-hidden">
+        <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex flex-col justify-between items-start relative overflow-hidden">
           <div className="absolute -right-8 -bottom-8 opacity-5 text-tertiary-container">
             <span className="material-symbols-outlined text-[120px]">
               pending_actions
             </span>
           </div>
           <div className="relative z-10 w-full">
-            <p className="text-on-surface-variant font-label-strong mb-sm">
+            <p className="text-slate-200-variant font-label-strong mb-sm">
               Pending Approvals
             </p>
             <div className="flex items-end gap-sm mb-md">
-              <span className="font-display text-on-surface leading-none">
+              <span className="font-display text-slate-200 leading-none">
                 42
               </span>
-              <span className="text-body-sm text-on-surface-variant mb-1">
+              <span className="text-body-sm text-slate-200-variant mb-1">
                 items require attention
               </span>
             </div>
@@ -471,15 +471,15 @@ const AdminDashboard = () => {
             </button>
           </div>
         </div>
-        <div className="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex-1">
-          <h2 className="font-h3 text-on-surface mb-md">
+        <div className="bg-[#111827] p-md rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] flex-1">
+          <h2 className="font-h3 text-slate-200 mb-md">
             Recent Registrations
           </h2>
           <div className="space-y-sm">
             {users.slice(0, 3).map((user: User) => {
               return (
               <div key={user.id} className="flex items-center gap-sm">
-              <div className="w-10 h-10 rounded-full bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-[#111827] flex-shrink-0 flex items-center justify-center overflow-hidden">
                 <img
                   className="w-full h-full object-cover"
                   data-alt="Professional headshot of a young woman smiling warmly in a well-lit office setting, modern corporate aesthetic"
@@ -487,14 +487,14 @@ const AdminDashboard = () => {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-label-strong text-on-surface truncate">
+                <p className="font-label-strong text-slate-200 truncate">
                   {user.name}
                 </p>
-                <p className="text-[12px] text-on-surface-variant truncate">
+                <p className="text-[12px] text-slate-200-variant truncate">
                   {user.role}
                 </p>
               </div>
-              <span className="text-[11px] text-on-surface-variant whitespace-nowrap">
+              <span className="text-[11px] text-slate-200-variant whitespace-nowrap">
                 {timeAgo(user.createdAt)} 
               </span>
                 </div>

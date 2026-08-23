@@ -31,29 +31,29 @@ const InternshipManagement = () => {
     {/* Header Section */}
     <div className="flex justify-between items-end mb-md">
       <div>
-        <h2 className="font-h1 text-h1 text-on-surface">Internship Moderation</h2>
-        <p className="font-body-md text-on-surface-variant mt-xs">
+        <h2 className="font-h1 text-h1 text-slate-200">Internship Moderation</h2>
+        <p className="font-body-md text-slate-200-variant mt-xs">
           Manage and approve pending job listings to ensure platform quality.
         </p>
       </div>
       <div className="flex gap-sm">
-        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-outline-variant shadow-sm">
+        <div className="flex items-center gap-2 bg-[#111827] px-3 py-2 rounded-lg border border-[#1E293B] shadow-sm">
           <span
-            className="material-symbols-outlined text-secondary"
+            className="material-symbols-outlined text-blue-400"
             data-icon="pending_actions"
           >
             pending_actions
           </span>
-          <span className="font-label-strong text-on-surface">24 Pending</span>
+          <span className="font-label-strong text-slate-200">24 Pending</span>
         </div>
-        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-outline-variant shadow-sm">
+        <div className="flex items-center gap-2 bg-[#111827] px-3 py-2 rounded-lg border border-[#1E293B] shadow-sm">
           <span
             className="material-symbols-outlined text-error"
             data-icon="report"
           >
             report
           </span>
-          <span className="font-label-strong text-on-surface">3 Reported</span>
+          <span className="font-label-strong text-slate-200">3 Reported</span>
         </div>
       </div>
     </div>
@@ -62,10 +62,10 @@ const InternshipManagement = () => {
       {/* Job Moderation Card 1 */}
       {internships.map((internship) => {
         return (
-      <div className="bg-white rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
+      <div className="bg-[#111827] rounded-xl p-md border border-[#1E293B] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] flex items-center justify-between group hover:border-secondary/30 transition-all duration-300 ">
           <>
           <div className="flex items-center gap-md mb-8">
-          <div className="w-16 h-16 rounded-lg bg-surface-container-low flex items-center justify-center p-3">
+          <div className="w-16 h-16 rounded-lg bg-[#0F172A] flex items-center justify-center p-3">
             <img
               alt="CloudScale Logo"
               className="w-full h-full object-contain"
@@ -75,24 +75,24 @@ const InternshipManagement = () => {
           </div>
           <div>
             <div className="flex items-center gap-2 mb-xs">
-              <span className="font-label-caps text-secondary bg-secondary/10 px-2 py-0.5 rounded">
+              <span className="font-label-caps text-blue-400 bg-secondary/10 px-2 py-0.5 rounded">
                 NEW POST
               </span>
-              <span className="font-body-sm text-on-surface-variant">
+              <span className="font-body-sm text-slate-200-variant">
                 Posted 2h ago
               </span>
             </div>
-            <h3 className="font-h3 text-h3 text-on-surface">
+            <h3 className="font-h3 text-h3 text-slate-200">
               {internship.title}
             </h3>
-            <p className="font-body-md text-on-surface-variant">
+            <p className="font-body-md text-slate-200-variant">
               {internship.companies.name} • {internship.location} (Remote)
             </p>
             <div className="flex gap-2 mt-sm">
-              <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
+              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
                 {AlphaCase(internship.internshipStatus)}
               </span>
-              <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
+              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
               {internship.type === "paid" ? (
                 <span className="flex items-center gap-1">
                   <IndianRupee size={16} />
@@ -105,17 +105,17 @@ const InternshipManagement = () => {
               )
                 }
               </span>
-              <span className="font-label-caps text-on-primary-container bg-primary-fixed/30 px-2 py-0.5 rounded">
+              <span className="font-label-caps text-white-container bg-blue-600-fixed/30 px-2 py-0.5 rounded">
                 {AlphaCase(internship.category)}
               </span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-sm">
-          <button className="px-md py-sm font-label-strong text-secondary border border-secondary rounded-lg hover:bg-secondary/5 transition-colors">
+          <button className="px-md py-sm font-label-strong text-blue-400 border border-secondary rounded-lg hover:bg-secondary/5 transition-colors">
             Quick Approve
           </button>
-          <button className="px-md py-sm font-label-strong bg-primary text-on-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+          <button className="px-md py-sm font-label-strong bg-blue-600 text-white rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
             <span>Review</span>
             <span className="material-symbols-outlined text-sm">
               arrow_forward
@@ -128,18 +128,18 @@ const InternshipManagement = () => {
       })}
     </div>
     {/* Batch Actions Footer */}
-    <div className="fixed bottom-0 right-0 left-64 bg-gray-200 border-t border-slate-200 px-6 py-4 flex justify-between items-center z-20">
+    <div className="fixed bottom-0 right-0 left-64 bg-gray-200 border-t border-[#1E293B] px-6 py-4 flex justify-between items-center z-20">
       <div className="flex items-center gap-2">
         <input
           className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
           type="checkbox"
         />
-        <span className="text-sm font-medium text-slate-600">
+        <span className="text-sm font-medium text-slate-300">
           Select All (24 items)
         </span>
       </div>
       <div className="flex gap-3">
-        <button className="px-4 py-2 border border-error text-error font-label-strong rounded-lg hover:bg-error/5 transition-colors">
+        <button className="px-4 py-2 border border-error text-error font-label-strong rounded-lg hover:bg-red-500/5 transition-colors">
           Reject Selected
         </button>
         <button className="px-4 py-2 bg-secondary text-white font-label-strong rounded-lg shadow-sm hover:opacity-90 transition-opacity">

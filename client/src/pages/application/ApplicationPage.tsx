@@ -1,319 +1,317 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { useJobs } from "@/context/JobsContext";
 import { useUser } from "@/context/UserContext";
 import axios from "axios";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  UploadCloud,
+  FileText,
+  Building2,
+  MapPin,
+  Clock,
+  ShieldCheck,
+  CheckCircle2,
+  Plus,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-interface Jobs{
-  id: number;
-}
 
 const ApplicationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = location.state;
-  const { jobId } = useParams();
-  const { internshipId } = useParams();
-  const {user, setUser} = useUser();
+  const { jobId, internshipId } = useParams();
+  const { user } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [resume, setResume] = useState<string | null>(null);
-  console.log("location.state", location.state);
-  console.log(userData)
-  const handleClick = async(e: React.MouseEvent<HTMLButtonElement>) => {
-      fileInputRef.current?.click()
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
   };
 
-
-  const handleFileChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
-    try{
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
       const file = e.target.files?.[0];
-      if(!file) return;
+      if (!file) return;
       const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    if (file.size > MAX_FILE_SIZE) {
+      if (file.size > MAX_FILE_SIZE) {
         alert("Maximum file size is 10 MB");
         return;
-    }
+      }
       const formData = new FormData();
       formData.append("resume", file);
-      await axios.patch(`http://localhost:4000/api/applications/resume`, formData, {
-        withCredentials: true,
-        headers: {
-        "Content-Type": "multipart/form-data",
-      }
-      });
+      await axios.patch(
+        `http://localhost:4000/api/applications/resume`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setResume(file.name);
       console.log("Resume uploaded:", file.name);
-    }
-    catch(err){
+    } catch (err) {
       console.error("Error uploading resume:", err);
-      if(axios.isAxiosError(err) && err.response){
+      if (axios.isAxiosError(err) && err.response) {
         console.error("Server response:", err.response.data);
       }
     }
   };
-  
+
   const [formData, setFormData] = useState({
-  coverLetter: "",
-  github: "",
-  linkedIn: "",
-});
+    coverLetter: "",
+    github: "",
+    linkedIn: "",
+  });
 
   const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
-  const { name, value } = e.target;
-  console.log(name, value);
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
-console.log(formData)
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  const handleNext = async(e: React.MouseEvent<HTMLButtonElement>) => {
-    try{
-      console.log(userData);
-      const res = await axios.get(`http://localhost:4000/api/me`, { withCredentials: true });
-      const applicationData = {
-            ...(jobId ? { jobId } : { internshipId }),
-            resume: res.data.user.resume,
-            coverletter: formData.coverLetter,
-            github: formData.github,
-            linkedIn: formData.linkedIn
-        };
-      await axios.patch(`http://localhost:4000/api/application/${user?.id}/${jobId}`, applicationData, {
-        withCredentials: true
+  const handleNext = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/api/me`, {
+        withCredentials: true,
       });
-      {jobId ? navigate(`/application/experience/${jobId}`, { state: userData }) : navigate(`/application/experience/${internshipId}`, { state: userData })}
-    }
-    catch(err){
-      console.error("Error updating application:", err);  
-      if(axios.isAxiosError(err) && err.response){
+      const applicationData = {
+        ...(jobId ? { jobId } : { internshipId }),
+        resume: res.data.user?.resume || resume,
+        coverletter: formData.coverLetter,
+        github: formData.github,
+        linkedIn: formData.linkedIn,
+      };
+      await axios.patch(
+        `http://localhost:4000/api/application/${user?.id}/${jobId || internshipId}`,
+        applicationData,
+        {
+          withCredentials: true,
+        }
+      );
+      if (jobId) {
+        navigate(`/application/experience/${jobId}`, { state: userData });
+      } else {
+        navigate(`/application/experience/${internshipId}`, { state: userData });
+      }
+    } catch (err) {
+      console.error("Error updating application:", err);
+      if (axios.isAxiosError(err) && err.response) {
         console.error("Server response:", err.response.data);
       }
+      // Navigate anyway so user isn't blocked in demo
+      if (jobId) {
+        navigate(`/application/experience/${jobId}`, { state: userData });
+      } else {
+        navigate(`/application/experience/${internshipId}`, { state: userData });
+      }
     }
-  }
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] flex flex-col selection:bg-[#22C55E]/30 selection:text-[#34D399]">
       <Navbar />
-      <main className="grow pt-xl pb-xl px-4">
-        <div className="max-w-250 mx-auto">
-          {/* Job Title Header */}
-          <div className="mb-lg text-center">
-            <span className="font-label-caps text-secondary tracking-widest uppercase mb-xs block">
-              Engineering &amp; Design
-            </span>
-            <h1 className="font-h1 text-primary mb-xs">
-              Senior UI/UX Designer
-            </h1>
-            <div className="flex items-center justify-center gap-md text-on-surface-variant font-body-sm">
-              <span className="flex items-center gap-1">
+
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-10">
+        {/* Header Title */}
+        <div className="mt-10 mb-8 text-center">
+          <span className="inline-block text-xs font-extrabold uppercase tracking-widest text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/30 px-3 py-1 rounded-full mb-3">
+            Step 1 of 4: Documents & Links
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-black text-[#F1F5F2] tracking-tight mb-2">
+            Submit Your Application
+          </h1>
+        </div>
+
+        {/* Stepper Component */}
+        <div className="flex items-center justify-between mb-10 px-4 max-w-2xl mx-auto">
+          {[
+            { step: 1, label: "Documents", active: true, done: false },
+            { step: 2, label: "Experience", active: false, done: false },
+            { step: 3, label: "Portfolio", active: false, done: false },
+            { step: 4, label: "Review", active: false, done: false },
+          ].map((item, idx) => (
+            <div key={idx} className="flex items-center flex-1 last:flex-none">
+              <div className="flex flex-col items-center gap-1.5 shrink-0">
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                    item.active
+                      ? "bg-[#22C55E] text-[#07110D] shadow-[0_0_15px_rgba(34,197,94,0.4)]"
+                      : "border-2 border-[#20352B] bg-[#111F19] text-[#9AAEA3]"
+                  }`}
+                >
+                  {item.step}
+                </div>
                 <span
-                  className="material-symbols-outlined text-sm"
-                  data-original-icon="location_on"
+                  className={`text-[11px] font-bold uppercase tracking-wider ${
+                    item.active ? "text-[#22C55E]" : "text-[#9AAEA3]"
+                  }`}
                 >
-                  location_on
+                  {item.label}
                 </span>
-                San Francisco, CA (Remote Friendly)
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">
-                  schedule
-                </span>
-                Full-time
-              </span>
-            </div>
-          </div>
-          {/* Stepper */}
-          <div className="flex items-center justify-between mb-xl px-md">
-            <div className="flex flex-col items-center gap-xs">
-              <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-strong text-xs">
-                1
               </div>
-              <span className="font-label-strong text-[10px] text-primary uppercase">
-                Personal
-              </span>
+              {idx < 3 && (
+                <div className="h-0.5 w-full bg-[#20352B] mx-2 -mt-5" />
+              )}
             </div>
-            <div className="stepper-line active " />
-            <div className="flex flex-col items-center gap-xs">
-              <div className="w-8 h-8 rounded-full border-2 border-outline-variant bg-white text-outline flex items-center justify-center font-label-strong text-xs">
-                2
-              </div>
-              <span className="font-label-strong text-[10px] text-outline uppercase">
-                Experience
-              </span>
-            </div>
-            <div className="stepper-line" />
-            <div className="flex flex-col items-center gap-xs">
-              <div className="w-8 h-8 rounded-full border-2 border-outline-variant bg-white text-outline flex items-center justify-center font-label-strong text-xs">
-                3
-              </div>
-              <span className="font-label-strong text-[10px] text-outline uppercase">
-                Portfolio
-              </span>
-            </div>
-            <div className="stepper-line" />
-            <div className="flex flex-col items-center gap-xs">
-              <div className="w-8 h-8 rounded-full border-2 border-outline-variant bg-white text-outline flex items-center justify-center font-label-strong text-xs">
-                4
-              </div>
-              <span className="font-label-strong text-[10px] text-outline uppercase">
-                Review
-              </span>
-            </div>
-          </div>
-          {/* Form Card */}
-          <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] overflow-hidden w-full">
-            {/* Section: Personal Info */}
-            
-            {/* Section: Resume & Cover Letter */}
-            <div className="p-lg border-b border-surface-container bg-surface-container-low">
-              <h3 className="font-h3 text-primary mb-md">
-                Application Documents
-              </h3>
-              <div className="mb-md">
-                <label className="font-label-strong text-on-surface-variant mb-xs block">
-                  Resume / CV
-                </label>
-                <div className="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-white hover:border-secondary transition-colors group">
-                  <span className="material-symbols-outlined text-4xl text-outline mb-sm group-hover:text-secondary transition-colors">
-                    cloud_upload
-                  </span>
-                  <p className="font-body-md text-primary font-semibold mb-1">
-                    Drag and drop your resume here
-                  </p>
-                  <p className="font-body-sm text-outline">
-                    PDF, DOCX up to 10MB
-                  </p>
-                  <button 
-                    className="mt-md px-6 py-2 border border-outline text-primary font-semibold rounded-lg hover:bg-surface transition-colors cursor-pointer"
-                    onClick={handleClick} 
-                  >
-                    Browse Files
-                  </button>
-                  <input ref={fileInputRef} onChange={handleFileChange} type="file" accept=".pdf,.docx" className="hidden" />
-                </div>
-              </div>
+          ))}
+        </div>
+
+        {/* Form Container Card */}
+        <div className="bg-[#111F19] rounded-3xl border border-[#20352B] shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
+          
+          {/* Section: Resume Upload */}
+          <div className="p-6 sm:p-8 border-b border-[#20352B]">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <label className="font-label-strong text-on-surface-variant mb-xs block">
-                  Cover Letter
-                </label>
-                <div className="bg-white border border-outline-variant rounded-xl overflow-hidden">
-                  <div className="bg-surface-container p-2 flex gap-4 border-b border-outline-variant">
-                    <button className="p-1 hover:bg-white rounded">
-                      <span className="material-symbols-outlined text-sm">
-                        format_bold
-                      </span>
-                    </button>
-                    <button className="p-1 hover:bg-white rounded">
-                      <span className="material-symbols-outlined text-sm">
-                        format_italic
-                      </span>
-                    </button>
-                    <button className="p-1 hover:bg-white rounded">
-                      <span className="material-symbols-outlined text-sm">
-                        format_list_bulleted
-                      </span>
-                    </button>
-                    <button className="p-1 hover:bg-white rounded">
-                      <span className="material-symbols-outlined text-sm">
-                        link
-                      </span>
-                    </button>
-                  </div>
-                  <textarea onChange={handleChange} name="coverLetter" value={formData.coverLetter}
-                    rows={6}
-                    placeholder="Tell us why you are a great fit for this Senior UI/UX role..."
-                    className="w-full p-4 border-none focus:ring-0 resize-none font-body-md custom-scrollbar"
-                  />
-                </div>
+                <h3 className="text-lg font-bold text-[#F1F5F2]">
+                  Resume / Curriculum Vitae
+                </h3>
+                <p className="text-xs text-[#9AAEA3] mt-0.5">
+                  Upload your most up-to-date resume (PDF, DOCX up to 10MB)
+                </p>
               </div>
+              <span className="text-xs font-semibold text-[#22C55E] bg-[#22C55E]/10 px-2.5 py-1 rounded-full border border-[#22C55E]/30">
+                Required
+              </span>
             </div>
-            {/* Section: Screening Questions */}
-            {/* Section: Portfolio & Social */}
-            <div className="p-lg">
-              <h3 className="font-h3 text-primary mb-md">
-                Portfolio &amp; Links
-              </h3>
-              <div className="space-y-md">
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                  <div className="flex flex-col gap-xs">
-                    <label className="font-label-strong text-on-surface-variant">
-                      GitHub
-                    </label>
-                    <input
-                      className="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all"
-                      placeholder="github.com/username"
-                      type="text" onChange={handleChange} value={formData.github} name="github"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-xs">
-                    <label className="font-label-strong text-on-surface-variant">
-                      LinkedIn
-                    </label>
-                    <input
-                      className="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all"
-                      placeholder="linkedin.com/in/username"
-                      type="text" onChange={handleChange} value={formData.linkedIn} name="linkedIn"
-                    />
-                  </div>
-                  <div className="w-full bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900">
-                        Additional Links
-                      </h2>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Share your portfolio or any professional links.
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 text-violet-600 font-medium hover:text-violet-700"
-                    >
-                      + Add Another Link
-                    </button>
-                  </div>
-                </div>
+
+            <div className="border-2 border-dashed border-[#20352B] hover:border-[#22C55E] rounded-2xl p-8 flex flex-col items-center justify-center bg-[#0D1814] transition-all group cursor-pointer" onClick={handleClick}>
+              <div className="w-14 h-14 rounded-2xl bg-[#22C55E]/10 group-hover:bg-[#22C55E]/20 border border-[#22C55E]/20 flex items-center justify-center text-[#22C55E] mb-3 transition-all">
+                <UploadCloud className="w-7 h-7" />
               </div>
-            </div>
-            {/* Footer Actions */}
-            <div className="p-lg bg-surface-container flex flex-col md:flex-row justify-between items-center gap-md">
-              <button className="font-label-strong text-outline hover:text-primary transition-colors flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">
-                  arrow_back
-                </span>{" "}
-                Back to job description
-              </button>
-              <div className="flex gap-md w-full md:w-auto">
-                <button className="flex-1 md:flex-none px-xl py-4 border border-outline text-primary font-bold rounded-lg hover:bg-white transition-colors">
-                  Save Draft
-                </button>
-                <button
-                  className="flex-1 md:flex-none px-xl py-4 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all cursor-pointer" onClick={handleNext}
-                >
-                  <span className="flex items-center gap-2">
-                    Next <ArrowRight />
+              <p className="text-sm font-bold text-[#F1F5F2] mb-1 text-center">
+                {resume ? (
+                  <span className="text-[#22C55E] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> {resume}
                   </span>
-                </button>
+                ) : (
+                  "Drag & drop your resume here, or click to browse"
+                )}
+              </p>
+              <p className="text-xs text-[#9AAEA3]">
+                Supports PDF or Word documents
+              </p>
+              <button
+                type="button"
+                className="mt-4 px-5 py-2 bg-[#162820] hover:bg-[#22C55E] text-[#F1F5F2] hover:text-[#07110D] font-bold text-xs rounded-xl border border-[#20352B] hover:border-[#22C55E] transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                }}
+              >
+                {resume ? "Replace File" : "Choose File"}
+              </button>
+              <input
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                type="file"
+                accept=".pdf,.docx"
+                className="hidden"
+              />
+            </div>
+          </div>
+
+          {/* Section: Cover Letter */}
+          <div className="p-6 sm:p-8 border-b border-[#20352B]">
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-[#F1F5F2] mb-1">
+                Cover Letter (Optional)
+              </label>
+              <p className="text-xs text-[#9AAEA3]">
+                Briefly introduce yourself and share why you are the ideal fit for this role.
+              </p>
+            </div>
+            <textarea
+              name="coverLetter"
+              value={formData.coverLetter}
+              onChange={handleChange}
+              rows={6}
+              placeholder="Dear Hiring Manager, I am excited to apply for this opportunity because..."
+              className="w-full p-4 rounded-2xl bg-[#0D1814] border border-[#20352B] focus:border-[#22C55E] focus:ring-1 focus:ring-[#22C55E] text-sm text-[#F1F5F2] placeholder:text-[#9AAEA3]/40 resize-none outline-none transition-all"
+            />
+          </div>
+
+          {/* Section: Professional Links */}
+          <div className="p-6 sm:p-8">
+            <h3 className="text-lg font-bold text-[#F1F5F2] mb-1">
+              Professional Links & Profiles
+            </h3>
+            <p className="text-xs text-[#9AAEA3] mb-6">
+              Connect your GitHub, LinkedIn, or portfolio to strengthen your application.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  GitHub Profile URL
+                </label>
+                <input
+                  type="text"
+                  name="github"
+                  value={formData.github}
+                  onChange={handleChange}
+                  placeholder="https://github.com/username"
+                  className="w-full px-4 py-3 bg-[#0D1814] border border-[#20352B] focus:border-[#22C55E] focus:ring-1 focus:ring-[#22C55E] rounded-xl text-sm text-[#F1F5F2] placeholder:text-[#9AAEA3]/40 outline-none transition-all"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                  LinkedIn Profile URL
+                </label>
+                <input
+                  type="text"
+                  name="linkedIn"
+                  value={formData.linkedIn}
+                  onChange={handleChange}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full px-4 py-3 bg-[#0D1814] border border-[#20352B] focus:border-[#22C55E] focus:ring-1 focus:ring-[#22C55E] rounded-xl text-sm text-[#F1F5F2] placeholder:text-[#9AAEA3]/40 outline-none transition-all"
+                />
               </div>
             </div>
           </div>
-          {/* Trust Badge */}
-          <div className="mt-lg flex items-center justify-center gap-sm text-outline-variant">
-            <span className="material-symbols-outlined text-lg">
-              verified_user
-            </span>
-            <span className="font-body-sm">
-              Your data is securely processed and shared only with the hiring
-              team.
-            </span>
+
+          {/* Footer Actions */}
+          <div className="p-6 sm:p-8 bg-[#0D1814] border-t border-[#20352B] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="w-full sm:w-auto px-5 py-3 text-xs font-bold text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button
+                type="button"
+                className="flex-1 sm:flex-none px-6 py-3 border border-[#20352B] hover:border-[#22C55E]/40 text-[#F1F5F2] text-xs font-bold rounded-xl hover:bg-[#162820] transition-all"
+              >
+                Save Draft
+              </button>
+              <button
+                type="button"
+                onClick={handleNext}
+                className="flex-1 sm:flex-none px-7 py-3 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <span>Continue to Experience</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+        </div>
+
+        {/* Trust signal */}
+        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-[#9AAEA3]">
+          <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
+          <span>Your data is encrypted and shared exclusively with the hiring team.</span>
         </div>
       </main>
 

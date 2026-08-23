@@ -58,7 +58,7 @@ const AdminUpperNav = ({
     );
 
   return (
-    <header className="fixed top-0 left-72 right-0 h-20 bg-surface/80 backdrop-blur-xl border-b border-outline-variant z-40 px-md flex items-center justify-between">
+    <header className="fixed top-0 left-72 right-0 h-20 bg-[#0A0F1A]/80 backdrop-blur-xl border-b border-[#1E293B] z-40 px-md flex items-center justify-between">
       <div className="flex-1 max-w-3xl relative">
       <div className="relative flex items-center">
         <span className="material-symbols-outlined absolute left-4 text-outline">
@@ -66,7 +66,7 @@ const AdminUpperNav = ({
         </span>
 
         <input
-          className="w-full h-11 pl-12 pr-4 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-secondary/50 text-body-sm outline-none transition-all"
+          className="w-full h-11 pl-12 pr-4 bg-[#111827] rounded-full border-none focus:ring-2 focus:ring-secondary/50 text-body-sm outline-none transition-all"
           placeholder="Search records, users, jobs..."
           type="text"
           onChange={handleChange}
@@ -76,19 +76,19 @@ const AdminUpperNav = ({
       </div>
 
       {search && uniqueResults.length > 0 && (
-        <ul className="absolute top-full mt-2 left-0 right-0 z-50 max-h-80 overflow-y-auto rounded-xl border border-outline-variant bg-white shadow-lg">
+        <ul className="absolute top-full mt-2 left-0 right-0 z-50 max-h-80 overflow-y-auto rounded-xl border border-[#1E293B] bg-[#111827] shadow-lg">
           {uniqueResults.map((item, index) => {
             const label = getItemLabel(item);
             return (
             <li
               key={getItemKey(item, index)}
-              className="cursor-pointer border-b border-slate-100 last:border-b-0"
+              className="cursor-pointer border-b border-[#1E293B] last:border-b-0"
               onClick={() => {
                 setQuery?.(label);
                 setResults?.([]);
               }}
             >
-              <div className="bg-white text-gray-900 px-4 py-2 hover:bg-gray-100">
+              <div className="bg-[#111827] text-gray-900 px-4 py-2 hover:bg-gray-100">
                 <strong>{label}</strong>
               </div>
             </li>
@@ -100,21 +100,21 @@ const AdminUpperNav = ({
 
 
   <div className="flex items-center gap-md">
-    <button className="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+    <button className="relative p-2 text-slate-200-variant hover:bg-[#111827]-high rounded-full transition-colors">
       <span className="material-symbols-outlined">notifications</span>
-      <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full" />
+      <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
     </button>
-    <button className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+    <button className="p-2 text-slate-200-variant hover:bg-[#111827]-high rounded-full transition-colors">
       <span className="material-symbols-outlined">help</span>
     </button>
-    <div className="flex items-center gap-sm pl-sm border-l border-outline-variant">
+    <div className="flex items-center gap-sm pl-sm border-l border-[#1E293B]">
       <div className="text-right hidden lg:block">
-        <p className="font-label-strong text-label-strong text-on-surface">
+        <p className="font-label-strong text-label-strong text-slate-200">
           Admin User
         </p>
       </div>
-      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-        <span className="material-symbols-outlined text-on-primary text-[18px]">
+      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+        <span className="material-symbols-outlined text-white text-[18px]">
           person
         </span>
       </div>

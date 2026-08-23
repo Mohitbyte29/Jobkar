@@ -6,22 +6,22 @@ const Terms = () => {
       <main className="max-w-max_width mx-auto px-margin py-xl">
   {/* Hero Header */}
   <div className="mb-xl text-center md:text-left">
-    <h1 className="font-h1 text-h1 text-on-surface mb-xs">Terms of Service</h1>
-    <p className="font-body-md text-on-surface-variant">
+    <h1 className="font-h1 text-h1 text-[#F1F5F2] mb-xs">Terms of Service</h1>
+    <p className="font-body-md text-[#9AAEA3]">
       Last Updated: October 24, 2023
     </p>
   </div>
   <div className="flex flex-col lg:flex-row gap-lg">
     {/* Sidebar Table of Contents */}
     <aside className="lg:w-1/4">
-      <div className="sticky-toc p-md bg-surface-container-low rounded-xl border border-outline-variant">
-        <h4 className="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">
+      <div className="sticky-toc p-md bg-[#0D1814] rounded-xl border border-[#20352B]">
+        <h4 className="font-label-caps text-label-caps text-[#9AAEA3] mb-md uppercase tracking-wider">
           On this page
         </h4>
         <ul className="space-y-sm">
           <li>
             <a
-              className="font-label-strong text-primary hover:text-secondary transition-colors flex items-center gap-xs"
+              className="font-label-strong text-[#F1F5F2] hover:text-[#22C55E] transition-colors flex items-center gap-xs"
               href="#acceptance"
             >
               <span className="material-symbols-outlined text-[18px]">
@@ -32,7 +32,7 @@ const Terms = () => {
           </li>
           <li>
             <a
-              className="font-label-strong text-on-surface-variant hover:text-secondary transition-colors flex items-center gap-xs"
+              className="font-label-strong text-[#9AAEA3] hover:text-[#22C55E] transition-colors flex items-center gap-xs"
               href="#responsibilities"
             >
               <span className="material-symbols-outlined text-[18px]">
@@ -43,7 +43,7 @@ const Terms = () => {
           </li>
           <li>
             <a
-              className="font-label-strong text-on-surface-variant hover:text-secondary transition-colors flex items-center gap-xs"
+              className="font-label-strong text-[#9AAEA3] hover:text-[#22C55E] transition-colors flex items-center gap-xs"
               href="#intellectual"
             >
               <span className="material-symbols-outlined text-[18px]">
@@ -54,7 +54,7 @@ const Terms = () => {
           </li>
           <li>
             <a
-              className="font-label-strong text-on-surface-variant hover:text-secondary transition-colors flex items-center gap-xs"
+              className="font-label-strong text-[#9AAEA3] hover:text-[#22C55E] transition-colors flex items-center gap-xs"
               href="#liability"
             >
               <span className="material-symbols-outlined text-[18px]">
@@ -65,7 +65,7 @@ const Terms = () => {
           </li>
           <li>
             <a
-              className="font-label-strong text-on-surface-variant hover:text-secondary transition-colors flex items-center gap-xs"
+              className="font-label-strong text-[#9AAEA3] hover:text-[#22C55E] transition-colors flex items-center gap-xs"
               href="#termination"
             >
               <span className="material-symbols-outlined text-[18px]">
@@ -78,29 +78,29 @@ const Terms = () => {
       </div>
     </aside>
     {/* Main Document Content */}
-    <article className="lg:w-3/4 bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+    <article className="lg:w-3/4 bg-[#111F19] p-lg rounded-xl border border-[#20352B] shadow-sm">
       <div className="content-canvas space-y-lg">
         <section className="prose-section" id="introduction">
-          <p className="font-body-lg text-body-lg text-on-surface leading-relaxed">
+          <p className="font-body-lg text-body-lg text-[#F1F5F2] leading-relaxed">
             Welcome to JobKar. These Terms of Service ("Terms") govern your
             access to and use of our website, services, and applications. Please
             read these Terms carefully before using our platform.
           </p>
         </section>
-        <hr className="border-outline-variant" />
+        <hr className="border-[#20352B]" />
         <section className="prose-section" id="acceptance">
           <div className="flex items-center gap-sm mb-sm">
             <span
-              className="material-symbols-outlined text-primary"
+              className="material-symbols-outlined text-[#F1F5F2]"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               verified_user
             </span>
-            <h2 className="font-h2 text-h2 text-on-surface">
+            <h2 className="font-h2 text-h2 text-[#F1F5F2]">
               1. Acceptance of Terms
             </h2>
           </div>
-          <div className="font-body-md text-on-surface-variant space-y-md">
+          <div className="font-body-md text-[#9AAEA3] space-y-md">
             <p>
               By accessing or using the JobKar platform, you agree to be bound
               by these Terms and our Privacy Policy. If you do not agree to
@@ -118,16 +118,16 @@ const Terms = () => {
         <section className="prose-section" id="responsibilities">
           <div className="flex items-center gap-sm mb-sm">
             <span
-              className="material-symbols-outlined text-primary"
+              className="material-symbols-outlined text-[#F1F5F2]"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               person_pin
             </span>
-            <h2 className="font-h2 text-h2 text-on-surface">
+            <h2 className="font-h2 text-h2 text-[#F1F5F2]">
               2. User Responsibilities
             </h2>
           </div>
-          <div className="font-body-md text-on-surface-variant space-y-md">
+          <div className="font-body-md text-[#9AAEA3] space-y-md">
             <p>As a user of JobKar, you agree to:</p>
             <ul className="list-disc pl-md space-y-xs">
               <li>
@@ -151,8 +151,8 @@ const Terms = () => {
                 users.
               </li>
             </ul>
-            <div className="bg-surface-container p-md rounded-lg border-l-4 border-secondary mt-md">
-              <p className="font-label-strong text-on-surface mb-xs">
+            <div className="bg-[#111F19] p-md rounded-lg border-l-4 border-[#22C55E] mt-md">
+              <p className="font-label-strong text-[#F1F5F2] mb-xs">
                 Prohibited Activities
               </p>
               <p className="text-body-sm">
@@ -167,16 +167,16 @@ const Terms = () => {
         <section className="prose-section" id="intellectual">
           <div className="flex items-center gap-sm mb-sm">
             <span
-              className="material-symbols-outlined text-primary"
+              className="material-symbols-outlined text-[#F1F5F2]"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               copyright
             </span>
-            <h2 className="font-h2 text-h2 text-on-surface">
+            <h2 className="font-h2 text-h2 text-[#F1F5F2]">
               3. Intellectual Property
             </h2>
           </div>
-          <div className="font-body-md text-on-surface-variant space-y-md">
+          <div className="font-body-md text-[#9AAEA3] space-y-md">
             <p>
               The platform and its original content, features, and functionality
               are and will remain the exclusive property of JobKar and its
@@ -194,16 +194,16 @@ const Terms = () => {
         <section className="prose-section" id="liability">
           <div className="flex items-center gap-sm mb-sm">
             <span
-              className="material-symbols-outlined text-primary"
+              className="material-symbols-outlined text-[#F1F5F2]"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               gavel
             </span>
-            <h2 className="font-h2 text-h2 text-on-surface">
+            <h2 className="font-h2 text-h2 text-[#F1F5F2]">
               4. Limitation of Liability
             </h2>
           </div>
-          <div className="font-body-md text-on-surface-variant space-y-md">
+          <div className="font-body-md text-[#9AAEA3] space-y-md">
             <p>
               In no event shall JobKar, its directors, employees, or partners be
               liable for any indirect, incidental, special, consequential, or
@@ -229,14 +229,14 @@ const Terms = () => {
         <section className="prose-section" id="termination">
           <div className="flex items-center gap-sm mb-sm">
             <span
-              className="material-symbols-outlined text-primary"
+              className="material-symbols-outlined text-[#F1F5F2]"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               cancel
             </span>
-            <h2 className="font-h2 text-h2 text-on-surface">5. Termination</h2>
+            <h2 className="font-h2 text-h2 text-[#F1F5F2]">5. Termination</h2>
           </div>
-          <div className="font-body-md text-on-surface-variant space-y-md">
+          <div className="font-body-md text-[#9AAEA3] space-y-md">
             <p>
               We may terminate or suspend your account and bar access to the
               platform immediately, without prior notice or liability, under our
@@ -251,8 +251,8 @@ const Terms = () => {
             </p>
           </div>
         </section>
-        <div className="pt-lg border-t border-outline-variant text-center">
-          <p className="font-body-md text-on-surface-variant mb-md">
+        <div className="pt-lg border-t border-[#20352B] text-center">
+          <p className="font-body-md text-[#9AAEA3] mb-md">
             Have questions about our terms?
           </p>
           <a

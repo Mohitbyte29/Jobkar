@@ -44,14 +44,14 @@ const UserManagement = () => {
       {/* Header Section */}
       <div className="mb-md flex justify-between items-end">
         <div>
-          <h2 className="font-h1 text-h1 text-on-surface">User Management</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant mt-1">
+          <h2 className="font-h1 text-h1 text-slate-200">User Management</h2>
+          <p className="font-body-md text-body-md text-slate-200-variant mt-1">
             Oversee and manage your platform's growing community of job seekers
             and employers.
           </p>
         </div>
         <div className="flex gap-sm">
-          <button className="flex items-center gap-xs px-sm py-2 bg-white border border-outline-variant text-on-surface rounded-lg font-label-strong shadow-sm hover:bg-surface-container-low transition-colors">
+          <button className="flex items-center gap-xs px-sm py-2 bg-[#111827] border border-[#1E293B] text-slate-200 rounded-lg font-label-strong shadow-sm hover:bg-[#0F172A] transition-colors">
             <span
               className="material-symbols-outlined text-lg"
               data-icon="filter_list"
@@ -60,7 +60,7 @@ const UserManagement = () => {
             </span>
             Filters
           </button>
-          <button className="flex items-center gap-xs px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong shadow-sm hover:opacity-90 transition-opacity">
+          <button className="flex items-center gap-xs px-sm py-2 bg-blue-600 text-white rounded-lg font-label-strong shadow-sm hover:opacity-90 transition-opacity">
             <span
               className="material-symbols-outlined text-lg"
               data-icon="person_add"
@@ -73,35 +73,35 @@ const UserManagement = () => {
       </div>
       {/* Bento Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
-        <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
-          <p className="font-label-caps text-label-caps text-on-primary-container mb-xs">
+        <div className="bg-[#111827] p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
+          <p className="font-label-caps text-label-caps text-white-container mb-xs">
             TOTAL USERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">{users.length}</span>
+            <span className="font-h2 text-h2 text-slate-200">{users.length}</span>
           </div>
         </div>
-        <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
-          <p className="font-label-caps text-label-caps text-on-primary-container mb-xs">
+        <div className="bg-[#111827] p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
+          <p className="font-label-caps text-label-caps text-white-container mb-xs">
             ACTIVE EMPLOYERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">{users.filter((u) => u.role === 'EMPLOYER').length}</span>
+            <span className="font-h2 text-h2 text-slate-200">{users.filter((u) => u.role === 'EMPLOYER').length}</span>
           </div>
         </div>
-        <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
-          <p className="font-label-caps text-label-caps text-on-primary-container mb-xs">
+        <div className="bg-[#111827] p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
+          <p className="font-label-caps text-label-caps text-white-container mb-xs">
             NEW SEEKERS
           </p>
           <div className="flex items-baseline gap-xs">
-            <span className="font-h2 text-h2 text-on-surface">{users.length}</span>
+            <span className="font-h2 text-h2 text-slate-200">{users.length}</span>
             <span className="text-tertiary-fixed-dim text-xs font-bold">
               This month
             </span>
           </div>
         </div>
-        <div className="bg-white p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
-          <p className="font-label-caps text-label-caps text-on-primary-container mb-xs">
+        <div className="bg-[#111827] p-sm rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white">
+          <p className="font-label-caps text-label-caps text-white-container mb-xs">
             PENDING VERIFICATIONS
           </p>
           <div className="flex items-baseline gap-xs">
@@ -113,24 +113,24 @@ const UserManagement = () => {
         </div>
       </div>
       {/* User Table Container */}
-      <div className="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden border border-white">
+      <div className="bg-[#111827] rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden border border-white">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-surface-container-low border-b border-surface-container-highest">
+            <thead className="bg-[#0F172A] border-b border-surface-container-highest">
               <tr>
-                <th className="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">
+                <th className="px-6 py-4 font-label-caps text-label-caps text-slate-200-variant">
                   NAME
                 </th>
-                <th className="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">
+                <th className="px-6 py-4 font-label-caps text-label-caps text-slate-200-variant">
                   ROLE
                 </th>
-                <th className="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">
+                <th className="px-6 py-4 font-label-caps text-label-caps text-slate-200-variant">
                   STATUS
                 </th>
-                <th className="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">
+                <th className="px-6 py-4 font-label-caps text-label-caps text-slate-200-variant">
                   JOIN DATE
                 </th>
-                <th className="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant text-right">
+                <th className="px-6 py-4 font-label-caps text-label-caps text-slate-200-variant text-right">
                   ACTIONS
                 </th>
               </tr>
@@ -140,20 +140,20 @@ const UserManagement = () => {
     return (
       <tr
         key={user.id}
-        className="hover:bg-surface-container-low transition-colors group"
+        className="hover:bg-[#0F172A] transition-colors group"
       >
         <td className="px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">
+            <div className="w-10 h-10 rounded-full bg-blue-600-fixed flex items-center justify-center text-white-fixed font-bold">
               {user.name?.charAt(0).toUpperCase()}
             </div>
 
             <div>
-              <p className="font-label-strong text-on-surface">
+              <p className="font-label-strong text-slate-200">
                 {user.name}
               </p>
 
-              <p className="text-xs text-on-primary-container font-body-sm">
+              <p className="text-xs text-white-container font-body-sm">
                 {user.email}
               </p>
             </div>
@@ -169,13 +169,13 @@ const UserManagement = () => {
         <td className="px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-secondary" />
-            <span className="font-body-sm text-on-surface">
+            <span className="font-body-sm text-slate-200">
               Active
             </span>
           </div>
         </td>
 
-        <td className="px-6 py-4 font-body-sm text-on-surface-variant">
+        <td className="px-6 py-4 font-body-sm text-slate-200-variant">
           {new Date(user.createdAt).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -184,7 +184,7 @@ const UserManagement = () => {
         </td>
 
         <td className="px-6 py-4 text-right">
-          <button className="text-secondary font-label-strong hover:underline decoration-2 underline-offset-4">
+          <button className="text-blue-400 font-label-strong hover:underline decoration-2 underline-offset-4">
             Manage
           </button>
         </td>
@@ -196,13 +196,13 @@ const UserManagement = () => {
           </table>
         </div>
         {/* Table Pagination */}
-        <div className="px-6 py-4 bg-white border-t border-surface-container flex items-center justify-between">
-          <p className="font-body-sm text-on-surface-variant">
+        <div className="px-6 py-4 bg-[#111827] border-t border-surface-container flex items-center justify-between">
+          <p className="font-body-sm text-slate-200-variant">
             Showing 1 to 4 of 12,842 users
           </p>
           <div className="flex gap-2">
             <button
-              className="p-2 border border-outline-variant rounded hover:bg-surface-container-low disabled:opacity-50"
+              className="p-2 border border-[#1E293B] rounded hover:bg-[#0F172A] disabled:opacity-50"
               disabled={true}
             >
               <span
@@ -212,16 +212,16 @@ const UserManagement = () => {
                 chevron_left
               </span>
             </button>
-            <button className="px-3 py-1 bg-primary text-on-primary rounded font-label-strong">
+            <button className="px-3 py-1 bg-blue-600 text-white rounded font-label-strong">
               1
             </button>
-            <button className="px-3 py-1 border border-outline-variant rounded hover:bg-surface-container-low font-label-strong">
+            <button className="px-3 py-1 border border-[#1E293B] rounded hover:bg-[#0F172A] font-label-strong">
               2
             </button>
-            <button className="px-3 py-1 border border-outline-variant rounded hover:bg-surface-container-low font-label-strong">
+            <button className="px-3 py-1 border border-[#1E293B] rounded hover:bg-[#0F172A] font-label-strong">
               3
             </button>
-            <button className="p-2 border border-outline-variant rounded hover:bg-surface-container-low">
+            <button className="p-2 border border-[#1E293B] rounded hover:bg-[#0F172A]">
               <span
                 className="material-symbols-outlined text-lg"
                 data-icon="chevron_right"

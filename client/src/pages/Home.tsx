@@ -310,15 +310,15 @@ export default function Home() {
           {" "}
           <div className="max-w-2xl">
             {" "}
-            <span className="hero-badge inline-block px-4 py-1.5 rounded-full bg-white/15 text-white font-label-caps mb-6 backdrop-blur-sm border border-white/20">
+            <span className="hero-badge inline-block px-4 py-1.5 rounded-full bg-[#111F19]/15 text-[#F1F5F2] font-label-caps mb-6 backdrop-blur-sm border border-white/20">
               {" "}
               NOW HIRING IN 45 COUNTRIES{" "}
             </span>{" "}
-            <h1 className="hero-title font-bold text-5xl lg:text-6xl text-white mb-6 leading-tight">
+            <h1 className="hero-title font-bold text-5xl lg:text-6xl text-[#F1F5F2] mb-6 leading-tight">
               {" "}
               <SplitText
                 text="Find Your Dream Job Today"
-                className="font-bold text-5xl lg:text-6xl text-white"
+                className="font-bold text-5xl lg:text-6xl text-[#F1F5F2]"
                 delay={50}
                 duration={1.25}
                 ease="power3.out"
@@ -330,7 +330,7 @@ export default function Home() {
                 textAlign="left"
               />{" "}
             </h1>{" "}
-            <p className="hero-subtitle font-body-lg text-lg text-white/80 mb-10 max-w-3xl">
+            <p className="hero-subtitle font-body-lg text-lg text-[#F1F5F2]/80 mb-10 max-w-3xl">
               {" "}
               Connect with industry-leading companies looking for top talent.
               JobKar is the premier destination for ambitious
@@ -344,7 +344,7 @@ export default function Home() {
               {" "}
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />{" "}
               <input
-                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-900"
                 placeholder="Job title or keyword"
                 type="text"
                 value={query}
@@ -353,7 +353,7 @@ export default function Home() {
               />{" "}
               <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />{" "}
               <input
-                className="w-full bg-white pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-outline text-gray-900"
+                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-900"
                 placeholder="Location"
                 type="text"
                 value={location}
@@ -362,7 +362,7 @@ export default function Home() {
               />{" "}
               <button
                 disabled={!canSearch}
-                className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${canSearch ? "bg-primary-container text-white cursor-pointer hover:opacity-90" : "bg-gray-400 text-white cursor-not-allowed opacity-50"}`}
+                className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${canSearch ? "bg-[#22C55E]/10 text-[#F1F5F2] cursor-pointer hover:opacity-90" : "bg-gray-400 text-[#F1F5F2] cursor-not-allowed opacity-50"}`}
                 onClick={() => {
                   if (!selectedJob && query.trim()) {
                     toast.error("Please enter a job");
@@ -414,7 +414,7 @@ export default function Home() {
                       }}
                     >
                       {" "}
-                      <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                      <div className="dropdown-item bg-[#111F19] text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
                         {" "}
                         <strong>{title}</strong>{" "}
                       </div>{" "}
@@ -441,7 +441,7 @@ export default function Home() {
                     }}
                   >
                     {" "}
-                    <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                    <div className="dropdown-item bg-[#111F19] text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
                       {" "}
                       <strong>{location}</strong>{" "}
                     </div>{" "}
@@ -452,23 +452,23 @@ export default function Home() {
             {/* </div> */}{" "}
             <div className="hero-tags mt-6 flex flex-wrap gap-3 items-center">
               {" "}
-              <span className="text-body-sm text-white/60">Popular:</span>{" "}
+              <span className="text-body-sm text-[#F1F5F2]/60">Popular:</span>{" "}
               <span
-                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                className="px-3 py-1 bg-[#111F19]/10 backdrop-blur-sm rounded-full text-body-sm text-[#F1F5F2]/80 hover:bg-[#111F19]/20 transition-colors cursor-pointer border border-[#20352B]"
                 onClick={() => setQuery("Product Designer")}
               >
                 {" "}
                 Product Design{" "}
               </span>{" "}
               <span
-                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                className="px-3 py-1 bg-[#111F19]/10 backdrop-blur-sm rounded-full text-body-sm text-[#F1F5F2]/80 hover:bg-[#111F19]/20 transition-colors cursor-pointer border border-[#20352B]"
                 onClick={() => setQuery("Software Engineer")}
               >
                 {" "}
                 Software Engineer{" "}
               </span>{" "}
               <span
-                className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-body-sm text-white/80 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+                className="px-3 py-1 bg-[#111F19]/10 backdrop-blur-sm rounded-full text-body-sm text-[#F1F5F2]/80 hover:bg-[#111F19]/20 transition-colors cursor-pointer border border-[#20352B]"
                 onClick={() => setQuery("Marketing")}
               >
                 {" "}
@@ -477,14 +477,14 @@ export default function Home() {
             </div>{" "}
           </div>{" "}
           {/* Floating stats card */}{" "}
-          <div className="hero-floating-card absolute bottom-12 right-12 z-20 bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/20 hidden lg:block">
+          <div className="hero-floating-card absolute bottom-12 right-12 z-20 bg-[#111F19]/10 backdrop-blur-md p-5 rounded-xl border border-white/20 hidden lg:block">
             {" "}
             <div className="flex items-center gap-3">
               {" "}
               <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
                 {" "}
                 <span
-                  className="material-symbols-outlined text-white"
+                  className="material-symbols-outlined text-[#F1F5F2]"
                   data-icon="trending_up"
                 >
                   {" "}
@@ -493,10 +493,10 @@ export default function Home() {
               </div>{" "}
               <div>
                 {" "}
-                <p className="font-label-strong text-white">
+                <p className="font-label-strong text-[#F1F5F2]">
                   1.2k+ New Jobs
                 </p>{" "}
-                <p className="text-xs text-white/60">Posted this week</p>{" "}
+                <p className="text-xs text-[#F1F5F2]/60">Posted this week</p>{" "}
               </div>{" "}
             </div>{" "}
           </div>{" "}
@@ -508,16 +508,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="categories-heading flex justify-between items-end mb-12">
             <div>
-              <h2 className="font-bold text-3xl sm:text-4xl tracking-tight text-white mb-3">
+              <h2 className="font-bold text-3xl sm:text-4xl tracking-tight text-[#F1F5F2] mb-3">
                 Explore by category
               </h2>
-              <p className="text-body-md text-slate-400">
+              <p className="text-body-md text-[#9AAEA3]">
                 Find the role that matches your expertise
               </p>
             </div>
             <Link
               to="/categories"
-              className="group hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-white border-b border-transparent hover:border-emerald-400 transition-all pb-0.5 shrink-0"
+              className="group hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-[#F1F5F2] border-b border-transparent hover:border-emerald-400 transition-all pb-0.5 shrink-0"
             >
               View all
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -526,7 +526,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Tech */}
             <div
-              className="category-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50  hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50  hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (navigate(`/jobs/search?category=${encodeURIComponent("TECHNOLOGY_SOFTWARE")}`))
               }
@@ -534,24 +534,24 @@ export default function Home() {
             >
               <div className="w-12 h-12 bg-emerald-400/10 border border-emerald-400/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-emerald-400/20 group-hover:scale-110 transition-all duration-300">
                 <span
-                  className="material-symbols-outlined text-emerald-400"
+                  className="material-symbols-outlined text-[#22C55E]"
                   data-icon="code"
                 >
                   code
                 </span>
               </div>
-              <h3 className="font-h3 text-h3 mb-1.5 text-white">Technology</h3>
-              <p className="text-body-sm text-slate-400 mb-5">
+              <h3 className="font-h3 text-h3 mb-1.5 text-[#F1F5F2]">Technology</h3>
+              <p className="text-body-sm text-[#9AAEA3] mb-5">
                 {techCount} open positions
               </p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#22C55E]">
                 Explore roles
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </div>
             {/* Design */}
             <div
-              className="category-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (window.location.href = `/jobs/search?category=${encodeURIComponent("CREATIVE_MEDIA")}`)
               }
@@ -559,24 +559,24 @@ export default function Home() {
             >
               <div className="w-12 h-12 bg-emerald-400/10 border border-emerald-400/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-emerald-400/20 group-hover:scale-110 transition-all duration-300">
                 <span
-                  className="material-symbols-outlined text-emerald-400"
+                  className="material-symbols-outlined text-[#22C55E]"
                   data-icon="palette"
                 >
                   palette
                 </span>
               </div>
-              <h3 className="font-h3 text-h3 mb-1.5 text-white">Design</h3>
-              <p className="text-body-sm text-slate-400 mb-5">
+              <h3 className="font-h3 text-h3 mb-1.5 text-[#F1F5F2]">Design</h3>
+              <p className="text-body-sm text-[#9AAEA3] mb-5">
                 {designCount} open positions
               </p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#22C55E]">
                 Explore roles
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </div>
             {/* Marketing */}
             <div
-              className="category-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (navigate(`/jobs/search?category=${encodeURIComponent("MARKETING")}`))
               }
@@ -584,24 +584,24 @@ export default function Home() {
             >
               <div className="w-12 h-12 bg-emerald-400/10 border border-emerald-400/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-emerald-400/20 group-hover:scale-110 transition-all duration-300">
                 <span
-                  className="material-symbols-outlined text-emerald-400"
+                  className="material-symbols-outlined text-[#22C55E]"
                   data-icon="campaign"
                 >
                   campaign
                 </span>
               </div>
-              <h3 className="font-h3 text-h3 mb-1.5 text-white">Marketing</h3>
-              <p className="text-body-sm text-slate-400 mb-5">
+              <h3 className="font-h3 text-h3 mb-1.5 text-[#F1F5F2]">Marketing</h3>
+              <p className="text-body-sm text-[#9AAEA3] mb-5">
                 {marketingCount} open positions
               </p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#22C55E]">
                 Explore roles
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </div>
             {/* Finance */}
             <div
-              className="category-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="category-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               onClick={() =>
                 (navigate(`/jobs/search?category=${encodeURIComponent("FINANCE")}`))
               }
@@ -609,17 +609,17 @@ export default function Home() {
             >
               <div className="w-12 h-12 bg-emerald-400/10 border border-emerald-400/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-emerald-400/20 group-hover:scale-110 transition-all duration-300">
                 <span
-                  className="material-symbols-outlined text-emerald-400"
+                  className="material-symbols-outlined text-[#22C55E]"
                   data-icon="payments"
                 >
                   payments
                 </span>
               </div>
-              <h3 className="font-h3 text-h3 mb-1.5 text-white">Finance</h3>
-              <p className="text-body-sm text-slate-400 mb-5">
+              <h3 className="font-h3 text-h3 mb-1.5 text-[#F1F5F2]">Finance</h3>
+              <p className="text-body-sm text-[#9AAEA3] mb-5">
                 {financeCount} open positions
               </p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#22C55E]">
                 Explore roles
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
@@ -632,11 +632,11 @@ export default function Home() {
       <section ref={jobsRef} className="bg-[#0d1c2d] py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="jobs-heading text-center mb-16">
-            <h2 className="font-bold text-3xl sm:text-4xl tracking-tight text-white mb-4">
+            <h2 className="font-bold text-3xl sm:text-4xl tracking-tight text-[#F1F5F2] mb-4">
               {" "}
               <SplitText
                 text="Latest opportunities"
-                className="font-bold text-5xl lg:text-6xl text-white"
+                className="font-bold text-5xl lg:text-6xl text-[#F1F5F2]"
                 delay={25}
                 duration={1.25}
                 ease="power3.out"
@@ -648,7 +648,7 @@ export default function Home() {
                 textAlign="left"
               />{" "}
             </h2>
-            <p className="text-body-md text-slate-400">
+            <p className="text-body-md text-[#9AAEA3]">
               Hand-picked roles from trusted partners
             </p>
           </div>
@@ -657,13 +657,13 @@ export default function Home() {
               jobData.slice(0, 3).map((job: any) => (
                 <div
                   key={job.id}
-                  className="job-card bg-[#104532] p-6 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:active:scale-150 hover:shadow-lg hover:shadow-black/30 hover:-translate-y-0.5 transition-all duration-300 group"
+                  className="job-card bg-[#104532] p-6 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:active:scale-150 hover:shadow-lg hover:shadow-black/30 hover:-translate-y-0.5 transition-all duration-300 group"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-6">
                     <div className="flex items-start gap-4 lg:contents">
                       <div className="w-14 h-14 shrink-0 rounded-xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center p-2">
                         <span
-                          className="material-symbols-outlined text-3xl text-emerald-400"
+                          className="material-symbols-outlined text-3xl text-[#22C55E]"
                           data-icon="token"
                         >
                           token
@@ -671,14 +671,14 @@ export default function Home() {
                       </div>
 
                       <div className="flex-1 min-w-0 lg:order-none">
-                        <h3 className="font-h3 text-h3 mb-1.5 truncate text-white">
+                        <h3 className="font-h3 text-h3 mb-1.5 truncate text-[#F1F5F2]">
                           {job.title}
                         </h3>
                         <div className="flex flex-wrap gap-x-4 gap-y-1.5 items-center">
                           <span className="text-body-sm font-label-strong text-slate-200">
                             {job.company?.name || "Unknown Company"}
                           </span>
-                          <div className="flex items-center gap-1 text-slate-400 text-body-sm">
+                          <div className="flex items-center gap-1 text-[#9AAEA3] text-body-sm">
                             <span
                               className="material-symbols-outlined text-sm"
                               data-icon="location_on"
@@ -687,7 +687,7 @@ export default function Home() {
                             </span>
                             {job.location}
                           </div>
-                          <div className="flex items-center gap-1 text-slate-400 text-body-sm">
+                          <div className="flex items-center gap-1 text-[#9AAEA3] text-body-sm">
                             <span
                               className="material-symbols-outlined text-sm"
                               data-icon="schedule"
@@ -702,7 +702,7 @@ export default function Home() {
 
                     <div className="flex items-center justify-between lg:flex-col lg:items-end gap-3 pl-[72px] lg:pl-0 shrink-0">
                       {job.salaryMin && job.salaryMax ? (
-                        <p className="font-h3 text-emerald-400 flex items-center gap-0.5 whitespace-nowrap">
+                        <p className="font-h3 text-[#22C55E] flex items-center gap-0.5 whitespace-nowrap">
                           <IndianRupee width={16} height={16} />
                           {(job.salaryMin / 100000).toFixed(1)}L –
                           <IndianRupee width={16} height={16} />
@@ -725,7 +725,7 @@ export default function Home() {
               ))
             ) : (
               <div className="text-center py-12">
-                <p className="text-slate-400">
+                <p className="text-[#9AAEA3]">
                   No jobs available at the moment
                 </p>
               </div>
@@ -734,7 +734,7 @@ export default function Home() {
           <div className="jobs-cta mt-14 text-center">
             <Link
               to="/jobs"
-              className="group inline-flex items-center gap-2 px-9 py-3.5 border-2 border-white/20 text-white font-label-strong rounded-xl hover:bg-emerald-400 hover:border-emerald-400 hover:text-slate-950 transition-all duration-200"
+              className="group inline-flex items-center gap-2 px-9 py-3.5 border-2 border-white/20 text-[#F1F5F2] font-label-strong rounded-xl hover:bg-emerald-400 hover:border-emerald-400 hover:text-slate-950 transition-all duration-200"
             >
               Browse all {total} jobs
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -744,7 +744,7 @@ export default function Home() {
       </section>
 
       <section ref={employerRef} className="py-24 px-6">
-        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden bg-primary-container text-white relative">
+        <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden bg-[#22C55E]/10 text-[#F1F5F2] relative">
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <div className="blob-teal absolute top-0 right-0 w-96 h-96 bg-teal-500 rounded-full blur-[100px]" />
             <div className="blob-indigo absolute bottom-0 left-0 w-96 h-96 bg-indigo-500 rounded-full blur-[100px]" />
@@ -754,47 +754,47 @@ export default function Home() {
               <h2 className="font-display text-display mb-6">
                 Reach the world's best talent.
               </h2>
-              <p className="text-body-lg text-on-primary-container mb-10">
+              <p className="text-body-lg text-[#22C55E] mb-10">
                 Join 10,000+ companies using JobKar to scale their teams with
                 the most qualified candidates in tech, design, and beyond.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/postJob"
-                  className="px-8 py-4 bg-secondary text-white rounded-lg font-label-strong active:scale-95 transition-all"
+                  className="px-8 py-4 bg-secondary text-[#F1F5F2] rounded-lg font-label-strong active:scale-95 transition-all"
                 >
                   Post a Job Now
                 </Link>
-                <button className="px-8 py-4 bg-white/10 text-white rounded-lg font-label-strong backdrop-blur-sm hover:bg-white/20 transition-all">
+                <button className="px-8 py-4 bg-[#111F19]/10 text-[#F1F5F2] rounded-lg font-label-strong backdrop-blur-sm hover:bg-[#111F19]/20 transition-all">
                   View Pricing
                 </button>
               </div>
             </div>
             <div className="hidden lg:grid grid-cols-2 gap-4">
               <div className="space-y-4 pt-12">
-                <div className="employer-stat bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors duration-300">
+                <div className="employer-stat bg-[#111F19]/5 p-6 rounded-2xl border border-[#20352B] backdrop-blur-md hover:bg-[#111F19]/10 transition-colors duration-300">
                   <h4 className="font-h3 text-h3 mb-2">95%</h4>
-                  <p className="text-sm text-on-primary-container">
+                  <p className="text-sm text-[#22C55E]">
                     Placement rate for premium listings
                   </p>
                 </div>
-                <div className="employer-stat bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors duration-300">
+                <div className="employer-stat bg-[#111F19]/5 p-6 rounded-2xl border border-[#20352B] backdrop-blur-md hover:bg-[#111F19]/10 transition-colors duration-300">
                   <h4 className="font-h3 text-h3 mb-2">24h</h4>
-                  <p className="text-sm text-on-primary-container">
+                  <p className="text-sm text-[#22C55E]">
                     Average time to first application
                   </p>
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="employer-stat bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors duration-300">
+                <div className="employer-stat bg-[#111F19]/5 p-6 rounded-2xl border border-[#20352B] backdrop-blur-md hover:bg-[#111F19]/10 transition-colors duration-300">
                   <h4 className="font-h3 text-h3 mb-2">1M+</h4>
-                  <p className="text-sm text-on-primary-container">
+                  <p className="text-sm text-[#22C55E]">
                     Monthly active job seekers
                   </p>
                 </div>
-                <div className="employer-stat bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors duration-300">
+                <div className="employer-stat bg-[#111F19]/5 p-6 rounded-2xl border border-[#20352B] backdrop-blur-md hover:bg-[#111F19]/10 transition-colors duration-300">
                   <h4 className="font-h3 text-h3 mb-2">4.9/5</h4>
-                  <p className="text-sm text-on-primary-container">
+                  <p className="text-sm text-[#22C55E]">
                     Average employer satisfaction rating
                   </p>
                 </div>
@@ -808,10 +808,10 @@ export default function Home() {
       <section ref={testimonialsRef} className="bg-[#03110C] py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="testimonials-heading text-center mb-16">
-            <h2 className="font-bold text-3xl text-white mb-4">
+            <h2 className="font-bold text-3xl text-[#F1F5F2] mb-4">
               <SplitText
                 text="Expert Career Insights"
-                className="font-bold text-3xl lg:text-3xl text-white"
+                className="font-bold text-3xl lg:text-3xl text-[#F1F5F2]"
                 delay={25}
                 duration={1.25}
                 ease="power3.out"
@@ -824,16 +824,16 @@ export default function Home() {
               />{" "}
               
             </h2>
-            <p className="text-body-md text-slate-400 max-w-2xl mx-auto">
+            <p className="text-body-md text-[#9AAEA3] max-w-2xl mx-auto">
               Trusted by industry leaders and career coaches as the premier
               platform for professional growth and top-tier talent acquisition.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Expert 1 */}
-            <div className="testimonial-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
+            <div className="testimonial-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-[#0D1814]">
                   <img
                     alt="Expert Headshot"
                     className="w-full h-full object-cover"
@@ -842,15 +842,15 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <h4 className="font-h3 text-base text-white">
+                  <h4 className="font-h3 text-base text-[#F1F5F2]">
                     Sarah Jenkins
                   </h4>
-                  <p className="text-xs text-slate-400 font-label-strong uppercase tracking-wider">
+                  <p className="text-xs text-[#9AAEA3] font-label-strong uppercase tracking-wider">
                     HR Director at TechFlow
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1 mb-4 text-emerald-400">
+              <div className="flex gap-1 mb-4 text-[#22C55E]">
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
@@ -861,16 +861,16 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-              <p className="text-body-md text-slate-300 italic">
+              <p className="text-body-md text-[#9AAEA3] italic">
                 "JobKar has revolutionized how we source senior design talent.
                 The quality of applicants is consistently higher than any other
                 platform we've used."
               </p>
             </div>
             {/* Expert 2 */}
-            <div className="testimonial-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
+            <div className="testimonial-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-[#0D1814]">
                   <img
                     alt="Expert Headshot"
                     className="w-full h-full object-cover"
@@ -879,13 +879,13 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <h4 className="font-h3 text-base text-white">David Chen</h4>
-                  <p className="text-xs text-slate-400 font-label-strong uppercase tracking-wider">
+                  <h4 className="font-h3 text-base text-[#F1F5F2]">David Chen</h4>
+                  <p className="text-xs text-[#9AAEA3] font-label-strong uppercase tracking-wider">
                     Executive Career Coach
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1 mb-4 text-emerald-400">
+              <div className="flex gap-1 mb-4 text-[#22C55E]">
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
@@ -896,16 +896,16 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-              <p className="text-body-md text-slate-300 italic">
+              <p className="text-body-md text-[#9AAEA3] italic">
                 "I always recommend JobKar to my clients. It's the only site
                 where the user experience for the candidate matches the high-end
                 nature of the roles being offered."
               </p>
             </div>
             {/* Expert 3 */}
-            <div className="testimonial-card bg-white/[0.03] p-8 rounded-2xl border border-white/10 hover:border-emerald-400/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
+            <div className="testimonial-card bg-[#111F19]/[0.03] p-8 rounded-2xl border border-[#20352B] hover:border-emerald-400/50 hover:bg-[#111F19]/[0.06] hover:shadow-xl hover:shadow-black/30 hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-[#0D1814]">
                   <img
                     alt="Expert Headshot"
                     className="w-full h-full object-cover"
@@ -914,15 +914,15 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <h4 className="font-h3 text-base text-white">
+                  <h4 className="font-h3 text-base text-[#F1F5F2]">
                     Marcus Rodriguez
                   </h4>
-                  <p className="text-xs text-slate-400 font-label-strong uppercase tracking-wider">
+                  <p className="text-xs text-[#9AAEA3] font-label-strong uppercase tracking-wider">
                     Talent Lead at InnovateX
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1 mb-4 text-emerald-400">
+              <div className="flex gap-1 mb-4 text-[#22C55E]">
                 {[...Array(4)].map((_, i) => (
                   <span
                     key={i}
@@ -939,7 +939,7 @@ export default function Home() {
                   star_half
                 </span>
               </div>
-              <p className="text-body-md text-slate-300 italic">
+              <p className="text-body-md text-[#9AAEA3] italic">
                 "The matching algorithm is incredibly accurate. We find that the
                 'Latest Opportunities' section consistently surfaces the exact
                 profiles we are looking for."

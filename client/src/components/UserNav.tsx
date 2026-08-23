@@ -1,125 +1,157 @@
 import { useUser } from '@/context/UserContext';
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  FileText,
+  Bookmark,
+  Briefcase,
+  GraduationCap,
+  User,
+  FileSpreadsheet,
+  Settings,
+  Rocket,
+} from 'lucide-react';
 
 const UserNav = () => {
-  const {user, setUser} = useUser();
+  const { user } = useUser();
+  const location = useLocation();
+
+  const navLinks = [
+    {
+      to: '/',
+      label: 'Home',
+      icon: LayoutDashboard,
+      active: location.pathname === '/',
+    },
+    {
+      to: `/application/${user?.id || ''}`,
+      label: 'My Applications',
+      icon: FileText,
+      active: location.pathname.startsWith('/application'),
+    },
+    {
+      to: '/saved-jobs',
+      label: 'Saved Jobs',
+      icon: Bookmark,
+      active: location.pathname === '/saved-jobs',
+    },
+    {
+      to: '/jobs',
+      label: 'Jobs',
+      icon: Briefcase,
+      active: location.pathname.startsWith('/jobs'),
+    },
+    {
+      to: '/internships',
+      label: 'Internships',
+      icon: GraduationCap,
+      active: location.pathname.startsWith('/internships'),
+    },
+    {
+      to: '/profile',
+      label: 'Profile',
+      icon: User,
+      active: location.pathname === '/profile',
+    },
+    {
+      to: '#',
+      label: 'Resume',
+      icon: FileSpreadsheet,
+      active: false,
+    },
+    {
+      to: '#',
+      label: 'Settings',
+      icon: Settings,
+      active: false,
+    },
+  ];
+
   return (
-    <div>
-      <aside
-    className="w-64 bg-white border-r border-job-border flex flex-col fixed h-full z-10"
-    data-purpose="sidebar"
-  >
-    <div className="p-6 border-b border-job-border flex items-center space-x-2">
-      <div className="w-8 h-8 bg-job-blue rounded-lg flex items-center justify-center">
-        <i className="fas fa-briefcase text-white text-sm" />
-      </div>
-      <span className="text-xl font-bold text-slate-900">Jobkar</span>
-    </div>
-    <nav className="flex-1 p-4 space-y-1">
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to="/"
-      >
-        <i className="fas fa-th-large w-5" />
-        <span className="text-sm font-medium">Home</span>
-      </Link>
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to={`/application/${user?.id}`}
-      >
-        <i className="fas fa-file-alt w-5" />
-        <span className="text-sm font-medium">My Applications</span>
-      </Link>
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to="/saved-jobs"
-      >
-        <i className="fas fa-heart w-5" />
-        <span className="text-sm font-medium">Saved Jobs</span>
-      </Link>
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to="/jobs"
-      >
-        <i className="fas fa-calendar-check w-5" />
-        <span className="text-sm font-medium">Jobs</span>
-      </Link>
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        to="/internships"
-      >
-        <i className="fas fa-comment-dots w-5" />
-        <span className="text-sm font-medium">Internships</span>
-      </Link>
-      <Link
-        className="flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-job-blue transition-colors"
-        to="/profile"
-      >
-        <i className="fas fa-user w-5" />
-        <span className="text-sm font-semibold">Profile</span>
-      </Link>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
-        href="#"
-      >
-        <i className="fas fa-file-invoice w-5" />
-        <span className="text-sm font-medium">Resume</span>
-      </a>
-      <a
-        className="flex items-center space-x-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors mt-auto"
-        href="#"
-      >
-        <i className="fas fa-cog w-5" />
-        <span className="text-sm font-medium">Settings</span>
-      </a>
-    </nav>
-    {/* Sidebar Promo Card */}
-    <div
-      className="p-4 m-4 bg-slate-50 rounded-2xl border border-job-border text-center"
-      data-purpose="promo-card"
+    <aside
+      className="w-64 bg-[#0D1814] border-r border-[#20352B] flex flex-col fixed h-full z-20"
+      data-purpose="sidebar"
     >
-      <div className="mb-2">
-        <i className="fas fa-rocket text-job-blue" />
-        <span className="text-xs font-bold ml-1 uppercase">
-          Get Hired Faster
+      {/* Brand Header */}
+      <div className="p-6 border-b border-[#20352B] flex items-center gap-3">
+        <div className="w-9 h-9 bg-[#22C55E]/15 border border-[#22C55E]/30 rounded-xl flex items-center justify-center text-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.2)]">
+          <Briefcase className="w-5 h-5" />
+        </div>
+        <span className="text-xl font-black text-[#F1F5F2] tracking-tight">
+          Job<span className="text-[#22C55E]">kar</span>
         </span>
       </div>
-      <p className="text-[10px] text-slate-500 mb-4 leading-tight">
-        Complete your profile 100% to increase your visibility to recruiters.
-      </p>
-      <div className="relative w-16 h-16 mx-auto mb-4">
-        {/* Circular Progress Simulation */}
-        <svg className="w-full h-full" viewBox="0 0 36 36">
-          <circle
-            className="text-slate-200 stroke-current"
-            cx={18}
-            cy={18}
-            fill="transparent"
-            r={16}
-            strokeWidth={3}
-          />
-          <circle
-            className="text-job-blue stroke-current"
-            cx={18}
-            cy={18}
-            fill="transparent"
-            r={16}
-            strokeDasharray="85, 100"
-            strokeLinecap="round"
-            strokeWidth={3}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-job-blue">85%</span>
-        </div>
-      </div>
-      <button className="w-full py-2 bg-black text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-600 transition-colors cursor-pointer">
-        Complete Now
-      </button>
-    </div>
-  </aside>
-    </div>
-  )
-}
 
-export default UserNav
+      {/* Navigation Links */}
+      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+        {navLinks.map((item, idx) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={idx}
+              to={item.to}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                item.active
+                  ? 'bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30 shadow-[0_0_10px_rgba(34,197,94,0.15)]'
+                  : 'text-[#9AAEA3] hover:text-[#F1F5F2] hover:bg-[#162820]'
+              }`}
+            >
+              <Icon className={`w-4 h-4 ${item.active ? 'text-[#22C55E]' : 'text-[#9AAEA3]'}`} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Sidebar Promo Card */}
+      <div
+        className="p-4 m-4 bg-[#111F19] rounded-2xl border border-[#20352B] text-center relative overflow-hidden"
+        data-purpose="promo-card"
+      >
+        <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#22C55E]/10 rounded-full blur-xl pointer-events-none" />
+        <div className="flex items-center justify-center gap-1.5 mb-2 text-[#22C55E]">
+          <Rocket className="w-4 h-4" />
+          <span className="text-xs font-extrabold uppercase tracking-wider">
+            Get Hired Faster
+          </span>
+        </div>
+        <p className="text-[11px] text-[#9AAEA3] mb-3 leading-relaxed">
+          Complete your profile 100% to boost your visibility to verified recruiters.
+        </p>
+        <div className="relative w-14 h-14 mx-auto mb-3">
+          <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+            <circle
+              className="text-[#20352B] stroke-current"
+              cx={18}
+              cy={18}
+              fill="transparent"
+              r={15}
+              strokeWidth={3}
+            />
+            <circle
+              className="text-[#22C55E] stroke-current"
+              cx={18}
+              cy={18}
+              fill="transparent"
+              r={15}
+              strokeDasharray="85, 100"
+              strokeLinecap="round"
+              strokeWidth={3}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xs font-bold text-[#F1F5F2]">85%</span>
+          </div>
+        </div>
+        <Link
+          to="/profile"
+          className="block w-full py-2 bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] text-xs font-bold rounded-lg shadow-sm transition-all text-center"
+        >
+          Complete Now
+        </Link>
+      </div>
+    </aside>
+  );
+};
+
+export default UserNav;

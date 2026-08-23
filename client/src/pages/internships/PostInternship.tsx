@@ -1,633 +1,590 @@
-import { useCompany } from "@/context/CompanyContext";
-import { useUser } from "@/context/UserContext";
-import axios from "axios";
-import { IndianRupee } from "lucide-react"
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {
+  IndianRupee,
+  GraduationCap,
+  Building2,
+  MapPin,
+  Sparkles,
+  Zap,
+  Plus,
+  X,
+  Calendar,
+  Lightbulb,
+  ArrowRight,
+  ShieldCheck,
+  Globe,
+  Award,
+} from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import { motion } from 'motion/react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { useCompany } from '@/context/CompanyContext';
+import { useUser } from '@/context/UserContext';
 
 interface Internship {
-    title: string;
-    category: string;
-    openings: number;
-    duration: number;
-    workType: string;
-    city: string;
-    country: string;
-    salaryMin: number;
-    salaryMax: number;
-    requirements: string;
-    description: string;
-    type: string;
+  title: string;
+  category: string;
+  openings: number;
+  duration: number;
+  workType: string;
+  city: string;
+  country: string;
+  salaryMin: number;
+  salaryMax: number;
+  requirements: string;
+  description: string;
+  type: string;
 }
 
 const PostInternship = () => {
-    const navigate = useNavigate();
-    const [company, setCompany] = useState("");
-    const [input, setInput] = useState("");
-    const {user, setUser} = useUser();
-    const [remote, setRemote] = useState(false);
-    const {companyData, setCompanyData} = useCompany();
-    const [tags, setTags] = useState<string[]>([]);
-    const [suggestedTags] = useState([
-    "JavaScript",
-    "React",
-    "Next Js",
-    "Python",
-    "UI Design",
+  const navigate = useNavigate();
+  const [company, setCompany] = useState('');
+  const [input, setInput] = useState('');
+  const { user } = useUser();
+  const { companyData } = useCompany();
+  const [tags, setTags] = useState<string[]>(['React', 'Python', 'FastAPI']);
+  const [suggestedTags] = useState([
+    'JavaScript',
+    'React',
+    'Next.js',
+    'Python',
+    'FastAPI',
+    'UI Design',
+    'Machine Learning',
+    'PostgreSQL',
+    'Docker',
+    'Node.js',
   ]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [internship, setInternship] = useState<Internship>({
-        title: "",
-        category: "TECHNOLOGY_SOFTWARE",
-        openings: 1,
-        duration: 3,
-        workType: "REMOTE",
-        city: "",
-        country: "",
-        salaryMin: 0,
-        salaryMax: 0,
-        requirements: "",
-        description: "",
-        type: "Unpaid"
-    });
+  const [internship, setInternship] = useState<Internship>({
+    title: '',
+    category: 'TECHNOLOGY_SOFTWARE',
+    openings: 2,
+    duration: 6,
+    workType: 'REMOTE',
+    city: '',
+    country: 'India',
+    salaryMin: 35000,
+    salaryMax: 55000,
+    requirements: '',
+    description: '',
+    type: 'Paid',
+  });
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if(e.key !== "Enter") return;
-        e.preventDefault();
-        const value = input.trim();
-        if (!value) return;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const value = input.trim();
+    if (!value) return;
 
-        if(tags.includes(value)){
-            setInput("");
-            return;
+    if (tags.includes(value)) {
+      setInput('');
+      return;
+    }
+
+    setTags([...tags, value]);
+    setInput('');
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
+  const addSuggestedTag = (tag: string) => {
+    if (tags.includes(tag)) return;
+    setTags([...tags, tag]);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setInternship((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const filteredCompany = companyData?.filter((comp) => comp.UserId === user?.id) || companyData;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await axios.post(
+        '/api/internships',
+        {
+          ...internship,
+          tags: tags,
+          companyId: Number(company) || (filteredCompany && filteredCompany[0]?.id) || 1,
+          remote: internship.workType === 'REMOTE',
+        },
+        {
+          withCredentials: true,
         }
-
-        setTags([...tags, value]);
-        setInput("");
-    };
-
-    const removeTag = (tagToRemove: string) => {
-        setTags(tags.filter((tag) => tag !== tagToRemove));
+      );
+      toast.success('Internship opportunity published successfully!', { duration: 3000 });
+      navigate('/internships');
+    } catch (err) {
+      console.error(err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.message || 'Failed to post internship');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const addSuggestedTag = (tag: string) => {
-        if(tags.includes(tag)) return;
-        setTags([...tags, tag]);
-    }
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setInternship(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-    const filteredCompany = companyData?.filter(
-    (comp) => comp.UserId === user?.id,
-  );
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(company)
-        try {
-            await axios.post("/api/internships", {
-                ...internship,
-                tags: tags,
-                companyId: Number(company),
-                remote: internship.workType === "REMOTE" ? true : false
-        
-            }, {
-                withCredentials: true
-            }
-                );
-            navigate("/");
-        } catch (err) {
-            console.error(err);
-            if(axios.isAxiosError(err)){
-                console.log(err.response?.data);
-            }
-        }
-    }
+  };
 
   return (
-    <div>
-        <main className="relative pt-20 bg-surface min-h-screen">
-  <form className="flex flex-col w-full p-lg gap-lg" onSubmit={handleSubmit}>
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="font-bold text-4xl text-on-surface">Post an Internship</h1>
-        <p className="font-body-md text-body-md text-on-surface-variant mt-xs">
-          Create a structured learning opportunity for rising talent.
-        </p>
-      </div>
-      <div className="flex items-center gap-sm">
-        <button className=" cursor-pointer px-md py-sm rounded-full bg-surface-container-high text-on-surface hover:bg-surface-dim transition-colors font-label-strong text-label-strong">
-          Save Draft
-        </button>
-        <button className="cursor-pointer active:scale-95 px-md py-sm rounded-full bg-primary text-on-primary hover:bg-primary/90 transition-colors font-label-strong text-label-strong flex items-center gap-xs" type="submit" >
-          <span className="material-symbols-outlined text-[20px]">send</span>{" "}
-          Publish Internship
-        </button>
-      </div>
-    </div>
-    <div className="grid grid-cols-12 gap-gutter">
-      <div className="col-span-12 lg:col-span-8 flex flex-col gap-md">
-        {/* Section 1: Basic Details */}
-        <section className="bg-surface-container-lowest rounded-2xl p-md shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col gap-md">
-          <div className="flex items-center gap-sm border-b border-surface-container-high pb-sm">
-            <div className="w-10 h-10 rounded-full bg-primary-fixed/20 flex items-center justify-center text-primary">
-              <span className="material-symbols-outlined text-[20px]">
-                info
-              </span>
-            </div>
-            <h2 className="font-h3 text-h3 text-on-surface">Basic Details</h2>
-          </div>
-          <div className="flex flex-col gap-xs relative">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Company Name *
-            </label>
-            <select
-                    className="w-full bg-transparent border-0 border-b border-outline-variant px-0 py-3 text-body-lg focus:ring-0 focus:border-primary transition-colors outline-none"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                  >
-                    <option value="">Select a Company</option>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#041416',
+            color: '#f1f5f9',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
+            backdropFilter: 'blur(12px)',
+          },
+        }}
+      />
 
-                    {filteredCompany?.map((comp) => (
-                      <option key={comp.id} value={comp.id}>
-                        {comp.name}
-                      </option>
-                    ))}
-                  </select>
-          </div>
-          <div className="flex flex-col gap-xs relative">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Internship Title *
-            </label>
-            <input
-              className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant"
-              placeholder="e.g. Software Engineering Intern"
-              type="text" value={internship.title} onChange={handleInputChange} name="title"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-md">
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Category *
-              </label>
-              <div className="relative">
-                <select className="w-full appearance-none bg-surface p-sm pr-10 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer" value={internship.category} onChange={handleInputChange} name="category">
-                  <option disabled={true} value="">
-                    Select category
-                  </option>
-                  <option value="TECHNOLOGY_SOFTWARE">Technology Software</option>
-                  <option value="CREATIVE_MEDIA">Design UX</option>
-                  <option value="MARKETING">Marketing</option>
-                  <option value="FINANCE">Finance</option>
-                  <option value="HEALTHCARE">Healthcare</option>
-                  <option value="EDUCATION_GOVERNMENT">Education Government</option>
-                  <option value="BUSINESS_OPERATIONS">Business Administration</option>
-                  <option value="OTHER">Other</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
-                  expand_more
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Number of Openings
-              </label>
-              <input
-                className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface"
-                min={1}
-                type="number"
-                value={internship.openings}
-                onChange={handleInputChange}
-                name="openings"
-              />
-            </div>
-            <div className="flex flex-col gap-xs relative">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Stipend Type
-            </label>
-            <select
-                    className="w-full bg-transparent border-0 border-b border-outline-variant px-0 py-3 text-body-lg focus:ring-0 focus:border-primary transition-colors outline-none"
-                    onChange={handleInputChange} value={internship.type} name="type"
-                  >
-                    <option>Paid</option>
-                    <option>Unpaid</option>
-                  </select>
-          </div>
-          </div>
-        </section>
-        {/* Section 2: Timeline */}
-        <section className="bg-surface-container-lowest rounded-2xl p-md shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col gap-md">
-          <div className="flex items-center gap-sm border-b border-surface-container-high pb-sm">
-            <div className="w-10 h-10 rounded-full bg-secondary-container/50 flex items-center justify-center text-on-secondary-container">
-              <span className="material-symbols-outlined text-[20px]">
-                calendar_month
-              </span>
-            </div>
-            <h2 className="font-h3 text-h3 text-on-surface">Timeline</h2>
-          </div>
-          <div className="grid grid-cols-3 gap-md">
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Duration
-              </label>
-              <div className="relative">
-                <select onChange={handleInputChange} name="duration" className="w-full appearance-none bg-surface p-sm pr-10 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer">
-                  <option value={1}>1 Month</option>
-                  <option value={2}>2 Months</option>
-                  <option value={3}>
-                    3 Months
-                  </option>
-                  <option value={6}>6 Months</option>
-                  <option value={12}>12 Months</option>
-                  <option value={24}>24 Months</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
-                  expand_more
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Expected Start Date
-              </label>
-              <input
-                className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer"
-                type="date"
-              />
-            </div>
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Applications Close
-              </label>
-              <input
-                className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer"
-                type="date"
-              />
-            </div>
-          </div>
-        </section>
-        {/* Section 3: Location & Mode */}
-        <section className="bg-surface-container-lowest rounded-2xl p-md shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col gap-md">
-          <div className="flex items-center gap-sm border-b border-surface-container-high pb-sm">
-            <div className="w-10 h-10 rounded-full bg-tertiary-fixed/40 flex items-center justify-center text-on-tertiary-container">
-              <span className="material-symbols-outlined text-[20px]">
-                location_on
-              </span>
-            </div>
-            <h2 className="font-h3 text-h3 text-on-surface">
-              Location &amp; Mode
-            </h2>
-          </div>
-          <div className="flex flex-col gap-xs">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Work Mode
-            </label>
-            <select className="flex bg-surface rounded-xl p-1 gap-1">
-              <option value="remote">Remote</option>
-              <option value="hybrid">Hybrid</option>
-              <option value="onsite">On-site</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-md">
-            <div className="flex flex-col gap-xs relative">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                City
-              </label>
-              <input onChange={handleInputChange} name="city" value={internship.city}
-                className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant"
-                placeholder="e.g. San Francisco"
-                type="text"
-              />
-            </div>
-            <div className="flex flex-col gap-xs relative">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Country
-              </label>
-              <div className="relative">
-                <select onChange={handleInputChange} name="country" value={internship.country} className="w-full appearance-none bg-surface p-sm pr-10 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer">
-                  <option disabled={true} value="us">
-                    United States
-                  </option>
-                  <option value="India">India</option>
-                  <option value="ca">Canada</option>
-                  <option value="au">Australia</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
-                  expand_more
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* Section 4: Stipend & Perks */}
-        <section className="bg-surface-container-lowest rounded-2xl p-md shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col gap-md">
-          <div className="flex items-center gap-sm border-b border-surface-container-high pb-sm">
-            <div className="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-on-error-container">
-              <span className="material-symbols-outlined text-[20px]">
-                payments
-              </span>
-            </div>
-            <h2 className="font-h3 text-h3 text-on-surface">
-              Stipend &amp; Perks
-            </h2>
-          </div>
-          <div className="grid grid-cols-3 gap-md">
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Min Stipend /mo
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-body-md">
-                  <IndianRupee size={16} />
-                </span>
-                <input
-                  className="w-full bg-surface p-sm pl-8 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface"
-                  placeholder="2000"
-                  type="number" value={internship.salaryMin} onChange={handleInputChange} name="salaryMin"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-xs">
-              <label className="font-label-strong text-label-strong text-on-surface">
-                Max Stipend /mo
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-body-md">
-                  <IndianRupee size={16} />
-                </span>
-                <input
-                  className="w-full bg-surface p-sm pl-8 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface"
-                  placeholder="4000"
-                  type="number" onChange={handleInputChange} name="salaryMax" value={internship.salaryMax}
-                />
-              </div>
-            </div>
-            {/* <div className="flex flex-col gap-xs">
-              <div className="relative">
-                <select className="w-full appearance-none bg-surface p-sm pr-10 rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface cursor-pointer">
-                  <option disabled={true} selected={true} value="usd">
-                    USD
-                  </option>
-                  <option value="eur">EUR</option>
-                  <option value="gbp">GBP</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
-                  expand_more
-                </span>
-              </div>
-            </div> */}
-          </div>
-          {/* <div className="flex flex-col gap-xs mt-sm">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Perks Offered
-            </label>
-            <div className="flex flex-wrap gap-sm mt-xs">
-              <label className="flex items-center gap-xs cursor-pointer group">
-                <div className="w-5 h-5 rounded bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
-                  <span className="material-symbols-outlined text-[14px]">
-                    check
-                  </span>
-                </div>
-                <span className="font-body-md text-body-sm text-on-surface select-none group-hover:text-primary transition-colors">
-                  Certificate
-                </span>
-              </label>
-              <label className="flex items-center gap-xs cursor-pointer group">
-                <div className="w-5 h-5 rounded border border-outline-variant group-hover:border-secondary bg-surface-container-lowest flex items-center justify-center transition-colors"></div>
-                <span className="font-body-md text-body-sm text-on-surface select-none group-hover:text-primary transition-colors">
-                  Letter of Recommendation
-                </span>
-              </label>
-              <label className="flex items-center gap-xs cursor-pointer group">
-                <div className="w-5 h-5 rounded bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
-                  <span className="material-symbols-outlined text-[14px]">
-                    check
-                  </span>
-                </div>
-                <span className="font-body-md text-body-sm text-on-surface select-none group-hover:text-primary transition-colors">
-                  Flexible Hours
-                </span>
-              </label>
-              <label className="flex items-center gap-xs cursor-pointer group">
-                <div className="w-5 h-5 rounded border border-outline-variant group-hover:border-secondary bg-surface-container-lowest flex items-center justify-center transition-colors"></div>
-                <span className="font-body-md text-body-sm text-on-surface select-none group-hover:text-primary transition-colors">
-                  Pre-Placement Offer (PPO)
-                </span>
-              </label>
-            </div>
-          </div> */}
-        </section>
-        {/* Section 5: Requirements & Description */}
-        <section className="bg-surface-container-lowest rounded-2xl p-md shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col gap-md">
-          <div className="flex items-center gap-sm border-b border-surface-container-high pb-sm">
-            <div className="w-10 h-10 rounded-full bg-primary-fixed-dim/30 flex items-center justify-center text-on-primary-fixed-variant">
-              <span className="material-symbols-outlined text-[20px]">
-                description
-              </span>
-            </div>
-            <h2 className="font-h3 text-h3 text-on-surface">
-              Requirements &amp; Description
-            </h2>
-          </div>
-          <div className="flex flex-col gap-xs">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Skills Required
-            </label>
-            <div className="flex flex-wrap gap-2 p-sm bg-surface rounded-xl border-2 border-transparent focus-within:border-secondary focus-within:bg-surface-container-lowest transition-all min-h-[56px] items-center">
-              {tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-body-sm flex items-center gap-2"
-                      >
-                        {tag}
-                        <button
-                          className="hover:text-error transition-colors flex items-center"
-                          type="button"
-                          onClick={() => removeTag(tag)}
-                        >
-                          <span className="material-symbols-outlined text-[14px] cursor-pointer">
-                            close
-                          </span>
-                        </button>
-                      </span>
-                    ))}
+      <div className="relative min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] overflow-x-hidden font-sans">
+        {/* Ambient Glows */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+          <div className="absolute top-[-10%] left-[15%] w-[600px] h-[600px] bg-gradient-to-br from-blue-600/10 via-cyan-500/8 to-transparent rounded-full blur-[150px]" />
+          <div className="absolute top-[35%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-emerald-500/10 via-teal-500/8 to-transparent rounded-full blur-[160px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
+        </div>
 
-              <input
-                className="bg-transparent outline-none flex-1 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant min-w-[120px]"
-                placeholder="Type and press enter..."
-                type="text" onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} name="tags" 
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-label-caps font-label-caps text-on-surface-variant tracking-wider">
-                      SUGGESTED:
-                    </span>
-                    {suggestedTags.map((tag) => (
-                      <button
-                        key={tag}
-                        className="bg-surface-container-low px-3 py-1.5 rounded-full text-body-sm hover:bg-primary hover:text-on-primary transition-colors cursor-pointer"
-                        type="button"
-                        onClick={() => addSuggestedTag(tag)}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-          </div>
-          <div className="flex flex-col gap-xs">
-            <label className="font-label-strong text-label-strong text-on-surface">
-               Requirements
-            </label>
-            <input
-              className="w-full bg-surface p-sm rounded-xl outline-none focus:bg-surface-container-lowest border-2 border-transparent focus:border-secondary transition-all font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant"
-              type="text"
-              placeholder="e.g. Bachelor's degree in Computer Science or related field"
-              onChange={handleInputChange}
-              name="requirements"
-              value={internship.requirements}
-            />
-          </div>
-          <div className="flex flex-col gap-xs">
-            <label className="font-label-strong text-label-strong text-on-surface">
-              Internship Description
-            </label>
-            <div className="border border-surface-container-highest rounded-xl overflow-hidden bg-surface-container-lowest focus-within:border-secondary focus-within:shadow-[0_0_0_2px_rgba(0,106,97,0.2)] transition-all">
-              <div className="flex items-center gap-1 p-2 bg-surface-container-low border-b border-surface-container-highest">
-                <button className="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">
-                    format_bold
-                  </span>
-                </button>
-                <button className="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">
-                    format_italic
-                  </span>
-                </button>
-                <button className="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">
-                    format_list_bulleted
-                  </span>
-                </button>
-                <div className="w-px h-4 bg-outline-variant/30 mx-1" />
-                <button className="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">
-                    link
-                  </span>
-                </button>
-              </div>
-              <textarea
-                className="w-full bg-transparent p-sm outline-none font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant resize-y"
-                placeholder="Describe the responsibilities, what the intern will learn, and expectations..."
-                rows={6}
-                 onChange={handleInputChange} name="description" value={internship.description}
-              />
-            </div>
-          </div>
-        </section>
-      </div>
-      {/* Sidebar */}
-      <div className="col-span-12 lg:col-span-4 flex flex-col gap-md">
-        {/* Tips Card */}
-        <div className="bg-primary text-on-primary p-md rounded-2xl relative overflow-hidden shadow-lg">
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-on-primary/5 rounded-full blur-xl pointer-events-none" />
-          <div className="absolute -left-12 bottom-0 w-40 h-40 bg-secondary/20 rounded-full blur-2xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col gap-sm">
-            <div className="flex items-center gap-xs">
-              <span className="material-symbols-outlined text-secondary-fixed">
-                lightbulb
-              </span>
-              <h3 className="font-h3 text-h3">Internship Posting Tips</h3>
-            </div>
-            <p className="font-body-sm text-body-sm text-on-primary/80 mb-xs">
-              Attract the best student talent by following these guidelines:
-            </p>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-[18px] text-secondary-fixed-dim mt-0.5">
-                  check_circle
-                </span>
-                <span className="font-body-sm text-body-sm text-on-primary">
-                  <strong>Be specific about learning outcomes.</strong> Students
-                  value mentorship and skill acquisition above all.
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-[18px] text-secondary-fixed-dim mt-0.5">
-                  check_circle
-                </span>
-                <span className="font-body-sm text-body-sm text-on-primary">
-                  <strong>State conversion potential.</strong> Clearly mention
-                  if there's a PPO (Pre-Placement Offer) possibility.
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-[18px] text-secondary-fixed-dim mt-0.5">
-                  check_circle
-                </span>
-                <span className="font-body-sm text-body-sm text-on-primary">
-                  <strong>Keep requirements realistic.</strong> Avoid asking for
-                  3+ years of experience for an internship role.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        {/* Premium Upgrade Card */}
-        <div className="bg-surface-container-lowest p-md rounded-2xl border border-surface-container-high shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col items-center text-center gap-sm relative overflow-hidden group hover:border-tertiary-fixed-dim transition-colors">
-          <div className="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary-container mb-xs group-hover:scale-110 transition-transform duration-500 ease-out">
-            <span className="material-symbols-outlined text-[32px]">
-              rocket_launch
-            </span>
-          </div>
-          <h3 className="font-h3 text-h3 text-on-surface">Hire 2x Faster</h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">
-            Upgrade your listing to featured status and reach top university
-            talent before competitors.
-          </p>
-          <button className="mt-xs w-full py-sm rounded-full bg-tertiary text-on-tertiary hover:bg-tertiary/90 transition-colors font-label-strong text-label-strong shadow-md">
-            Boost This Listing
-          </button>
-        </div>
-        {/* Data visualization decoration (Subtle ambient SVG) */}
-        <div className="hidden lg:flex justify-center mt-lg opacity-40 mix-blend-multiply">
-          <svg
-            fill="none"
-            height={200}
-            viewBox="0 0 200 200"
-            width={200}
-            xmlns="http://www.w3.org/2000/svg"
+        <Navbar />
+
+        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+          {/* Header Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10 text-center max-w-3xl mx-auto"
           >
-            <path
-              d="M100 200C155.228 200 200 155.228 200 100C200 44.7715 155.228 0 100 0C44.7715 0 0 44.7715 0 100C0 155.228 44.7715 200 100 200Z"
-              fill="url(#paint0_radial_decoration)"
-            />
-            <defs>
-              <radialGradient
-                cx={0}
-                cy={0}
-                gradientTransform="translate(100 100) rotate(90) scale(100)"
-                gradientUnits="userSpaceOnUse"
-                id="paint0_radial_decoration"
-                r={1}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D1814]/60 border border-[#22C55E]/25 text-[#22C55E] text-xs font-semibold uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(34,197,94,0.15)]">
+              <Sparkles className="w-3.5 h-3.5 text-[#22C55E]" />
+              <span>University & Early Career Talent</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#F1F5F2] tracking-tight">
+              Post an{' '}
+              <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                Internship
+              </span>
+            </h1>
+            <p className="mt-3 text-[#9AAEA3] text-base sm:text-lg">
+              Create structured, high-mentorship learning opportunities for rising tech talent and future leaders.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Form Section (8 cols) */}
+            <div className="lg:col-span-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-3xl bg-[#111F19]/90 border border-[#20352B] p-6 sm:p-10 backdrop-blur-xl shadow-2xl relative"
               >
-                <stop stopColor="#006a61" stopOpacity="0.15" />
-                <stop offset={1} stopColor="#f7f9fb" stopOpacity={0} />
-              </radialGradient>
-            </defs>
-          </svg>
-        </div>
+                <form className="space-y-8" onSubmit={handleSubmit}>
+                  {/* Company & Title */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3] flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-[#22C55E]" />
+                        Company Profile
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all cursor-pointer"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        required
+                      >
+                        <option value="" className="bg-[#0D1814]">
+                          Select Registered Company
+                        </option>
+                        {filteredCompany?.map((comp) => (
+                          <option key={comp.id} value={comp.id} className="bg-[#0D1814]">
+                            {comp.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3] flex items-center gap-1.5">
+                        <GraduationCap className="w-3.5 h-3.5 text-[#22C55E]" />
+                        Internship Title
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                        placeholder="e.g. Software Engineering Intern"
+                        type="text"
+                        onChange={handleInputChange}
+                        name="title"
+                        value={internship.title}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Category & Openings */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Category
+                      </label>
+                      <select
+                        onChange={handleInputChange}
+                        name="category"
+                        value={internship.category}
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all cursor-pointer"
+                      >
+                        <option value="TECHNOLOGY_SOFTWARE" className="bg-[#0D1814]">
+                          Technology Software
+                        </option>
+                        <option value="CREATIVE_MEDIA" className="bg-[#0D1814]">
+                          Design & UI/UX
+                        </option>
+                        <option value="MARKETING" className="bg-[#0D1814]">
+                          Marketing & Growth
+                        </option>
+                        <option value="FINANCE" className="bg-[#0D1814]">
+                          Finance & FinTech
+                        </option>
+                        <option value="HEALTHCARE" className="bg-[#0D1814]">
+                          Healthcare
+                        </option>
+                        <option value="BUSINESS_OPERATIONS" className="bg-[#0D1814]">
+                          Business Operations
+                        </option>
+                        <option value="OTHER" className="bg-[#0D1814]">
+                          Other
+                        </option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Number of Openings
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                        min={1}
+                        type="number"
+                        value={internship.openings}
+                        onChange={handleInputChange}
+                        name="openings"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Duration
+                      </label>
+                      <select
+                        onChange={handleInputChange}
+                        name="duration"
+                        value={internship.duration}
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all cursor-pointer"
+                      >
+                        <option value={1} className="bg-[#0D1814]">
+                          1 Month
+                        </option>
+                        <option value={2} className="bg-[#0D1814]">
+                          2 Months
+                        </option>
+                        <option value={3} className="bg-[#0D1814]">
+                          3 Months
+                        </option>
+                        <option value={6} className="bg-[#0D1814]">
+                          6 Months
+                        </option>
+                        <option value={12} className="bg-[#0D1814]">
+                          12 Months
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Work Mode & Location */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Work Mode
+                      </label>
+                      <select
+                        onChange={handleInputChange}
+                        name="workType"
+                        value={internship.workType}
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all cursor-pointer"
+                      >
+                        <option value="REMOTE" className="bg-[#0D1814]">
+                          Remote
+                        </option>
+                        <option value="HYBRID" className="bg-[#0D1814]">
+                          Hybrid
+                        </option>
+                        <option value="ONSITE" className="bg-[#0D1814]">
+                          On-site
+                        </option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3] flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#22C55E]" />
+                        City
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                        placeholder="e.g. Bangalore"
+                        type="text"
+                        onChange={handleInputChange}
+                        name="city"
+                        value={internship.city}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                        Country
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                        placeholder="e.g. India"
+                        type="text"
+                        onChange={handleInputChange}
+                        name="country"
+                        value={internship.country}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Monthly Stipend */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3] flex items-center gap-1.5">
+                      <IndianRupee className="w-3.5 h-3.5 text-[#22C55E]" />
+                      Monthly Stipend Range (INR)
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEA3] text-xs font-bold">
+                          ₹ Min / mo
+                        </span>
+                        <input
+                          className="w-full pl-20 pr-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                          placeholder="e.g. 35,000"
+                          type="number"
+                          onChange={handleInputChange}
+                          value={internship.salaryMin}
+                          name="salaryMin"
+                          required
+                        />
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEA3] text-xs font-bold">
+                          ₹ Max / mo
+                        </span>
+                        <input
+                          className="w-full pl-20 pr-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                          placeholder="e.g. 55,000"
+                          type="number"
+                          onChange={handleInputChange}
+                          value={internship.salaryMax}
+                          name="salaryMax"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Required Skills */}
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Required Skills & Keywords
+                    </label>
+                    <div className="p-3 bg-[#111F19] border border-[#20352B] rounded-xl space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        {tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-[#0D1814]/60 border border-[#22C55E]/30 text-[#34D399]"
+                          >
+                            <span>#{tag}</span>
+                            <button
+                              type="button"
+                              onClick={() => removeTag(tag)}
+                              className="hover:text-[#EF4444] transition-colors"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          className="flex-1 bg-[#111F19]/90 border border-[#20352B] rounded-lg px-3 py-2 text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60"
+                          placeholder="Add skill tag (e.g. TypeScript, PyTorch) and press Enter..."
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (input.trim()) {
+                              addSuggestedTag(input.trim());
+                              setInput('');
+                            }
+                          }}
+                          className="px-3.5 py-2 rounded-lg bg-[#111F19] hover:bg-[#162820] text-[#F1F5F2] text-xs font-bold flex items-center gap-1"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add</span>
+                        </button>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span className="text-[11px] font-semibold text-[#9AAEA3] uppercase tracking-wider mr-1">
+                          Suggested:
+                        </span>
+                        {suggestedTags.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => addSuggestedTag(tag)}
+                            className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#07110D] border border-[#20352B] text-[#9AAEA3] hover:text-[#34D399] hover:border-[#22C55E]/30 transition-colors"
+                          >
+                            +{tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Requirements */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Eligibility & Candidate Requirements
+                    </label>
+                    <input
+                      className="w-full px-4 py-3 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all"
+                      type="text"
+                      placeholder="e.g. Pursuing B.Tech / M.Tech in Computer Science or related degree, graduating in 2025/2026"
+                      onChange={handleInputChange}
+                      name="requirements"
+                      value={internship.requirements}
+                      required
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]">
+                      Internship Description & Learning Outcomes
+                    </label>
+                    <textarea
+                      className="w-full p-4 bg-[#111F19] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-slate-500 focus:outline-none focus:border-[#22C55E]/60 focus:ring-1 focus:ring-[#22C55E]/40 transition-all resize-y min-h-[140px]"
+                      placeholder="Describe what the intern will learn, the projects they will build, and mentorship provided..."
+                      rows={5}
+                      onChange={handleInputChange}
+                      name="description"
+                      value={internship.description}
+                      required
+                    />
+                  </div>
+
+                  {/* Submit Actions */}
+                  <div className="pt-4 border-t border-[#20352B] flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/internships')}
+                      className="text-xs font-semibold text-[#9AAEA3] hover:text-[#F1F5F2] transition-colors"
+                    >
+                      Cancel & Return
+                    </button>
+
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-[#07110D] font-bold text-sm transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-50"
+                      >
+                        <span>{isSubmitting ? 'Publishing...' : 'Publish Internship Opportunity'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+
+            {/* Sidebar Column (4 cols) */}
+            <aside className="lg:col-span-4 space-y-6">
+              {/* Internship Guidance */}
+              <div className="p-6 rounded-2xl bg-[#111F19]/90 border border-[#20352B] backdrop-blur-xl space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#22C55E]/10 border border-[#22C55E]/20 flex items-center justify-center text-[#22C55E]">
+                    <Lightbulb className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base font-bold text-[#F1F5F2]">Mentorship Guidelines</h3>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div className="p-3 rounded-xl bg-[#0D1814]/90 border border-[#20352B]/80 space-y-1">
+                    <div className="font-bold text-[#22C55E]">01. Highlight Learning Outcomes</div>
+                    <p className="text-[#9AAEA3] leading-relaxed">
+                      Students prioritize skill acquisition and mentorship. Clearly outline what they will learn.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-[#0D1814]/90 border border-[#20352B]/80 space-y-1">
+                    <div className="font-bold text-[#22C55E]">02. State Conversion Potential</div>
+                    <p className="text-[#9AAEA3] leading-relaxed">
+                      Mention whether full-time Pre-Placement Offers (PPOs) are offered based on internship performance.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-[#0D1814]/90 border border-[#20352B]/80 space-y-1">
+                    <div className="font-bold text-[#22C55E]">03. Realistic Expectations</div>
+                    <p className="text-[#9AAEA3] leading-relaxed">
+                      Focus on fundamentals, enthusiasm, and eagerness to build rather than expecting years of commercial experience.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Verified Badge Guarantee */}
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-slate-950 to-blue-950/40 border border-[#22C55E]/20 backdrop-blur-xl space-y-3">
+                <div className="flex items-center gap-2 text-[#22C55E] font-bold text-sm">
+                  <Award className="w-4 h-4" />
+                  <span>Campus & University Network</span>
+                </div>
+                <p className="text-xs text-[#9AAEA3] leading-relaxed">
+                  Your internship listing will be broadcast directly to pre-screened engineering students and bootcamp
+                  graduates from premier institutes.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </main>
+
+        <Footer />
       </div>
-    </div>
-  </form>
-</main>
+    </>
+  );
+};
 
-    </div>
-  )
-}
-
-export default PostInternship
+export default PostInternship;

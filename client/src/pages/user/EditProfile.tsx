@@ -312,9 +312,9 @@ const EditProfile = () => {
             {/* Header / Media Section */}
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden"
+              className="bg-[#111F19] rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden"
             >
-              <div className="relative bg-surface-container-high group overflow-hidden w-full aspect-[4/1] rounded-xl">
+              <div className="relative bg-[#162820] group overflow-hidden w-full aspect-[4/1] rounded-xl">
                   <img
                     src={coverImage}
                     alt="Cover"
@@ -323,7 +323,7 @@ const EditProfile = () => {
                 <button
                   type="button"
                   onClick={handleCoverClick}
-                  className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg font-label-strong text-label-strong text-primary flex items-center gap-2 hover:bg-white transition-all"
+                  className="absolute bottom-4 right-4 bg-[#111F19]/90 backdrop-blur px-4 py-2 rounded-lg font-label-strong text-label-strong text-[#F1F5F2] flex items-center gap-2 hover:bg-[#111F19] transition-all"
                 >
                   <span className="material-symbols-outlined text-[20px]">
                     photo_camera
@@ -339,13 +339,13 @@ const EditProfile = () => {
               </div>
               <div className="px-md pb-md mt-6">
                 <div className="flex flex-col sm:flex-row items-end gap-md -mt-12 sm:-mt-16 mb-6">
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl border-4 border-white overflow-hidden bg-surface-container-high">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl border-4 border-white overflow-hidden bg-[#162820]">
                     <img
                       className="w-full h-full object-cover"
                       data-alt="A professional headshot of a male job seeker in a light-colored business casual outfit. He is smiling warmly against a soft-focus studio background. The visual style is crisp and modern, emphasizing clarity and reliability. The lighting is diffused and natural, highlighting a friendly yet professional demeanor."
                       src={profilePhoto}
                     />
-                    <button className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                    <button className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[#F1F5F2]">
                       <span className="material-symbols-outlined">
                         add_a_photo
                       </span>
@@ -354,7 +354,7 @@ const EditProfile = () => {
                   <div className="flex-1 pb-2">
                     <button
                       onClick={handleClick}
-                      className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity cursor-pointer active:scale-95"
+                      className="px-sm py-2 bg-[#22C55E] text-[#07110D] rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity cursor-pointer active:scale-95"
                     >
                       Upload New Photo
                     </button>
@@ -364,7 +364,7 @@ const EditProfile = () => {
                       onChange={handleProfilePhotoChange}
                       className="hidden"
                     />
-                    <p className="text-on-surface-variant font-body-sm text-body-sm mt-2">
+                    <p className="text-[#9AAEA3] font-body-sm text-body-sm mt-2">
                       Recommended: Square image, at least 400x400px.
                     </p>
                   </div>
@@ -375,23 +375,23 @@ const EditProfile = () => {
             {/* Personal Information */}
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">
                   Personal Information
                 </h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   Manage your basic contact and identity details.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     First Name
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="John"
                     type="text"
                     onChange={handleFirstNameChange}
@@ -399,68 +399,68 @@ const EditProfile = () => {
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Last Name
                   </label>
                   <input
                     onChange={handleLastNameChange}
                     value={lastname}
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Doe"
                     type="text"
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Email Address
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="john.doe@example.com"
                     type="email"
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Phone Number
                   </label>
                   <input
                     onChange={handlePhoneNumberChange}
                     value={phoneNumber}
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="+1 (555) 000-0000"
                     type="tel"
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     City
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEA3]">
                       location_on
                     </span>
                     <input
                       onChange={handleCityChange}
                       value={city}
-                      className="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                      className="w-full pl-10 pr-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="San Francisco"
                       type="text"
                     />
                   </div>
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Country
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEA3]">
                       public
                     </span>
                     <select
                       onChange={handleCountryChange}
                       value={country}
-                      className="w-full px-9 py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                      className="w-full px-9 py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-[#111F19]"
                     >
                       <option value="">Select Country</option>
                       <option>United States</option>
@@ -473,13 +473,13 @@ const EditProfile = () => {
                   </div>
                 </div>
                 <div className="space-y-xs md:col-span-2">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Industry
                   </label>
                   <select
                     onChange={handleIndustryChange}
                     value={industry}
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-[#111F19]"
                   >
                     <option value="">Select Industry</option>
                     <option>Technology Software</option>
@@ -498,22 +498,22 @@ const EditProfile = () => {
             {/* Professional Summary */}
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">
                   Professional Summary
                 </h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   A short bio to introduce yourself to potential employers.
                 </p>
               </div>
               <div className="space-y-xs">
-                <label className="font-label-strong text-label-strong text-on-surface">
+                <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                   About Me
                 </label>
                 <textarea
-                  className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                  className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                   placeholder="Experienced Software Engineer with a passion for building scalable web applications..."
                   rows={5}
                   onChange={handleBioChange}
@@ -525,21 +525,21 @@ const EditProfile = () => {
             {/* Career Details */}
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">Career Details</h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">Career Details</h3>
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   Help us match you with the right opportunities.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
                 <div className="space-y-xs md:col-span-3">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Profession
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="Senior Product Designer"
                     type="text"
                     onChange={handleProfessionChange}
@@ -551,21 +551,21 @@ const EditProfile = () => {
 
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">Education</h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">Education</h3>
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   Your academic background and qualifications.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
                 <div className="space-y-xs md:col-span-1">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     School Name
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. High School Name"
                     type="text"
                     onChange={handleSchoolChange}
@@ -573,11 +573,11 @@ const EditProfile = () => {
                   />
                 </div>
                 <div className="space-y-xs md:col-span-2">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     University Name
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. Stanford University"
                     type="text"
                     onChange={handleInstitutionChange}
@@ -585,11 +585,11 @@ const EditProfile = () => {
                   />
                 </div>
                 <div className="space-y-xs md:col-span-1">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Degree
                   </label>
                   <select
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-[#111F19]"
                     onChange={handleDegreeChange}
                     value={degree}
                   >
@@ -603,11 +603,11 @@ const EditProfile = () => {
                   </select>
                 </div>
                 <div className="space-y-xs md:col-span-2">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Field of Study
                   </label>
                   <select
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-white"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all bg-[#111F19]"
                     onChange={handleFieldOfStudyChange}
                     value={fieldOfStudy}
                   >
@@ -621,11 +621,11 @@ const EditProfile = () => {
                 </div>
 
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Grade / GPA
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="e.g. 3.8/4.0"
                     type="number"
                     step="0.1"
@@ -634,11 +634,11 @@ const EditProfile = () => {
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     Start Year
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="YYYY"
                     type="number"
                     onChange={handleStartYearChange}
@@ -646,11 +646,11 @@ const EditProfile = () => {
                   />
                 </div>
                 <div className="space-y-xs">
-                  <label className="font-label-strong text-label-strong text-on-surface">
+                  <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                     End Year
                   </label>
                   <input
-                    className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                    className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                     placeholder="YYYY (or Expected)"
                     type="number"
                     onChange={handleEndYearChange}
@@ -661,15 +661,15 @@ const EditProfile = () => {
             </section>
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">Projects</h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">Projects</h3>
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   Show Your Projects and Work Samples to Potential Employers.
                 </p>
               </div>
-              <button className="px-sm py-2 bg-primary text-on-primary rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity active:scale-95 cursor-pointer">
+              <button className="px-sm py-2 bg-[#22C55E] text-[#07110D] rounded-lg font-label-strong text-label-strong hover:opacity-90 transition-opacity active:scale-95 cursor-pointer">
                 Add Project
               </button>
             </section>
@@ -677,31 +677,31 @@ const EditProfile = () => {
             {/* Social Links */}
             <section
               ref={addSectionRef}
-              className="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
+              className="bg-[#111F19] p-md rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)]"
             >
               <div className="mb-md">
-                <h3 className="font-h3 text-h3 text-primary">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2]">
                   Social Profiles
                 </h3>
-                <p className="text-on-surface-variant font-body-sm text-body-sm">
+                <p className="text-[#9AAEA3] font-body-sm text-body-sm">
                   Where else can recruiters find your work?
                 </p>
               </div>
               <div className="space-y-md">
                 <div className="flex items-center gap-md">
                   <div className="w-10 flex justify-center">
-                    <span className="material-symbols-outlined text-primary">
+                    <span className="material-symbols-outlined text-[#F1F5F2]">
                       link
                     </span>
                   </div>
                   <div className="flex-1 space-y-xs">
-                    <label className="font-label-strong text-label-strong text-on-surface">
+                    <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                       LinkedIn
                     </label>
                     <input
                       onChange={handleLinkedinChange}
                       value={linkedin}
-                      className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                      className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://linkedin.com/in/username"
                       type="url"
                     />
@@ -709,18 +709,18 @@ const EditProfile = () => {
                 </div>
                 <div className="flex items-center gap-md">
                   <div className="w-10 flex justify-center">
-                    <span className="material-symbols-outlined text-primary">
+                    <span className="material-symbols-outlined text-[#F1F5F2]">
                       code
                     </span>
                   </div>
                   <div className="flex-1 space-y-xs">
-                    <label className="font-label-strong text-label-strong text-on-surface">
+                    <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                       GitHub
                     </label>
                     <input
                       onChange={handleGithubChange}
                       value={github}
-                      className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                      className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://github.com/username"
                       type="url"
                     />
@@ -728,18 +728,18 @@ const EditProfile = () => {
                 </div>
                 <div className="flex items-center gap-md">
                   <div className="w-10 flex justify-center">
-                    <span className="material-symbols-outlined text-primary">
+                    <span className="material-symbols-outlined text-[#F1F5F2]">
                       language
                     </span>
                   </div>
                   <div className="flex-1 space-y-xs">
-                    <label className="font-label-strong text-label-strong text-on-surface">
+                    <label className="font-label-strong text-label-strong text-[#F1F5F2]">
                       Portfolio
                     </label>
                     <input
                       onChange={handlePortfolioChange}
                       value={portFolio}
-                      className="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-md text-body-md input-focus-ring transition-all"
+                      className="w-full px-sm py-3 border border-[#20352B] rounded-lg font-body-md text-body-md input-focus-ring transition-all"
                       placeholder="https://yourportfolio.com"
                       type="url"
                     />
@@ -749,16 +749,16 @@ const EditProfile = () => {
             </section>
 
             {/* Action Footer */}
-            <div className="flex items-center justify-end gap-md pt-md border-t border-outline-variant">
+            <div className="flex items-center justify-end gap-md pt-md border-t border-[#20352B]">
               <button
-                className="px-md py-3 text-on-surface-variant font-label-strong text-label-strong hover:bg-surface-container-high rounded-lg transition-all"
+                className="px-md py-3 text-[#9AAEA3] font-label-strong text-label-strong hover:bg-[#162820] rounded-lg transition-all"
                 onClick={() => navigate(-1)}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="cursor-pointer px-xl py-3 bg-primary text-on-primary font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2"
+                className="cursor-pointer px-xl py-3 bg-[#22C55E] text-[#07110D] font-label-strong text-label-strong rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">
                   check

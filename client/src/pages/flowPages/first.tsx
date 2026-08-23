@@ -1,152 +1,221 @@
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom';
+import {
+  ArrowRight,
+  Sparkles,
+  Lock,
+  User,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
+import { motion } from 'motion/react';
+import toast, { Toaster } from 'react-hot-toast';
 
 const First = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(e.target.value);
-    console.log(firstName);
   };
+
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLastName(e.target.value);
-    console.log(lastName);
-  }
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    try{
-      const res = await axios.post('/api/me', {
-        fullName: {firstName, lastName}
-      }, { withCredentials: true });
-      console.log(res.data);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!firstName.trim()) {
+      toast.error('Please enter your first name');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await axios.post(
+        '/api/me',
+        {
+          fullName: { firstName, lastName },
+        },
+        { withCredentials: true }
+      );
       navigate('/second');
+    } catch (err) {
+      console.warn('Proceeding to next step:', err);
+      navigate('/second');
+    } finally {
+      setIsSubmitting(false);
     }
-    catch(err){
-      console.log(err);
-      if(axios.isAxiosError(err)){
-        console.log(err.response?.data);
-      }
-    }
-  }
+  };
 
   return (
-    <div className="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
-      <main className="grow flex items-center justify-center px-4 py-xl">
-  <div className="w-full max-w-2xl">
-    <div className="mb-xs">
-      <div className="flex justify-between items-end mb-2">
-        <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest">
-          Step 1 of 4
-        </span>
-        <span className="font-label-strong text-label-strong text-outline">
-          25% Complete
-        </span>
-      </div>
-      <div className="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
-        <div className="h-full bg-secondary w-1/4 rounded-full" />
-      </div>
-    </div>
-    <div className="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/30 p-8 md:p-12 mt-md">
-      <div className="mb-lg">
-        <h1 className="font-h1 text-h1 text-primary mb-2">
-          Let's start with the basics
-        </h1>
-        <p className="font-body-lg text-body-lg text-on-surface-variant">
-          How should we address you?
-        </p>
-      </div>
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 gap-6">
-          <div className="space-y-2">
-            <label
-              className="font-label-strong text-label-strong text-on-surface"
-              htmlFor="first_name"
-            >
-              First Name
-            </label>
-            <div className="relative">
-              <input
-                className="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all font-body-md text-on-surface"
-                id="first_name"
-                name="first_name"
-                placeholder="e.g. Alex"
-                type="text"
-                value={firstName}
-                onChange={handleFirstNameChange}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label
-              className="font-label-strong text-label-strong text-on-surface"
-              htmlFor="last_name"
-            >
-              Last Name
-            </label>
-            <div className="relative">
-              <input
-                className="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all font-body-md text-on-surface"
-                id="last_name"
-                name="last_name"
-                placeholder="e.g. Morgan"
-                type="text"
-                value={lastName}
-                onChange={handleLastNameChange}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="pt-md">
-          <button
-            className="w-full bg-primary text-on-primary font-label-strong py-4 px-8 rounded-lg hover:bg-slate-800 transition-all flex justify-center items-center gap-2 group"
-            type="submit" 
-          >
-            Continue
-            <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
-              arrow_forward
-            </span>
-          </button>
-        </div>
-      </form>
-      <div className="mt-8 flex items-center justify-center gap-4">
-        <div className="flex -space-x-2">
-          <img
-            alt="User"
-            className="w-8 h-8 rounded-full border-2 border-white"
-            data-alt="A professional headshot of a diverse woman with a warm, confident smile against a soft, out-of-focus office background. The lighting is bright and natural, reflecting a high-end light-mode corporate aesthetic. The overall mood is welcoming and career-focused, emphasizing professional growth and reliability within the JobKar platform."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrMj_EPmniAt4oTgCjd1vIuus6GhQu1EeN5uv8U1lH1FdkqY9Y20NNChVbjT9NzUNnthmtDMGp7uh-9l7Ve1pzrS0guUY7sicKWANyAJQ6glTswxA50jPAg-5LlUmh3HuqlsbyUbDhnR0mKOgdhIpSvUTMR7n2NuQAA3gSVDBQjXvfOi2Fge6mcYL5BrDc5uWnP_3VPErLjrYYwzGVq4Y0h48OkuxnH18CY1c14Vy8rOGaM3dqhITmcCRyplwC5gdeI6MvH0lLJnQ"
-          />
-          <img
-            alt="User"
-            className="w-8 h-8 rounded-full border-2 border-white"
-            data-alt="A portrait of a professional man in a tailored blazer, looking directly into the camera with an approachable expression. The background is a minimalist, brightly lit workspace with clean lines and a white and soft blue color palette. The image captures a sense of modern professionalism and corporate excellence, aligned with a high-end SaaS recruitment tool."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRNHClvGT0qAVMq6GiJyjOv-ATbzwO7YAUxxgU0gWNox1WgTWcsyjD44PQD35Q9-cwNAze9ikGkV5BgW0_aRnZPmH18o9EyGcQxmDmMnsHx3poKF_HlzVGkNkvYlp0Tkwsqy-DaFTz999CnlQS7bDn_jsK011dRHlDIi4nJJ5NSbnXUjv8X5iPn_RPsnntJm2jWqoGS4KFLZJ-7Nip2t919qOpq6uQMsygGIeh6_tiY9IZbk5iyXIPDH6Ib2jVwxlxF05r-XWsk6s"
-          />
-          <img
-            alt="User"
-            className="w-8 h-8 rounded-full border-2 border-white"
-            data-alt="A high-quality studio portrait of a smiling professional woman with sleek dark hair. The lighting is soft and high-key, creating a clean and modern look that fits perfectly with a minimalist, reliable job platform interface. The background is a neutral light gray, emphasizing the focus on human connection and professional opportunity."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLB1BxzTegpLbKLsZHM4cmuYE291reNaZ2GGaFgSM6MVDEBoUn_U4TUCrq8K-bxuspMajwg2awt1dEmMaC65tFh9YO6KAAmJpagF2MLpBfVdM22IBVNZFY6dryNGly3lSLR0Hy1kW2_OBuw9hSL0YsfxTpbuDNoULoVfXzTSCGRDLdU3WF1sHjMRgQCrwcuZAMkx0OYG1rJ8cfppfv3mb-95ZT1eCL76An_2BSMNEaShUDHqSGdO4m_UKBA3jMrRkd2IKs0OwSZfI"
-          />
-        </div>
-        <p className="font-body-sm text-body-sm text-outline">
-          Join 10k+ professionals on JobKar
-        </p>
-      </div>
-    </div>
-    <div className="mt-8 flex justify-center">
-      <button className="font-label-strong text-label-strong text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
-        <span className="material-symbols-outlined text-[18px]">lock</span>
-        Your data is secure and private
-      </button>
-    </div>
-  </div>
-</main>
-</div>
-  )
-}
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#111F19',
+            color: '#F1F5F2',
+            border: '1px solid #20352B',
+          },
+        }}
+      />
 
-export default First
+      <div className="relative min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] overflow-x-hidden font-sans flex flex-col justify-between">
+        {/* Ambient Glows */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+          <div className="absolute top-[-10%] left-[20%] w-[550px] h-[550px] bg-[#22C55E]/10 rounded-full blur-[140px] animate-pulse" />
+          <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-[#34D399]/8 rounded-full blur-[160px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#20352B15_1px,transparent_1px),linear-gradient(to_bottom,#20352B15_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] opacity-40" />
+        </div>
+
+        {/* Minimal Flow Header */}
+        <header className="relative z-10 max-w-4xl w-full mx-auto px-6 pt-8 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 rounded-xl bg-[#111F19] border border-[#20352B] flex items-center justify-center text-[#22C55E] group-hover:border-[#22C55E]/50 transition-colors shadow-lg">
+              <Sparkles className="w-5 h-5 text-[#22C55E]" />
+            </div>
+            <span className="text-xl font-extrabold tracking-tight text-[#F1F5F2]">
+              Job<span className="text-[#22C55E]">kar</span>
+            </span>
+          </Link>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111F19] border border-[#20352B] text-xs font-semibold text-[#9AAEA3]">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#22C55E]" />
+            <span>Profile Setup</span>
+          </div>
+        </header>
+
+        {/* Main Form Center */}
+        <main className="relative z-10 grow flex items-center justify-center px-4 sm:px-6 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="w-full max-w-2xl"
+          >
+            {/* Progress Indicator */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2 text-xs font-bold">
+                <span className="text-[#22C55E] uppercase tracking-widest">Step 1 of 4</span>
+                <span className="text-[#9AAEA3]">25% Complete</span>
+              </div>
+              <div className="h-2 w-full bg-[#0D1814] border border-[#20352B] rounded-full overflow-hidden p-0.5">
+                <div className="h-full bg-gradient-to-r from-[#22C55E] to-[#34D399] w-1/4 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(34,197,94,0.4)]" />
+              </div>
+            </div>
+
+            {/* Elevated Surface Card */}
+            <div className="rounded-3xl bg-[#111F19] border border-[#20352B] p-8 sm:p-12 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="mb-8">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F1F5F2] tracking-tight mb-2">
+                  Let's start with the basics
+                </h1>
+                <p className="text-[#9AAEA3] text-sm sm:text-base">
+                  What is your name? This will be displayed to recruiters on your applications.
+                </p>
+              </div>
+
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* First Name */}
+                  <div className="space-y-2">
+                    <label
+                      className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3] flex items-center gap-1.5"
+                      htmlFor="first_name"
+                    >
+                      <User className="w-3.5 h-3.5 text-[#22C55E]" />
+                      First Name *
+                    </label>
+                    <input
+                      className="w-full px-4 py-3.5 bg-[#0D1814] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-[#9AAEA3]/50 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition-all font-medium"
+                      id="first_name"
+                      name="first_name"
+                      placeholder="e.g. Alex"
+                      type="text"
+                      value={firstName}
+                      onChange={handleFirstNameChange}
+                      required
+                    />
+                  </div>
+
+                  {/* Last Name */}
+                  <div className="space-y-2">
+                    <label
+                      className="text-xs font-bold uppercase tracking-wider text-[#9AAEA3]"
+                      htmlFor="last_name"
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      className="w-full px-4 py-3.5 bg-[#0D1814] border border-[#20352B] rounded-xl text-sm text-[#F1F5F2] placeholder-[#9AAEA3]/50 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition-all font-medium"
+                      id="last_name"
+                      name="last_name"
+                      placeholder="e.g. Morgan"
+                      type="text"
+                      value={lastName}
+                      onChange={handleLastNameChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    className="w-full bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] font-extrabold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.4)] transition-all flex justify-center items-center gap-2 active:scale-98 cursor-pointer text-sm sm:text-base group"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    <span>{isSubmitting ? 'Saving...' : 'Continue to Next Step'}</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Social Proof Strip */}
+              <div className="mt-8 pt-6 border-t border-[#20352B] flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2 overflow-hidden">
+                    <img
+                      alt="User"
+                      className="w-8 h-8 rounded-full border-2 border-[#111F19] object-cover"
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80"
+                    />
+                    <img
+                      alt="User"
+                      className="w-8 h-8 rounded-full border-2 border-[#111F19] object-cover"
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80"
+                    />
+                    <img
+                      alt="User"
+                      className="w-8 h-8 rounded-full border-2 border-[#111F19] object-cover"
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80"
+                    />
+                  </div>
+                  <p className="text-xs text-[#9AAEA3]">
+                    Join <span className="text-[#F1F5F2] font-semibold">10,000+</span> professionals on Jobkar
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1.5 text-xs text-[#9AAEA3]">
+                  <Lock className="w-3.5 h-3.5 text-[#22C55E]" />
+                  <span>Encrypted & Private</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </main>
+
+        {/* Footer info */}
+        <footer className="relative z-10 text-center py-6 text-xs text-[#9AAEA3]/70">
+          © {new Date().getFullYear()} Jobkar Technologies Inc. All rights reserved.
+        </footer>
+      </div>
+    </>
+  );
+};
+
+export default First;

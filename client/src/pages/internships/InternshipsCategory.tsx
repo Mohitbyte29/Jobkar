@@ -9,6 +9,8 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useInternshipsearch } from "@/hooks/InternshipSearch.tsx";
 import gsap from "gsap";
+import SplitText from "@/components/SplitText.tsx";
+import Footer from "@/components/Footer.tsx";
 
 interface Internship{
     id: number;
@@ -120,12 +122,24 @@ interface Internship{
   <div className="relative z-10 mx-auto w-full max-w-7xl">
   <section className="mb-12">
     <h1 className="internships-hero listing-heading font-bold text-4xl mb-8 md:text-6xl">
-      Find your next career move
+      <SplitText 
+              text="Find your next Internship"
+              className="font-bold text-5xl lg:text-6xl text-[#F1F5F2]"
+                delay={50}
+                duration={1.25}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-100px"
+                textAlign="left"
+            />
     </h1>
-    <div className="internships-search rounded-2xl border border-white/80 bg-white/85 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2">
-            <div className="flex items-center px-4 py-2 flex-1 border-r border-outline-variant/30 w-full">
+    <div className="internships-search rounded-2xl border border-white/80 bg-[#111F19]/85 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2">
+            <div className="flex items-center px-4 py-2 flex-1 border-r border-[#20352B] w-full">
               <span
-                className="material-symbols-outlined text-outline mr-2"
+                className="material-symbols-outlined text-[#9AAEA3]/70 mr-2"
                 data-icon="search"
               >
                 search
@@ -138,7 +152,7 @@ interface Internship{
             </div>
             <div className="flex items-center px-4 py-2 flex-1 w-full">
               <span
-                className="material-symbols-outlined text-outline mr-2"
+                className="material-symbols-outlined text-[#9AAEA3]/70 mr-2"
                 data-icon="location_on"
               >
                 location_on
@@ -154,8 +168,8 @@ interface Internship{
       <button
             className={`w-full md:w-auto py-3 px-8 rounded-xl text-xl font-label-strong active:scale-95 transition-all ${
               query.trim() || location.trim()
-                ? 'bg-primary-container text-white cursor-pointer hover:opacity-90' 
-                : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+                ? 'bg-[#22C55E]/10 text-[#F1F5F2] cursor-pointer hover:opacity-90' 
+                : 'bg-[#9AAEA3] text-[#F1F5F2] cursor-not-allowed opacity-50'
             }`}
             onClick={() => {
               if (!selectedInternship && query.trim()) {
@@ -193,7 +207,7 @@ interface Internship{
               setQuery(title)
               setResults([]);
             }}>
-              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+              <div className="dropdown-item bg-[#111F19] text-[#F1F5F2] px-4 py-2 border-2 hover:bg-[#0D1814] rounded">
               <strong>{title}</strong>
               </div>
             </li>
@@ -207,7 +221,7 @@ interface Internship{
               setLocation(location)
               setLocationResults([]);
             }}>
-              <div className="dropdown-item bg-white text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+              <div className="dropdown-item bg-[#111F19] text-[#F1F5F2] px-4 py-2 border-2 hover:bg-[#0D1814] rounded">
               <strong>{location}</strong>
               </div>
             </li>
@@ -220,50 +234,50 @@ interface Internship{
     {/* Sidebar Filters */}
     <aside className="internships-sidebar listing-filter md:sticky md:top-20 md:col-span-3 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto space-y-8 rounded-2xl p-6">
             <div>
-              <h3 className="font-h3 text-h3 text-on-surface mb-4">Filters</h3>
-              <button className="text-sm text-secondary hover:underline mb-4 block">
+              <h3 className="font-h3 text-h3 text-[#F1F5F2] mb-4">Filters</h3>
+              <button className="text-sm text-[#22C55E] hover:underline mb-4 block">
                 Clear All
               </button>
               <div className="space-y-4">
                 <div>
-                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2">
+                  <span className="font-label-strong text-label-strong text-[#9AAEA3] block mb-2">
                     Job Type
                   </span> 
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         defaultChecked={true}
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Full-time
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Part-time
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Contract
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Remote
                       </span>
                     </label>
@@ -271,16 +285,16 @@ interface Internship{
                 </div>
 
                 <div>
-                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                  <span className="font-label-strong text-label-strong text-[#9AAEA3] block mb-2 mt-6">
                     Salary Range
                   </span>
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface flex items-center gap-1">
+                      <span className="font-body-sm text-[#F1F5F2] flex items-center gap-1">
                         Under 
                       <span className="flex items-center">
                         <IndianRupee size={16} />500k
@@ -289,10 +303,10 @@ interface Internship{
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         <span className="flex items-center gap-1">
                         <IndianRupee size={16} />500k - <IndianRupee size={16} />1000k
                         </span>
@@ -300,10 +314,10 @@ interface Internship{
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         <span className="flex items-center ">
                           <IndianRupee size={16} />1000k - <IndianRupee size={16} />1500k
                         </span>
@@ -311,10 +325,10 @@ interface Internship{
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         <span className="flex items-center">
                           <IndianRupee size={16} />1500k+
                         </span>
@@ -323,109 +337,109 @@ interface Internship{
                   </div>
                 </div>
                 <div>
-                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                  <span className="font-label-strong text-label-strong text-[#9AAEA3] block mb-2 mt-6">
                     Work Mode
                   </span>
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         On-site
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Hybrid
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Remote
                       </span>
                     </label>
                   </div>
                 </div>
                 <div>
-                  <span className="font-label-strong text-label-strong text-on-surface-variant block mb-2 mt-6">
+                  <span className="font-label-strong text-label-strong text-[#9AAEA3] block mb-2 mt-6">
                     Category
                   </span>
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary "
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary "
                         type="checkbox" onChange={() => handleFilterChange("category", "TECHNOLOGY_SOFTWARE")}
                       />
-                      <span className="font-body-sm text-on-surface" >
+                      <span className="font-body-sm text-[#F1F5F2]" >
                         Software Engineering
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary" onChange={() => handleFilterChange("category", "CREATIVE_MEDIA")}
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Design
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox"
                       onChange={() => handleFilterChange("category", "MARKETING")} /> 
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Marketing
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox" onChange={() => handleFilterChange("category", "HEALTHCARE")}
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Healthcare
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox" onChange={() => handleFilterChange("category", "BUSINESS_OPERATIONS")}
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Business Operations
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         onChange={() => handleFilterChange("category", "FINANCE")}
                         type="checkbox"
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Finance
                       </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
-                        className="rounded border-outline-variant text-secondary focus:ring-secondary"
+                        className="rounded border-[#20352B] text-[#22C55E] focus:ring-secondary"
                         type="checkbox" onChange={() => handleFilterChange("category", "OTHER")}
                       />
-                      <span className="font-body-sm text-on-surface">
+                      <span className="font-body-sm text-[#F1F5F2]">
                         Other
                       </span>
                     </label>
-                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-primary-container text-white cursor-pointer hover:opacity-90 mt-4">
+                    <button onClick={applyFilters} className="w-full py-3 px-8 rounded-xl text-l font-label-strong active:scale-95 transition-all bg-[#22C55E]/10 text-[#F1F5F2] cursor-pointer hover:opacity-90 mt-4">
                       Apply Changes
                     </button>
                   </div>
@@ -436,17 +450,17 @@ interface Internship{
     {/* internship Feed */}
     <div className="md:col-span-9 space-y-md">
       <div className="flex justify-between items-center mb-4">
-        <span className="font-body-sm text-on-surface-variant">
+        <span className="font-body-sm text-[#9AAEA3]">
           Showing <strong>{count}</strong> internships
         </span>
         <div className="flex items-center gap-2">
-          <span className="font-label-strong text-label-strong text-on-surface-variant">
+          <span className="font-label-strong text-label-strong text-[#9AAEA3]">
             Sort by:
           </span>
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-transparent border-none font-label-strong text-secondary focus:ring-0 cursor-pointer">
+            className="bg-transparent border-none font-label-strong text-[#22C55E] focus:ring-0 cursor-pointer">
             <option value="recent">Most Recent</option>
             <option value="salary">Highest Salary</option>
           </select>
@@ -455,11 +469,11 @@ interface Internship{
       {filteredInternships.length > 0 && (
         filteredInternships.map((internship) => (
             <div key={internship.id}>
-              <div className="internship-card bg-white p-sm md:p-md rounded-xl internship-card-shadow border border-slate-100 hover:border-secondary transition-all group">
+              <div className="internship-card bg-[#111F19] p-sm md:p-md rounded-xl internship-card-shadow border border-[#20352B] hover:border-[#22C55E] transition-all group">
                 <div className="flex flex-col md:flex-row gap-6">
-                  <div className="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-lg bg-[#162820] flex items-center justify-center flex-shrink-0">
                     <span
-              className="material-symbols-outlined text-3xl text-primary"
+              className="material-symbols-outlined text-3xl text-[#F1F5F2]"
               data-icon="token"
             >
               token
@@ -468,14 +482,14 @@ interface Internship{
           <div className="grow">
             <div className="flex justify-between items-start mb-1">
               <div>
-                <h3 className="font-h3 text-h3 text-on-surface group-hover:text-secondary transition-colors">
+                <h3 className="font-h3 text-h3 text-[#F1F5F2] group-hover:text-[#22C55E] transition-colors">
                   {internship.title}
                 </h3>
-                <p className="font-body-md text-on-surface-variant mt-1">
+                <p className="font-body-md text-[#9AAEA3] mt-1">
                   {internship.companies.name} • {internship.location} 
                 </p>
               </div>
-              <button className="text-outline hover:text-error transition-colors">
+              <button className="text-[#9AAEA3]/70 hover:text-error transition-colors">
                 <span
                   className="material-symbols-outlined"
                   data-icon="bookmark"
@@ -485,44 +499,44 @@ interface Internship{
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              <span className="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps rounded-full">
+              <span className="px-3 py-1 bg-[#22C55E]/15 text-[#34D399] font-label-caps rounded-full">
                 {toTitleCase(internship.type)}
               </span>
-              <span className="px-3 py-1 bg-surface-container text-on-surface-variant font-label-caps rounded-full">
+              <span className="px-3 py-1 bg-[#111F19] text-[#9AAEA3] font-label-caps rounded-full">
                 {toTitleCase(internship.category)}
               </span>
             </div>
-            <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 pt-6 border-t border-slate-50 gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 pt-6 border-t border-[#20352B] gap-4">
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <span
-                    className="material-symbols-outlined text-outline text-sm"
+                    className="material-symbols-outlined text-[#9AAEA3]/70 text-sm"
                     data-icon="payments"
                   >
                     payments
                   </span>
-                  <span className="font-label-strong text-on-surface flex items-center">
+                  <span className="font-label-strong text-[#F1F5F2] flex items-center">
                     <IndianRupee width={15} />
                     <span>{internship.salaryMin/1000}k - {internship.salaryMax/1000}k</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="material-symbols-outlined text-outline text-sm"
+                    className="material-symbols-outlined text-[#9AAEA3]/70 text-sm"
                     data-icon="schedule"
                   >
                     schedule
                   </span>
-                  <span className="font-body-sm text-on-surface-variant">
+                  <span className="font-body-sm text-[#9AAEA3]">
                     {timeAgo(internship.updatedAt)}
                   </span>
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="cursor-pointer px-6 py-2 border border-secondary text-secondary font-label-strong rounded-lg hover:bg-secondary hover:text-white transition-all active:scale-95">
+                <button className="cursor-pointer px-6 py-2 border border-[#22C55E] text-[#22C55E] font-label-strong rounded-lg hover:bg-secondary hover:text-[#F1F5F2] transition-all active:scale-95">
                   Save internship
                 </button>
-                <button onClick={() => navigate(`/internships/search/${internship.title}`, {state: internship})} className="cursor-pointer px-6 py-2 bg-primary text-on-primary font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
+                <button onClick={() => navigate(`/internships/search/${internship.title}`, {state: internship})} className="cursor-pointer px-6 py-2 bg-[#22C55E] text-[#07110D] font-label-strong rounded-lg hover:opacity-90 transition-all active:scale-95">
                   Apply Now
                 </button>
               </div>
@@ -541,6 +555,7 @@ interface Internship{
   </div>
 </div>
 </main>
+<Footer/>
         </>
     )
 }

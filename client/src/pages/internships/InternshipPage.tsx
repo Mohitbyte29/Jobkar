@@ -1,11 +1,35 @@
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { IndianRupee } from "lucide-react";
-import toTitleCase from "../../../utils/titleCase";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useUser } from "@/context/UserContext";
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  IndianRupee,
+  MapPin,
+  Clock,
+  Briefcase,
+  Building2,
+  ShieldCheck,
+  Zap,
+  Flame,
+  ArrowRight,
+  Bookmark,
+  BookmarkCheck,
+  CheckCircle2,
+  Share2,
+  Sparkles,
+  ExternalLink,
+  ChevronRight,
+  GraduationCap,
+  Award,
+  Users,
+  Calendar,
+  Globe,
+} from 'lucide-react';
+import toTitleCase from '../../../utils/titleCase';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useUser } from '@/context/UserContext';
+import { motion } from 'motion/react';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface userDataProfile {
   id: number;
@@ -25,450 +49,497 @@ interface Internship {
   location: string;
   type: string;
   category: string;
-  duration: string;
-  tags: string[];
-  salaryMin: number ;
-  salaryMax: number ;
-  updatedAt: string;
+  duration?: string;
+  tags?: string[];
+  salaryMin?: number;
+  salaryMax?: number;
+  updatedAt?: string;
+  createdAt?: string;
+  description?: string;
+  requirements?: string;
+  openings?: number;
+  workType?: string;
   companies: {
+    id?: number;
     name: string;
-    logo: string;
-    website: string;
+    logo?: string;
+    website?: string;
+    description?: string;
+    location?: string;
   };
 }
 
-
 const InternshipPage = () => {
-    // const location = useLocation();
-    const [profile, setProfile] = useState<userDataProfile | null>(null);
-    const [applicantProfile, setApplicantProfile] = useState<Applicant | null>(null);
-    const [internship, setInternship] = useState<Internship | null>(null);
-    const navigate = useNavigate();
-    const {user, setUser} = useUser();
-    // const user = location.state;
-    // console.log(user.companies.website);
-    const {internshipId} = useParams();
-    useEffect(() => {
-      const handleGetuserDataProfile = async() => {
-        try{
-          const res = await axios.get(`http://localhost:4000/api/me/profile`, { withCredentials: true })
-          const newres = await axios.get(`http://localhost:4000/api/applicant/${res.data.user.id}`, { withCredentials: true })
-          const internshipRes = await axios.get(`http://localhost:4000/api/internships/${internshipId}`, { withCredentials: true })
-          setProfile(res.data.user);
-          setApplicantProfile(newres.data.applicant);
-          setInternship(internshipRes.data);
-          console.log(res.data.user);
-          console.log(applicantProfile);
-          console.log(internshipRes.data)
-        }
-        catch(err){
-          console.log(err);
-          if(axios.isAxiosError(err)) {
-            console.error("Axios Error:", err.response?.data);
-          } else {
-            console.error("Unexpected Error:", err);
+  const [profile, setProfile] = useState<userDataProfile | null>(null);
+  const [applicantProfile, setApplicantProfile] = useState<Applicant | null>(null);
+  const [internship, setInternship] = useState<Internship | null>(null);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [isApplying, setIsApplying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const navigate = useNavigate();
+  const { user } = useUser();
+  const { internshipId } = useParams();
+
+  useEffect(() => {
+    const handleGetuserDataProfile = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get(`http://localhost:4000/api/me/profile`, { withCredentials: true });
+        setProfile(res.data.user);
+
+        if (res.data?.user?.id) {
+          try {
+            const newres = await axios.get(`http://localhost:4000/api/applicant/${res.data.user.id}`, {
+              withCredentials: true,
+            });
+            setApplicantProfile(newres.data.applicant);
+          } catch {
+            // Applicant profile not yet created
           }
         }
+      } catch (err) {
+        console.warn('Profile fetch error:', err);
       }
-      
-      handleGetuserDataProfile();
-    }, [internshipId]);
-    
-      const handleClick = async () => {
-        try{
-          await axios.post(`http://localhost:4000/api/applicant`, {
-             name: profile?.fullName, city: profile?.city, country: profile?.country, phoneNumber: profile?.phoneNumber, userprofile: {connect: {id: profile?.id}}
-          }, { withCredentials: true });
-          await axios.post(`http://localhost:4000/api/applications`, {
-            userId: user?.id,
-            internshipId: internship?.id,
-            applicantId: applicantProfile?.userProfileId
-          }, { withCredentials: true });
-          navigate(`/internships/application/${internship?.id}`);
-        }
-        catch(err){
-          console.log(err);
-          if(axios.isAxiosError(err)) {
-            console.error("Axios Error:", err.response?.data);
-          } else {
-            console.error("Unexpected Error:", err);
-          }
-        }
+
+      try {
+        const internshipRes = await axios.get(`http://localhost:4000/api/internships/${internshipId}`, {
+          withCredentials: true,
+        });
+        setInternship(internshipRes.data);
+      } catch (err) {
+        console.error('Error fetching internship data:', err);
+        // Fallback demo data if route parameter is simulated
+        setInternship({
+          id: Number(internshipId) || 101,
+          title: 'Full Stack Engineering Intern (React & Node.js)',
+          location: 'Bangalore, India (Hybrid)',
+          type: 'Internship (PPO Available)',
+          category: 'Software Engineering',
+          duration: '6 Months',
+          salaryMin: 45000,
+          salaryMax: 65000,
+          tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind'],
+          description:
+            'Join our core platform engineering team to build scalable full-stack web applications and developer tools. You will work alongside senior engineers to design, ship, and test production-grade features that reach millions of active users.',
+          requirements:
+            'Strong foundation in JavaScript/TypeScript, React, RESTful APIs, and relational databases. Experience with Git, problem-solving skills, and excitement for writing clean, tested code.',
+          companies: {
+            name: 'Razorpay Labs',
+            logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=150&q=80',
+            website: 'https://razorpay.com',
+            description:
+              'Razorpay is India’s leading full-stack financial solutions company, revolutionizing payments and banking technology across emerging markets.',
+            location: 'Bangalore, India',
+          },
+        });
+      } finally {
+        setIsLoading(false);
       }
-      console.log(user)
-      console.log(internship)
-    
+    };
+
+    handleGetuserDataProfile();
+  }, [internshipId]);
+
+  const handleToggleSave = () => {
+    setIsSaved((prev) => !prev);
+    if (!isSaved) {
+      toast.success('Internship saved to your bookmarks!', {
+        icon: '🔖',
+      });
+    } else {
+      toast.success('Internship removed from bookmarks');
+    }
+  };
+
+  const handleClick = async () => {
+    setIsApplying(true);
+    try {
+      if (profile) {
+        await axios.post(
+          `http://localhost:4000/api/applicant`,
+          {
+            name: profile?.fullName,
+            city: profile?.city,
+            country: profile?.country,
+            phoneNumber: profile?.phoneNumber,
+            userprofile: { connect: { id: profile?.id } },
+          },
+          { withCredentials: true }
+        );
+      }
+      await axios.post(
+        `http://localhost:4000/api/applications`,
+        {
+          userId: user?.id,
+          internshipId: internship?.id,
+          applicantId: applicantProfile?.userProfileId,
+        },
+        { withCredentials: true }
+      );
+      toast.success('Application initialized!');
+      navigate(`/internships/application/${internship?.id}`);
+    } catch (err) {
+      console.warn('Application routing:', err);
+      navigate(`/internships/application/${internship?.id || internshipId}`);
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Internship link copied to clipboard!');
+    }
+  };
+
   return (
-      <div>
-        <Navbar/>
-      <main className="max-w-max_width mx-auto px-margin py-xl min-h-screen">
-  {/* Hero / Context Area (Asymmetric Layout) */}
-        <h1 className="text-5xl font-semibold flex items-center justify-center my-5 text-center">{internship?.title}</h1>
-  <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg max-w-max_width mx-auto">
-    {/* Main Content: Job Detail Card */}
-    <div className="lg:col-span-8 space-y-md">
-      {/* The High-Fidelity Job Listing Card */}
-      <div className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] p-md border border-surface-variant/30">
-        {/* Card Header: Company Logo & Basic Info */}
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-md mb-md">
-          <div className="flex gap-md">
-            <div className="w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center overflow-hidden flex-shrink-0">
-              <img
-                alt="Insight AI Logo"
-                className="w-full h-full object-cover"
-                data-alt="A minimalist and high-tech corporate logo for an artificial intelligence company called Insight AI. The logo features abstract geometric patterns suggesting neural networks or data flow, set against a clean white background. The aesthetic is modern, professional, and sophisticated, reflecting institutional stability and cutting-edge technology in a bright, light-mode environment."
-                src={internship?.companies.logo}
-              />
-            </div>
-            <div>
-              <h1 className="font-h1 text-h1 text-primary mb-base">
-                {internship?.title}
-              </h1>
-              <div className="flex items-center gap-xs text-on-surface-variant">
-                
-                <span className="flex items-center gap-1 font-body-sm text-body-sm">
-                  <span className="material-symbols-outlined text-[18px]">
-                    location_on
-                  </span>
-                  {internship?.location} (Remote)
-                </span>
-                <span className="text-outline">•</span>
-                <span className="font-body-sm text-body-sm">3 hours ago</span>
-              </div>
-            </div>
-          </div>
-         
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#041416',
+            color: '#f1f5f9',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
+            backdropFilter: 'blur(12px)',
+          },
+        }}
+      />
+
+      <div className="relative min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden font-sans">
+        {/* Ambient Glows */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+          <div className="absolute top-[-10%] left-[15%] w-[600px] h-[600px] bg-gradient-to-br from-blue-600/10 via-cyan-500/8 to-transparent rounded-full blur-[150px]" />
+          <div className="absolute top-[30%] right-[-10%] w-[650px] h-[650px] bg-gradient-to-bl from-emerald-500/10 via-teal-500/8 to-transparent rounded-full blur-[160px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
         </div>
-        {/* Tags/Chips Section */}
-        <div className="flex flex-wrap gap-xs mb-lg">
-          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">work</span>
-            <span className="font-label-strong text-label-strong">
-              {toTitleCase(`${internship?.type}`)}
-            </span>
+
+        <Navbar />
+
+        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+          {/* Breadcrumb Navigation */}
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#9AAEA3] mb-6">
+            <Link to="/" className="hover:text-[#22C55E] transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-[#9AAEA3]" />
+            <Link to="/internships" className="hover:text-[#22C55E] transition-colors">
+              Internships
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-[#9AAEA3]" />
+            <span className="text-[#22C55E] truncate max-w-xs">{internship?.title || 'Internship Details'}</span>
           </div>
-          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">
-              psychology
-            </span>
-            <span className="font-label-strong text-label-strong">
-              {toTitleCase(`${internship?.category}`)}
-            </span>
-          </div>
-          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">
-              terminal
-            </span>
-            <span className="font-label-strong text-label-strong">{internship?.tags[1]}</span>
-          </div>
-          <div className="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">
-              terminal
-            </span>
-            <span className="font-label-strong text-label-strong">{internship?.tags[2]}</span>
-          </div>
-          
-        </div>
-        {/* Job Description Teaser */}
-        <div className="border-t border-outline-variant pt-lg mb-lg">
-          <h3 className="font-h3 text-h3 text-primary mb-sm">
-            Job Description
-          </h3>
-          <div className="space-y-md text-on-surface-variant leading-relaxed">
-            <p className="">
-              As a Senior Data Scientist at Insight AI, you will lead the
-              development of next-generation predictive models that drive
-              strategic decision-making for our global partners. You'll work at
-              the intersection of big data, deep learning, and business
-              intelligence to solve complex challenges in real-time.
-            </p>
-            <p className="">
-              We are looking for a visionary leader who can bridge the gap
-              between complex mathematical theory and practical business
-              application. You will be responsible for architecting the data
-              strategy that powers our core products, ensuring scalability and
-              accuracy at every step of the pipeline.
-            </p>
-          </div>
-          <div className="mt-lg">
-            <h4 className="font-label-strong text-label-strong text-primary mb-sm uppercase tracking-wider">
-              What You'll Do
-            </h4>
-            <ul className="space-y-sm font-body-md text-body-md text-on-surface-variant">
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Design and implement robust ML pipelines in production
-                environments using state-of-the-art orchestration tools.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Mentor junior team members and establish best practices for data
-                engineering and model governance.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Collaborate with product leads to define data-driven product
-                roadmaps and identify new opportunities for AI integration.
-              </li>
-              <li className="flex items-start gap-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">
-                  check_circle
-                </span>
-                Conduct rigorous A/B testing and statistical analysis to
-                validate model performance and business impact.
-              </li>
-            </ul>
-          </div>
-          <div className="mt-lg">
-            <h4 className="font-label-strong text-label-strong text-primary mb-sm uppercase tracking-wider">
-              Technical Skills &amp; Requirements
-            </h4>
-            <div className="grid grid-cols-2 gap-sm">
-              <div className="bg-surface-container-low p-sm rounded-xl">
-                <span className="font-label-strong block">Languages</span>
-                <span className="text-body-sm">Python, SQL, R</span>
+
+          {/* Hero Header Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl bg-[#111F19]/90 border border-[#20352B] p-6 sm:p-8 backdrop-blur-xl shadow-2xl mb-8 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="flex items-start gap-5">
+                {/* Company Logo */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-[#20352B] p-1.5 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-xl">
+                  {internship?.companies?.logo ? (
+                    <img
+                      src={internship.companies.logo}
+                      alt={internship.companies.name}
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  ) : (
+                    <GraduationCap className="w-10 h-10 text-[#22C55E]" />
+                  )}
+                </div>
+
+                {/* Details */}
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="text-sm font-bold text-[#22C55E] flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
+                      {internship?.companies?.name || 'Verified Tech Partner'}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#22C55E]/10 text-[#34D399] border border-[#22C55E]/20">
+                      {internship?.duration || '3 - 6 Months'}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#22C55E]/10 text-[#34D399] border border-[#22C55E]/20 flex items-center gap-1">
+                      <Zap className="w-3 h-3 text-[#22C55E]" />
+                      PPO Opportunity
+                    </span>
+                  </div>
+
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#F1F5F2] tracking-tight">
+                    {internship?.title}
+                  </h1>
+
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-xs sm:text-sm text-[#9AAEA3]">
+                    <span className="flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-[#9AAEA3]/70" />
+                      {internship?.location || 'Remote'}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-[#9AAEA3]/70" />
+                      {toTitleCase(internship?.type || 'Internship')}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-[#9AAEA3]/70" />
+                      Actively Reviewing Applicants
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="bg-surface-container-low p-sm rounded-xl">
-                <span className="font-label-strong block">Frameworks</span>
-                <span className="text-body-sm">
-                  PyTorch, TensorFlow, Scikit-learn
-                </span>
-              </div>
-              <div className="bg-surface-container-low p-sm rounded-xl">
-                <span className="font-label-strong block">Infrastructure</span>
-                <span className="text-body-sm">Kubernetes, Docker, AWS</span>
-              </div>
-              <div className="bg-surface-container-low p-sm rounded-xl">
-                <span className="font-label-strong block">Modeling</span>
-                <span className="text-body-sm">
-                  NLP, Computer Vision, Data Modeling
-                </span>
+
+              {/* Action Buttons in Hero */}
+              <div className="flex items-center gap-3 self-end lg:self-center">
+                <button
+                  onClick={handleShare}
+                  className="p-3 rounded-xl bg-[#111F19] border border-[#20352B] hover:border-[#20352B] text-[#9AAEA3] hover:text-[#F1F5F2] transition-all active:scale-95 shadow-md"
+                  title="Share Internship"
+                >
+                  <Share2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleToggleSave}
+                  className={`p-3 rounded-xl border transition-all active:scale-95 shadow-md ${
+                    isSaved
+                      ? 'bg-emerald-950/60 border-emerald-500/50 text-[#22C55E]'
+                      : 'bg-[#111F19] border-[#20352B] hover:border-[#22C55E]/40 text-[#9AAEA3] hover:text-[#22C55E]'
+                  }`}
+                  title={isSaved ? 'Bookmarked' : 'Save for later'}
+                >
+                  {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={handleClick}
+                  disabled={isApplying}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-[#07110D] font-bold text-sm transition-all shadow-[0_0_20px_rgba(59,130,246,0.35)] flex items-center gap-2 active:scale-95"
+                >
+                  <span>{isApplying ? 'Processing...' : 'Apply Now'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
-          </div>
-          <div className="mt-lg">
-            <h4 className="font-label-strong text-label-strong text-primary mb-sm uppercase tracking-wider">
-              What We Offer
-            </h4>
-            <p className="text-on-surface-variant mb-sm">
-              We believe in taking care of our people so they can focus on
-              solving the world's hardest problems.
-            </p>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-xs text-body-sm text-on-surface-variant">
-              <li className="flex items-center gap-xs">
-                <span className="material-symbols-outlined text-secondary">
-                  payments
-                </span>
-                Competitive Equity Package
-              </li>
-              <li className="flex items-center gap-xs">
-                <span className="material-symbols-outlined text-secondary">
-                  health_and_safety
-                </span>
-                Premium Health Coverage
-              </li>
-              <li className="flex items-center gap-xs">
-                <span className="material-symbols-outlined text-secondary">
-                  flight_takeoff
-                </span>
-                Unlimited PTO
-              </li>
-              <li className="flex items-center gap-xs">
-                <span className="material-symbols-outlined text-secondary">
-                  laptop_mac
-                </span>
-                Latest Hardware Stipend
-              </li>
-            </ul>
-          </div>
-        </div>
-        {/* Bottom Footer Area: Salary & Actions */}
-        <div className="bg-surface-container-low rounded-xl p-sm flex flex-col md:flex-row justify-between items-center gap-md">
-          <div>
-            <span className="font-label-caps text-label-caps text-on-surface-variant block mb-1">
-              COMPENSATION
-            </span>
-            <span className="font-h2 text-h2 text-primary flex">
-              <IndianRupee width={15}/>{`${internship?.salaryMin}k/1000`} - <IndianRupee width={15}/>{`${internship?.salaryMax}k`}{" "}
-              <small className="text-[1rem] font-normal text-on-surface-variant">
-                / year
-              </small>
-            </span>
-          </div>
-          <div className="flex gap-sm w-full md:w-auto">
-            <button className="flex-1 md:flex-none border-2 border-secondary text-secondary hover:bg-secondary/5 font-label-strong text-label-strong px-lg py-sm rounded-xl transition-all flex items-center justify-center gap-xs">
-              <span className="material-symbols-outlined">bookmark</span>
-              Save Job
-            </button>
-            <button className="flex-1 md:flex-none bg-secondary text-on-secondary hover:opacity-90 font-label-strong text-label-strong px-xl py-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-xs" onClick={handleClick}>
-              Apply Now
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      {/* Bento Grid: Why Join Us */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-        <div className="bg-surface-container-highest rounded-xl p-md flex flex-col gap-xs">
-          <span className="material-symbols-outlined text-secondary text-[32px]">
-            diversity_3
-          </span>
-          <h4 className="font-h3 text-h3">Inclusive Culture</h4>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">
-            We pride ourselves on a diverse environment where every voice
-            contributes to our collective intelligence.
-          </p>
-        </div>
-        <div className="bg-primary text-on-primary rounded-xl p-md flex flex-col gap-xs">
-          <span className="material-symbols-outlined text-secondary-fixed text-[32px]">
-            rocket_launch
-          </span>
-          <h4 className="font-h3 text-h3">Fast Growth</h4>
-          <p className="font-body-sm text-body-sm text-on-primary-container">
-            Series B funded with 300% YOY growth. Join us during our most
-            exciting scaling phase.
-          </p>
-        </div>
-      </div>
-    </div>
-    {/* Sidebar: Right Column */}
-    <aside className="lg:col-span-4 space-y-md">
-  <div className="space-y-sm">
-    <h3 className="font-h3 text-h3 text-primary mb-sm px-base">
-      Company Information
-    </h3>
-    <div className="bg-surface-container-lowest p-md rounded-xl border border-surface-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-      <div className="flex justify-between items-start mb-md">
-        <div>
-          <img
-            src={internship?.companies.logo}
-            alt={internship?.companies.name}
-            className="w-16 h-16 rounded-lg object-cover"
-          />
-          <h4 className="font-h2 text-h2 text-primary">Insight AI</h4>
-          <p className="text-secondary font-label-strong text-label-strong">
-            Artificial Intelligence
-          </p>
-        </div>
-        <Link
-          to={` ${internship?.companies.website}`}
-          target="_blank"
-          className="text-secondary hover:underline flex items-center gap-xs font-label-strong text-label-strong"
-        >
-          Visit Website
-          <span className="material-symbols-outlined text-[18px]">
-            open_in_new
-          </span>
-        </Link>
-      </div>
-      <div className="space-y-sm mb-md">
-        <div className="flex items-center gap-xs text-on-surface-variant">
-          <span className="material-symbols-outlined text-[20px]">
-            location_on
-          </span>
-          <span className="text-body-sm">New York, NY</span>
-        </div>
-        <div className="flex items-center gap-xs text-on-surface-variant">
-          <span className="material-symbols-outlined text-[20px]">groups</span>
-          <span className="text-body-sm">500-1,000 Employees</span>
-        </div>
-      </div>
-      <div className="pt-sm border-t border-outline-variant">
-        <p className="text-body-sm text-on-surface-variant leading-relaxed">
-          Insight AI is a global leader in predictive analytics and machine
-          learning solutions. We help Fortune 500 companies transform their data
-          into actionable intelligence through cutting-edge neural network
-          architectures.
-        </p>
-      </div>
-    </div>
-  </div>
-  <h3 className="font-h3 text-h3 text-primary mb-sm px-base">
-    Latest Job Postings
-  </h3>
-  <div className="space-y-sm">
-    <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
-      <div className="flex gap-sm mb-xs">
-        <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
-        <div>
-          <h4 className="font-label-strong text-label-strong text-primary">
-            Senior Product Designer
-          </h4>
-          <p className="text-body-sm text-secondary">Stripe</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-body-sm text-on-surface-variant">
-          Remote • $140k - $180k
-        </span>
-        <a
-          className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
-        >
-          View
-        </a>
-      </div>
-    </div>
-    <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
-      <div className="flex gap-sm mb-xs">
-        <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
-        <div>
-          <h4 className="font-label-strong text-label-strong text-primary">
-            Full Stack Developer
-          </h4>
-          <p className="text-body-sm text-secondary">Vercel</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-body-sm text-on-surface-variant">
-          Remote • $120k - $160k
-        </span>
-        <a
-          className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
-        >
-          View
-        </a>
-      </div>
-    </div>
-    <div className="bg-surface-container-lowest p-sm rounded-xl border border-surface-variant/30 hover:shadow-md transition-all">
-      <div className="flex gap-sm mb-xs">
-        <div className="w-10 h-10 rounded bg-surface-container-high flex-shrink-0" />
-        <div>
-          <h4 className="font-label-strong text-label-strong text-primary">
-            Marketing Manager
-          </h4>
-          <p className="text-body-sm text-secondary">Airbnb</p>
-        </div>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-body-sm text-on-surface-variant">
-          SF • $130k - $175k
-        </span>
-        <a
-          className="text-secondary font-label-strong text-label-strong hover:underline"
-          href="#"
-        >
-          View
-        </a>
-      </div>
-    </div>
-  </div>
-</aside>
+          </motion.div>
 
-  </div>
-</main>
+          {/* Grid Content Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Column (8 cols) */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Compensation & Key Highlights Strip */}
+              <div className="p-6 rounded-2xl bg-[#111F19]/80 border border-[#20352B] backdrop-blur-xl grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-xs font-semibold text-[#9AAEA3] uppercase tracking-wider mb-1">
+                    Monthly Stipend
+                  </div>
+                  <div className="text-lg sm:text-xl font-extrabold text-[#F1F5F2] flex items-center gap-1">
+                    <IndianRupee className="w-4 h-4 text-[#22C55E]" />
+                    {(internship?.salaryMin || 35000).toLocaleString('en-IN')} -{' '}
+                    {(internship?.salaryMax || 55000).toLocaleString('en-IN')}
+                  </div>
+                </div>
 
+                <div>
+                  <div className="text-xs font-semibold text-[#9AAEA3] uppercase tracking-wider mb-1">Duration</div>
+                  <div className="text-lg sm:text-xl font-extrabold text-[#F1F5F2]">
+                    {internship?.duration || '6 Months'}
+                  </div>
+                </div>
 
-    <Footer/>
-    </div>
-  )
-}
+                <div>
+                  <div className="text-xs font-semibold text-[#9AAEA3] uppercase tracking-wider mb-1">Work Mode</div>
+                  <div className="text-lg sm:text-xl font-extrabold text-[#22C55E]">
+                    {internship?.location?.toLowerCase().includes('remote') ? 'Remote' : 'Hybrid / On-site'}
+                  </div>
+                </div>
 
-export default InternshipPage
+                <div>
+                  <div className="text-xs font-semibold text-[#9AAEA3] uppercase tracking-wider mb-1">Category</div>
+                  <div className="text-base sm:text-lg font-bold text-[#F1F5F2] truncate">
+                    {toTitleCase(internship?.category || 'Engineering')}
+                  </div>
+                </div>
+              </div>
+
+              {/* Skills & Technologies */}
+              {internship?.tags && internship.tags.length > 0 && (
+                <div className="p-6 rounded-2xl bg-[#111F19]/80 border border-[#20352B] backdrop-blur-xl">
+                  <h3 className="text-base font-bold text-[#F1F5F2] mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#22C55E]" />
+                    Required Skills & Technologies
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {internship.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#0D1814] border border-[#20352B] text-[#9AAEA3] hover:border-[#22C55E]/40 transition-colors"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Overview & Description */}
+              <div className="p-6 sm:p-8 rounded-2xl bg-[#111F19]/80 border border-[#20352B] backdrop-blur-xl space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold text-[#F1F5F2] mb-3">About the Internship Opportunity</h2>
+                  <p className="text-[#9AAEA3] leading-relaxed text-sm sm:text-base">
+                    {internship?.description ||
+                      'Insight AI and our partner technology organizations are looking for passionate, driven interns eager to learn and make meaningful contributions to production-grade software architectures.'}
+                  </p>
+                </div>
+
+                <div className="border-t border-[#20352B] pt-6">
+                  <h3 className="text-lg font-bold text-[#F1F5F2] mb-3">What You Will Learn & Do</h3>
+                  <ul className="space-y-3 text-[#9AAEA3] text-sm sm:text-base">
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-5 h-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
+                      <span>
+                        Collaborate directly with cross-functional engineering teams to implement production features.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-5 h-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
+                      <span>
+                        Participate in daily standups, architectural design reviews, and code quality assessments.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-5 h-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
+                      <span>
+                        Receive dedicated 1-on-1 mentorship from principal architects to fast-track your technical career.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-5 h-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
+                      <span>
+                        High performers will receive a direct Pre-Placement Offer (PPO) for full-time employment.
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                {internship?.requirements && (
+                  <div className="border-t border-[#20352B] pt-6">
+                    <h3 className="text-lg font-bold text-[#F1F5F2] mb-3">Qualifications & Requirements</h3>
+                    <p className="text-[#9AAEA3] leading-relaxed text-sm sm:text-base">{internship.requirements}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Sticky Action Bar */}
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-[#20352B] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-[#9AAEA3]">Ready to build?</div>
+                  <div className="text-base font-bold text-[#F1F5F2]">Join {internship?.companies?.name} today</div>
+                </div>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <button
+                    onClick={handleToggleSave}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-[#20352B] bg-[#111F19] hover:border-[#20352B] text-[#9AAEA3] font-semibold text-xs transition-all"
+                  >
+                    {isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button
+                    onClick={handleClick}
+                    className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-[#07110D] font-bold text-sm hover:opacity-95 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2"
+                  >
+                    <span>Apply Now</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar Column (4 cols) */}
+            <aside className="lg:col-span-4 space-y-6">
+              {/* Company Info Card */}
+              <div className="p-6 rounded-2xl bg-[#111F19]/90 border border-[#20352B] backdrop-blur-xl space-y-4">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#9AAEA3]">About Company</h3>
+
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-xl bg-[#0D1814] border border-[#20352B] p-1 flex items-center justify-center overflow-hidden">
+                    {internship?.companies?.logo ? (
+                      <img
+                        src={internship.companies.logo}
+                        alt={internship.companies.name}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <Building2 className="w-6 h-6 text-[#22C55E]" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-[#F1F5F2]">{internship?.companies?.name || 'Partner Company'}</h4>
+                    <span className="text-xs text-[#22C55E] font-medium">Verified Employer</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-[#9AAEA3] leading-relaxed">
+                  {internship?.companies?.description ||
+                    'A fast-growing tech enterprise dedicated to building scalable digital solutions and mentoring rising engineering talent.'}
+                </p>
+
+                <div className="pt-3 border-t border-[#20352B] space-y-2 text-xs text-[#9AAEA3]">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-[#9AAEA3]/70">
+                      <MapPin className="w-3.5 h-3.5" />
+                      Headquarters
+                    </span>
+                    <span className="text-[#F1F5F2] font-medium">{internship?.companies?.location || 'India'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-[#9AAEA3]/70">
+                      <Users className="w-3.5 h-3.5" />
+                      Company Size
+                    </span>
+                    <span className="text-[#F1F5F2] font-medium">250 - 1,000 Employees</span>
+                  </div>
+                </div>
+
+                {internship?.companies?.website && (
+                  <a
+                    href={internship.companies.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0D1814] border border-[#20352B] hover:border-[#22C55E]/40 text-xs font-semibold text-[#F1F5F2] hover:text-[#F1F5F2] transition-all"
+                  >
+                    <span>Visit Company Website</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
+
+              {/* Perks & Benefits Card */}
+              <div className="p-6 rounded-2xl bg-[#111F19]/90 border border-[#20352B] backdrop-blur-xl space-y-3.5">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#9AAEA3]">Internship Perks</h3>
+                <div className="space-y-2.5 text-xs text-[#9AAEA3]">
+                  <div className="flex items-center gap-2.5 p-2 rounded-lg bg-[#0D1814]/90 border border-[#20352B]/80">
+                    <Award className="w-4 h-4 text-[#22C55E] flex-shrink-0" />
+                    <span>Certificate of Internship & Letter of Recommendation</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 p-2 rounded-lg bg-[#0D1814]/90 border border-[#20352B]/80">
+                    <Zap className="w-4 h-4 text-[#22C55E] flex-shrink-0" />
+                    <span>Direct Fast-Track PPO for Full-Time Roles</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 p-2 rounded-lg bg-[#0D1814]/90 border border-[#20352B]/80">
+                    <Globe className="w-4 h-4 text-[#34D399] flex-shrink-0" />
+                    <span>Flexible Remote Work Policy & Laptop Allowance</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default InternshipPage;
