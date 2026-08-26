@@ -6,6 +6,11 @@ import { loginSchema, registerSchema } from "../validators/auth.validators.js";
 import jwt from "jsonwebtoken";
 import { includes } from "zod";
 
+export const getRegisterPage = (req, res) => {
+    const redirectUrl = req.query.redirect || '/';
+    res.render('register', { redirectAfter: redirectUrl });
+}
+
 export const registerUser = async (req, res, next) => {
     try {
         const result = registerSchema.safeParse(req.body);

@@ -62,6 +62,7 @@ export function Internships() {
   const { internshipData, total } = useInternships();
   const [sortBy, setSortBy] = useState<string>('recent');
   const [saveInternships, setSaveInternships] = useState<SavedInternship[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
   const navigate = useNavigate();
   const {
@@ -103,6 +104,16 @@ export function Internships() {
     return saveInternships.some((saved) => saved.internshipId === internshipId);
   };
 
+  const handleApply = (internship: Internship) => {
+    if (!isLoggedIn) {
+      navigate('/register?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    navigate(`/internships/search/${internship.id}`, {
+      state: internship,
+    });
+  };
+
   const handlegetSavedInternships = async () => {
     try {
       const res = await axios.get(`http://localhost:4000/api/internships/saved`, {
@@ -131,6 +142,10 @@ export function Internships() {
 
   const handleSaveInternship = async (internshipId: number) => {
     try {
+      if(!isLoggedIn) {
+        navigate('/register?redirect=' + encodeURIComponent(window.location.pathname));
+        return;
+      }
       await axios.post(
         `http://localhost:4000/api/internships/${internshipId}/save`,
         {},
@@ -235,7 +250,7 @@ export function Internships() {
   }, [sortBy, internshipData.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#030814] via-[#041416] to-[#030c10] text-[#F1F5F2] flex flex-col selection:bg-emerald-500 selection:text-neutral-950 font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#17232d] text-[#F1F5F2] flex flex-col selection:bg-emerald-500 selection:text-neutral-950 font-sans relative overflow-x-hidden">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -592,7 +607,7 @@ export function Internships() {
                       {/* Right: Actions */}
                       <div className="flex md:flex-col items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-[#20352B] w-full md:w-auto justify-end">
                         <button
-                          onClick={() => navigate(`/internships/search/${internship.id}`)}
+                          onClick={() => handleApply(internship)}
                           className="flex-1 md:flex-none h-11 px-6 rounded-xl bg-gradient-to-r from-[#22C55E] to-[#34D399] hover:from-emerald-400 hover:to-cyan-300 text-neutral-950 font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(34,197,94,0.45)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <span>Apply Now</span>

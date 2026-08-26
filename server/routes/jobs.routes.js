@@ -11,7 +11,7 @@ router.get('/api/jobs/saved', isAuthenticated, authenticateJobSeeker, getSavedJo
 router.get('/api/jobs/:id', getJobById);
 router.delete('/api/jobs/:id', isAuthenticated, authenticateEmployer, deleteJob);
 router.patch('/api/jobs/:id', updateJob);
-router.post('/api/jobs/:id/save', isAuthenticated, authenticateJobSeeker, saveJob);
+router.post('/api/jobs/:id/save', isAuthenticated, saveJob);
 router.delete('/api/jobs/:id/save', isAuthenticated, authenticateJobSeeker, removeSavedJob);
 
 export const jobsRoutes = router;

@@ -83,6 +83,7 @@ export function JobsCategory() {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLElement>(null);
   const hasAnimatedRef = useRef(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
   interface Filters {
     jobType: string[];
@@ -97,6 +98,8 @@ export function JobsCategory() {
     salaryRange: [],
     mode: [],
   });
+
+  
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -159,6 +162,32 @@ export function JobsCategory() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+      axios
+        .get("/api/me")
+        .then(() => setIsLoggedIn(true))
+        .catch(() => setIsLoggedIn(false));
+    }, []);
+  
+    const handleApply = async (job: Job) => {
+      try {
+        if (!isLoggedIn) {
+          navigate(
+            `/register?redirect=${encodeURIComponent(window.location.pathname)}`,
+          );
+          return;
+        }
+        navigate(`/jobs/search/${job.id}`, {
+          state: job,
+        });
+      } catch (error) {
+        console.error("Error navigating to job details:", error);
+        if (axios.isAxiosError(error) && error.response) {
+          console.error("Error response data:", error.response.data);
+        }
+      }
+    };
 
   const handlegetSavedJobs = async () => {
     try {
@@ -699,9 +728,7 @@ export function JobsCategory() {
                       <div className="flex md:flex-col items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-[#20352B] w-full md:w-auto justify-end">
                         <button
                           onClick={() => {
-                            navigate(`/jobs/search/${job.id}`, {
-                              state: job,
-                            });
+                            handleApply(job)
                           }}
                           className="flex-1 md:flex-none h-11 px-6 rounded-xl bg-gradient-to-r from-[#22C55E] to-[#34D399] hover:from-emerald-400 hover:to-cyan-300 text-neutral-950 font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(34,197,94,0.45)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                         >

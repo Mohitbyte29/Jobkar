@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { loginUser, logOutUser, registerUser } from "../controllers/auth.controller.js";
+import { getRegisterPage, loginUser, logOutUser, registerUser } from "../controllers/auth.controller.js";
 import { isAuthenticated } from "../middlewares/middleware.js";
 import { googleAuth, googleAuthCallback } from "../config/passport.js";
 import passport from "passport";
 
 const router = new Router();
 
+router.get('/api/auth/register', getRegisterPage);
 router.post('/api/auth/register', registerUser);
 router.post('/api/auth/login', loginUser,  isAuthenticated);
 router.post('/api/auth/logout', isAuthenticated, logOutUser);

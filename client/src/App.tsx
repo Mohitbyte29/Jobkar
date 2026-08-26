@@ -75,8 +75,8 @@ const App = () => {
         <Route path='/postJob' element={<PostJob />} />
         <Route path='/postInternship' element={<PostInternship />} />
         <Route path='/company/:companyId' element={<CompanyPage />} />
-        <Route path='/saved-jobs' element={<SavedJob/>} />
-        <Route path='/saved-internships' element={<SavedJob defaultTab="internships" />} />
+        <Route path='/savedJobs' element={<SavedJob/>} />
+        <Route path='/savedInternships' element={<SavedJob defaultTab="internships" />} />
         <Route path='/admin/dashboard' element={<AdminDashboard/>} />
         <Route path='/admin/jobs' element={<JobManagement/>} />
         <Route path='/admin/internships' element={<InternshipManagement/>} />

@@ -170,7 +170,7 @@ export default function Companies() {
       <Navbar />
 
       <main
-        className="relative min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden font-sans pt-20"
+        className="relative min-h-screen bg-[#17232d] text-[#F1F5F2] selection:bg-emerald-500/30 selection:text-emerald-200 overflow-x-hidden font-sans pt-20"
         ref={pageRef}
       >
         {/* Ambient Cosmic Background Glow Orbs */}

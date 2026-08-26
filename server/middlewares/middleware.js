@@ -11,15 +11,21 @@ export const isAuthenticated = (req, res, next) => {
     const token = req.cookies.accessToken;
     // console.log("Token: ", token);
     if(!token){
-        return res.status(401).json({success: false, message: 'Unauthorized, JWT token is required'});
+        return res.status(401).json({authenticated: false,
+      redirectUrl: `/api/auth/register?redirect=${encodeURIComponent(req.originalUrl)}`});
     }
     try{
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
         req.user = decoded;
         next();
     } catch(err){
-        console.log(err);
-        return res.status(403).json({success: false, message: 'Unauthorized, JWT token is wrong or expired'})
+        res.clearCookie('accessToken');
+        const reason = err.name === 'TokenExpiredError' ? 'expired' : 'invalid';
+        return res.status(401).json({
+            authenticated: false,
+            reason,
+            redirectUrl: `/api/auth/register?redirect=${encodeURIComponent(req.originalUrl)}`
+        });
     }
 }
 

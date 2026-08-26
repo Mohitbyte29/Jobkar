@@ -138,12 +138,6 @@ export default function Navbar() {
             >
               Register
             </Link>
-            <Link
-              to="/postJob"
-              className="px-4 py-1.5 text-sm font-semibold rounded-lg bg-emerald-500 text-neutral-950 hover:bg-emerald-400 transition-all duration-200 active:scale-95"
-            >
-              Post a Job
-            </Link>
           </div>
         )}
       </div>

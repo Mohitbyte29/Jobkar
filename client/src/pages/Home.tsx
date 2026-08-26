@@ -344,7 +344,7 @@ export default function Home() {
               {" "}
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />{" "}
               <input
-                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-900"
+                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-300"
                 placeholder="Job title or keyword"
                 type="text"
                 value={query}
@@ -353,7 +353,7 @@ export default function Home() {
               />{" "}
               <MapPin className="absolute right-92 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />{" "}
               <input
-                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-900"
+                className="w-full bg-[#111F19] pl-8 p-2 rounded-xl border-none focus:ring-0 font-body-sm text-xl placeholder:text-[#9AAEA3]/70 text-gray-300"
                 placeholder="Location"
                 type="text"
                 value={location}
@@ -406,7 +406,7 @@ export default function Home() {
                 {Array.from(new Set(results.map((job: Job) => job.title))).map(
                   (title: string) => (
                     <li
-                      key={title}
+                      key={title}                                     
                       onClick={() => {
                         setQuery(title);
                         setSelectedJob(title);
@@ -414,7 +414,7 @@ export default function Home() {
                       }}
                     >
                       {" "}
-                      <div className="dropdown-item bg-[#111F19] text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                      <div className="dropdown-item bg-[#111F19] text-gray-500 px-4 py-2 border-2 hover:bg-gray-100 rounded">
                         {" "}
                         <strong>{title}</strong>{" "}
                       </div>{" "}
@@ -441,7 +441,7 @@ export default function Home() {
                     }}
                   >
                     {" "}
-                    <div className="dropdown-item bg-[#111F19] text-gray-900 px-4 py-2 border-2 hover:bg-gray-100 rounded">
+                    <div className="dropdown-item bg-[#111F19] text-gray-500 px-4 py-2 border-2 hover:bg-gray-100 rounded">
                       {" "}
                       <strong>{location}</strong>{" "}
                     </div>{" "}

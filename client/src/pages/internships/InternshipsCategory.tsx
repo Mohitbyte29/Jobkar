@@ -87,6 +87,7 @@ export function InternshipsCategory() {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLElement>(null);
   const hasAnimatedRef = useRef(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
   interface Filters {
     type: string[];
@@ -101,6 +102,16 @@ export function InternshipsCategory() {
     salaryRange: [],
     mode: [],
   });
+
+  const handleApply = (internship: Internship) => {
+    if (!isLoggedIn) {
+      navigate('/register?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    navigate(`/internships/search/${internship.id}`, {
+      state: internship,
+    });
+  };
 
   const searchTitle = searchParams.get("q") || searchParams.get("c") || "";
   const searchLocation = searchParams.get("location") || "";
@@ -191,6 +202,10 @@ export function InternshipsCategory() {
 
   const handleSaveInternship = async (internshipId: number) => {
     try {
+      if(!isLoggedIn) {
+        navigate('/register?redirect=' + encodeURIComponent(window.location.pathname));
+        return;
+      }
       await axios.post(
         `http://localhost:4000/api/internships/${internshipId}/save`,
         {},
@@ -308,7 +323,7 @@ export function InternshipsCategory() {
   }, [count]);
 
   return (
-    <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] flex flex-col selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#17232d] text-[#F1F5F2] flex flex-col selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans relative overflow-x-hidden">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -718,9 +733,7 @@ export function InternshipsCategory() {
                       <div className="flex md:flex-col items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-[#20352B] w-full md:w-auto justify-end">
                         <button
                           onClick={() => {
-                            navigate(`/internships/search/${internship.id}`, {
-                              state: internship,
-                            });
+                            handleApply(internship)
                           }}
                           className="flex-1 md:flex-none h-11 px-6 rounded-xl bg-[#22C55E] hover:bg-[#34D399] text-[#07110D] font-extrabold text-sm tracking-wide shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                         >

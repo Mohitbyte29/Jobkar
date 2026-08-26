@@ -17,19 +17,19 @@ import {
   ArrowUpRight,
   BookmarkCheck,
   RotateCcw,
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { useJobs } from '../../context/JobsContext.tsx';
-import timeAgo from '../../../utils/timeAgo.tsx';
-import Navbar from '@/components/Navbar.tsx';
-import { useNavigate } from 'react-router-dom';
-import toTitleCase from '../../../utils/titleCase.tsx';
-import toast, { Toaster } from 'react-hot-toast';
-import { usejobSearch } from '@/hooks/JobSearch.tsx';
-import axios from 'axios';
-import Footer from '@/components/Footer.tsx';
-import SplitText from '@/components/SplitText.tsx';
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useJobs } from "../../context/JobsContext.tsx";
+import timeAgo from "../../../utils/timeAgo.tsx";
+import Navbar from "@/components/Navbar.tsx";
+import { useNavigate } from "react-router-dom";
+import toTitleCase from "../../../utils/titleCase.tsx";
+import toast, { Toaster } from "react-hot-toast";
+import { usejobSearch } from "@/hooks/JobSearch.tsx";
+import axios from "axios";
+import Footer from "@/components/Footer.tsx";
+import SplitText from "@/components/SplitText.tsx";
 
 interface SavedJob {
   id: number;
@@ -61,8 +61,9 @@ interface Job {
 
 export function Jobs() {
   const { jobData, total, loading } = useJobs();
-  const [sortBy, setSortBy] = useState<string>('recent');
+  const [sortBy, setSortBy] = useState<string>("recent");
   const [saveJob, setsaveJob] = useState<SavedJob[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   interface Filters {
     type: string[];
@@ -109,24 +110,50 @@ export function Jobs() {
     }));
   };
 
+  useEffect(() => {
+    axios
+      .get("/api/me")
+      .then(() => setIsLoggedIn(true))
+      .catch(() => setIsLoggedIn(false));
+  }, []);
+
+  const handleApply = async (job: Job) => {
+    try {
+      if (!isLoggedIn) {
+        navigate(
+          `/register?redirect=${encodeURIComponent(window.location.pathname)}`,
+        );
+        return;
+      }
+      navigate(`/jobs/search/${job.id}`, {
+        state: job,
+      });
+    } catch (error) {
+      console.error("Error navigating to job details:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error response data:", error.response.data);
+      }
+    }
+  };
+
   const applyFilters = async () => {
     try {
       const params = new URLSearchParams();
 
       filters.type.forEach((type) => {
-        params.append('type', type);
+        params.append("type", type);
       });
 
       filters.category.forEach((category) => {
-        params.append('category', category);
+        params.append("category", category);
       });
 
       filters.salaryRange.forEach((range) => {
-        params.append('salaryRange', range);
+        params.append("salaryRange", range);
       });
 
       filters.mode.forEach((mode) => {
-        params.append('mode', mode);
+        params.append("mode", mode);
       });
 
       navigate(`/jobs/search?${params.toString()}`);
@@ -146,20 +173,21 @@ export function Jobs() {
       });
       setsaveJob(res.data);
     } catch (error) {
-      console.error('Error fetching saved jobs:', error);
+      console.error("Error fetching saved jobs:", error);
       if (axios.isAxiosError(error) && error.response) {
-        console.error('Error response data:', error.response.data);
+        console.error("Error response data:", error.response.data);
       }
     }
   };
 
   const getSortedJobs = () => {
     const jobs = [...jobData];
-    if (sortBy === 'recent') {
+    if (sortBy === "recent") {
       return jobs.sort(
-        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       );
-    } else if (sortBy === 'salary') {
+    } else if (sortBy === "salary") {
       return jobs.sort((a, b) => b.salaryMax - a.salaryMax);
     }
     return jobs;
@@ -167,19 +195,30 @@ export function Jobs() {
 
   const handleSaveJob = async (jobId: number) => {
     try {
+      if(!isLoggedIn) {
+        navigate('/register?redirect=' + encodeURIComponent(window.location.pathname));
+        return;
+      }
       await axios.post(
         `http://localhost:4000/api/jobs/${jobId}/save`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      toast.success('Job saved to your wishlist!', { icon: '✨' });
+      toast.success("Job saved to your wishlist!", { icon: "✨" });
       handlegetSavedJobs();
     } catch (error) {
-      console.error('Error saving job:', error);
       if (axios.isAxiosError(error) && error.response) {
-        console.error('Error response data:', error.response.data);
+        if (error.response.status === 401) {
+          // use current page instead of the backend's API-route redirect (see note below)
+          navigate(
+            `/register?redirect=${encodeURIComponent(window.location.pathname)}`,
+          );
+          return;
+        }
+        console.error("Error response data:", error.response.data);
       }
-      toast.error('Failed to save job');
+      console.error("Error saving job:", error);
+      toast.error("Failed to save job");
     }
   };
 
@@ -188,14 +227,14 @@ export function Jobs() {
       await axios.delete(`http://localhost:4000/api/jobs/${jobId}/save`, {
         withCredentials: true,
       });
-      toast.success('Job removed from saved list');
+      toast.success("Job removed from saved list");
       handlegetSavedJobs();
     } catch (error) {
-      console.error('Error Removing job:', error);
+      console.error("Error Removing job:", error);
       if (axios.isAxiosError(error) && error.response) {
-        console.error('Error response data:', error.response.data);
+        console.error("Error response data:", error.response.data);
       }
-      toast.error('Failed to remove job');
+      toast.error("Failed to remove job");
     }
   };
 
@@ -204,22 +243,24 @@ export function Jobs() {
   }, []);
 
   useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (reduceMotion || !pageRef.current) return;
 
     const context = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>('.job-card');
+      const cards = gsap.utils.toArray<HTMLElement>(".job-card");
 
       if (!hasAnimatedRef.current) {
-        const timeline = gsap.timeline({ defaults: { ease: 'power2.out' } });
+        const timeline = gsap.timeline({ defaults: { ease: "power2.out" } });
 
         timeline
-          .from('.jobs-hero', { y: 16, opacity: 0, duration: 0.35 })
-          .from('.jobs-search', { y: 12, opacity: 0, duration: 0.3 }, '-=0.16')
+          .from(".jobs-hero", { y: 16, opacity: 0, duration: 0.35 })
+          .from(".jobs-search", { y: 12, opacity: 0, duration: 0.3 }, "-=0.16")
           .from(
-            ['.jobs-sidebar', '.jobs-toolbar'],
+            [".jobs-sidebar", ".jobs-toolbar"],
             { y: 12, opacity: 0, duration: 0.3, stagger: 0.05 },
-            '-=0.12'
+            "-=0.12",
           )
           .from(
             cards,
@@ -228,9 +269,9 @@ export function Jobs() {
               opacity: 0,
               duration: 0.32,
               stagger: 0.035,
-              clearProps: 'transform,opacity',
+              clearProps: "transform,opacity",
             },
-            '-=0.1'
+            "-=0.1",
           );
 
         hasAnimatedRef.current = true;
@@ -242,8 +283,8 @@ export function Jobs() {
         opacity: 0,
         duration: 0.28,
         stagger: 0.03,
-        ease: 'power1.out',
-        clearProps: 'transform,opacity',
+        ease: "power1.out",
+        clearProps: "transform,opacity",
       });
     }, pageRef);
 
@@ -256,9 +297,9 @@ export function Jobs() {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#0a1628',
-            color: '#f8fafc',
-            border: '1px solid rgba(34,197,94,0.2)',
+            background: "#0a1628",
+            color: "#f8fafc",
+            border: "1px solid rgba(34,197,94,0.2)",
           },
         }}
       />
@@ -289,7 +330,9 @@ export function Jobs() {
               <Sparkles className="w-3.5 h-3.5 text-[#22C55E]" />
               <span>CURATED OPPORTUNITIES & CAREERS</span>
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              <span className="text-[#34D399] font-bold">{total || jobData.length} Open Roles</span>
+              <span className="text-[#34D399] font-bold">
+                {total || jobData.length} Open Roles
+              </span>
             </div>
 
             <h1 className="jobs-hero text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#F1F5F2] leading-tight">
@@ -308,7 +351,8 @@ export function Jobs() {
               />
             </h1>
             <p className="text-[#9AAEA3] text-sm sm:text-base leading-relaxed">
-              Explore vetted roles at leading technology companies, venture-backed startups, and remote teams.
+              Explore vetted roles at leading technology companies,
+              venture-backed startups, and remote teams.
             </p>
           </div>
 
@@ -342,22 +386,22 @@ export function Jobs() {
               disabled={!canSearch}
               className={`w-full md:w-auto px-8 py-3 rounded-xl text-sm font-bold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 ${
                 canSearch
-                  ? 'bg-gradient-to-r from-[#22C55E] to-[#34D399] hover:from-emerald-400 hover:to-cyan-300 text-neutral-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95'
-                  : 'bg-[#111F19]/[0.06] text-[#9AAEA3]/70 border border-[#20352B] cursor-not-allowed opacity-60'
+                  ? "bg-gradient-to-r from-[#22C55E] to-[#34D399] hover:from-emerald-400 hover:to-cyan-300 text-neutral-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95"
+                  : "bg-[#111F19]/[0.06] text-[#9AAEA3]/70 border border-[#20352B] cursor-not-allowed opacity-60"
               }`}
               onClick={() => {
                 if (!selectedJob && query.trim()) {
-                  toast.error('Please enter a job');
+                  toast.error("Please enter a job");
                   return;
                 }
 
                 if (!selectedLocation && location.trim()) {
-                  toast.error('Please enter a valid location');
+                  toast.error("Please enter a valid location");
                   return;
                 }
                 if (query.trim() && location.trim()) {
                   navigate(
-                    `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`
+                    `/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`,
                   );
                   setResults([]);
                   setLocationResults([]);
@@ -366,11 +410,13 @@ export function Jobs() {
                   setResults([]);
                   setLocationResults([]);
                 } else if (location.trim()) {
-                  navigate(`/jobs/search?location=${encodeURIComponent(location)}`);
+                  navigate(
+                    `/jobs/search?location=${encodeURIComponent(location)}`,
+                  );
                   setResults([]);
                   setLocationResults([]);
                 } else {
-                  toast.error('Please enter either job title or location');
+                  toast.error("Please enter either job title or location");
                 }
               }}
             >
@@ -382,39 +428,41 @@ export function Jobs() {
           {/* Autocomplete Dropdowns */}
           {results.length > 0 && (
             <div className="absolute z-30 mt-2 w-full max-w-2xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
-              {Array.from(new Set(results.map((job: Job) => job.title))).map((title: string) => (
-                <div
-                  key={title}
-                  onClick={() => {
-                    setQuery(title);
-                    setSelectedJob(title);
-                    setResults([]);
-                  }}
-                  className="px-4 py-2.5 rounded-lg hover:bg-[#22C55E]/15 text-[#F1F5F2] hover:text-[#34D399] text-sm font-semibold cursor-pointer transition-colors"
-                >
-                  {title}
-                </div>
-              ))}
+              {Array.from(new Set(results.map((job: Job) => job.title))).map(
+                (title: string) => (
+                  <div
+                    key={title}
+                    onClick={() => {
+                      setQuery(title);
+                      setSelectedJob(title);
+                      setResults([]);
+                    }}
+                    className="px-4 py-2.5 rounded-lg hover:bg-[#22C55E]/15 text-[#F1F5F2] hover:text-[#34D399] text-sm font-semibold cursor-pointer transition-colors"
+                  >
+                    {title}
+                  </div>
+                ),
+              )}
             </div>
           )}
 
           {locationResults.length > 0 && (
             <div className="absolute z-30 mt-2 w-full max-w-3xl bg-[#0D1814] border border-[#22C55E]/30 rounded-xl shadow-2xl p-2 space-y-1">
-              {Array.from(new Set(locationResults.map((job: Job) => job.location))).map(
-                (loc: string) => (
-                  <div
-                    key={loc}
-                    onClick={() => {
-                      setLocation(loc);
-                      setSelectedLocation(loc);
-                      setLocationResults([]);
-                    }}
-                    className="px-4 py-2.5 rounded-lg hover:bg-[#22C55E]/15 text-[#F1F5F2] hover:text-[#34D399] text-sm font-semibold cursor-pointer transition-colors"
-                  >
-                    {loc}
-                  </div>
-                )
-              )}
+              {Array.from(
+                new Set(locationResults.map((job: Job) => job.location)),
+              ).map((loc: string) => (
+                <div
+                  key={loc}
+                  onClick={() => {
+                    setLocation(loc);
+                    setSelectedLocation(loc);
+                    setLocationResults([]);
+                  }}
+                  className="px-4 py-2.5 rounded-lg hover:bg-[#22C55E]/15 text-[#F1F5F2] hover:text-[#34D399] text-sm font-semibold cursor-pointer transition-colors"
+                >
+                  {loc}
+                </div>
+              ))}
             </div>
           )}
         </section>
@@ -451,22 +499,27 @@ export function Jobs() {
                   Job Type
                 </span>
                 <div className="space-y-2">
-                  {['Full-time', 'Part-time', 'Contract', 'Remote'].map((type) => (
-                    <label key={type} className="flex items-center gap-2.5 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={filters.type.includes(type)}
-                        onChange={() => handleFilterChange('type', type)}
-                        className="sr-only peer"
-                      />
-                      <div className="w-4 h-4 rounded bg-[#111F19]/[0.05] border border-white/20 peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-cyan-400 peer-checked:border-[#22C55E]/70 flex items-center justify-center transition-all">
-                        {filters.type.includes(type) && (
-                          <CheckCircle2 className="w-3 h-3 text-neutral-950 stroke-[3]" />
-                        )}
-                      </div>
-                      <span className="text-xs text-[#9AAEA3]">{type}</span>
-                    </label>
-                  ))}
+                  {["Full-time", "Part-time", "Contract", "Remote"].map(
+                    (type) => (
+                      <label
+                        key={type}
+                        className="flex items-center gap-2.5 cursor-pointer select-none"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={filters.type.includes(type)}
+                          onChange={() => handleFilterChange("type", type)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-4 h-4 rounded bg-[#111F19]/[0.05] border border-white/20 peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-cyan-400 peer-checked:border-[#22C55E]/70 flex items-center justify-center transition-all">
+                          {filters.type.includes(type) && (
+                            <CheckCircle2 className="w-3 h-3 text-neutral-950 stroke-[3]" />
+                          )}
+                        </div>
+                        <span className="text-xs text-[#9AAEA3]">{type}</span>
+                      </label>
+                    ),
+                  )}
                 </div>
               </div>
 
@@ -477,16 +530,21 @@ export function Jobs() {
                 </span>
                 <div className="space-y-2">
                   {[
-                    { id: 'under_500k', label: 'Under ₹500k' },
-                    { id: '500k_1000k', label: '₹500k - ₹1,000k' },
-                    { id: '1000k_1500k', label: '₹1,000k - ₹1,500k' },
-                    { id: '1500k_plus', label: '₹1,500k+' },
+                    { id: "under_500k", label: "Under ₹500k" },
+                    { id: "500k_1000k", label: "₹500k - ₹1,000k" },
+                    { id: "1000k_1500k", label: "₹1,000k - ₹1,500k" },
+                    { id: "1500k_plus", label: "₹1,500k+" },
                   ].map((range) => (
-                    <label key={range.id} className="flex items-center gap-2.5 cursor-pointer select-none">
+                    <label
+                      key={range.id}
+                      className="flex items-center gap-2.5 cursor-pointer select-none"
+                    >
                       <input
                         type="checkbox"
                         checked={filters.salaryRange.includes(range.id)}
-                        onChange={() => handleFilterChange('salaryRange', range.id)}
+                        onChange={() =>
+                          handleFilterChange("salaryRange", range.id)
+                        }
                         className="sr-only peer"
                       />
                       <div className="w-4 h-4 rounded bg-[#111F19]/[0.05] border border-white/20 peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-cyan-400 peer-checked:border-[#22C55E]/70 flex items-center justify-center transition-all">
@@ -494,7 +552,9 @@ export function Jobs() {
                           <CheckCircle2 className="w-3 h-3 text-neutral-950 stroke-[3]" />
                         )}
                       </div>
-                      <span className="text-xs text-[#9AAEA3]">{range.label}</span>
+                      <span className="text-xs text-[#9AAEA3]">
+                        {range.label}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -506,12 +566,15 @@ export function Jobs() {
                   Work Mode
                 </span>
                 <div className="space-y-2">
-                  {['On-site', 'Hybrid', 'Remote'].map((mode) => (
-                    <label key={mode} className="flex items-center gap-2.5 cursor-pointer select-none">
+                  {["On-site", "Hybrid", "Remote"].map((mode) => (
+                    <label
+                      key={mode}
+                      className="flex items-center gap-2.5 cursor-pointer select-none"
+                    >
                       <input
                         type="checkbox"
                         checked={filters.mode.includes(mode)}
-                        onChange={() => handleFilterChange('mode', mode)}
+                        onChange={() => handleFilterChange("mode", mode)}
                         className="sr-only peer"
                       />
                       <div className="w-4 h-4 rounded bg-[#111F19]/[0.05] border border-white/20 peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-cyan-400 peer-checked:border-[#22C55E]/70 flex items-center justify-center transition-all">
@@ -532,19 +595,25 @@ export function Jobs() {
                 </span>
                 <div className="space-y-2">
                   {[
-                    { id: 'TECHNOLOGY_SOFTWARE', label: 'Software Engineering' },
-                    { id: 'CREATIVE_MEDIA', label: 'Design' },
-                    { id: 'MARKETING', label: 'Marketing' },
-                    { id: 'HEALTHCARE', label: 'Healthcare' },
-                    { id: 'BUSINESS_OPERATIONS', label: 'Business Operations' },
-                    { id: 'FINANCE', label: 'Finance' },
-                    { id: 'OTHER', label: 'Other' },
+                    {
+                      id: "TECHNOLOGY_SOFTWARE",
+                      label: "Software Engineering",
+                    },
+                    { id: "CREATIVE_MEDIA", label: "Design" },
+                    { id: "MARKETING", label: "Marketing" },
+                    { id: "HEALTHCARE", label: "Healthcare" },
+                    { id: "BUSINESS_OPERATIONS", label: "Business Operations" },
+                    { id: "FINANCE", label: "Finance" },
+                    { id: "OTHER", label: "Other" },
                   ].map((cat) => (
-                    <label key={cat.id} className="flex items-center gap-2.5 cursor-pointer select-none">
+                    <label
+                      key={cat.id}
+                      className="flex items-center gap-2.5 cursor-pointer select-none"
+                    >
                       <input
                         type="checkbox"
                         checked={filters.category.includes(cat.id)}
-                        onChange={() => handleFilterChange('category', cat.id)}
+                        onChange={() => handleFilterChange("category", cat.id)}
                         className="sr-only peer"
                       />
                       <div className="w-4 h-4 rounded bg-[#111F19]/[0.05] border border-white/20 peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-cyan-400 peer-checked:border-[#22C55E]/70 flex items-center justify-center transition-all">
@@ -552,7 +621,9 @@ export function Jobs() {
                           <CheckCircle2 className="w-3 h-3 text-neutral-950 stroke-[3]" />
                         )}
                       </div>
-                      <span className="text-xs text-[#9AAEA3]">{cat.label}</span>
+                      <span className="text-xs text-[#9AAEA3]">
+                        {cat.label}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -573,12 +644,17 @@ export function Jobs() {
             {/* Toolbar */}
             <div className="jobs-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#111F19]/80 border border-[#22C55E]/15 backdrop-blur-md">
               <span className="text-xs font-semibold text-[#9AAEA3]">
-                Showing <strong className="text-[#34D399] font-extrabold">{total || jobData.length}</strong>{' '}
-                <span>{total === 1 ? 'job' : 'jobs'} found</span>
+                Showing{" "}
+                <strong className="text-[#34D399] font-extrabold">
+                  {total || jobData.length}
+                </strong>{" "}
+                <span>{total === 1 ? "job" : "jobs"} found</span>
               </span>
 
               <div className="flex items-center gap-2 self-end sm:self-auto">
-                <span className="text-xs text-[#9AAEA3] font-medium">Sort by:</span>
+                <span className="text-xs text-[#9AAEA3] font-medium">
+                  Sort by:
+                </span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -624,7 +700,7 @@ export function Jobs() {
                       <div className="flex items-start gap-4 flex-1">
                         {/* Company Monogram */}
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-950/80 via-[#071d24] to-[#081e36] border border-[#22C55E]/30 flex items-center justify-center text-[#34D399] font-extrabold text-xl shrink-0 shadow-inner group-hover:border-[#22C55E]/70/60 transition-colors">
-                          {job.company?.name ? job.company.name.charAt(0) : 'J'}
+                          {job.company?.name ? job.company.name.charAt(0) : "J"}
                         </div>
 
                         <div className="space-y-2 flex-1">
@@ -643,11 +719,11 @@ export function Jobs() {
                             )}
 
                             <span className="px-2.5 py-0.5 rounded-full bg-[#111F19]/[0.04] border border-[#20352B] text-[#9AAEA3] text-[11px] font-semibold">
-                              {toTitleCase(job.type || 'Full-time')}
+                              {toTitleCase(job.type || "Full-time")}
                             </span>
 
                             <span className="px-2.5 py-0.5 rounded-full bg-[#0D1814]/60 border border-[#22C55E]/30 text-[#34D399] text-[11px] font-semibold">
-                              {toTitleCase(job.category || 'Engineering')}
+                              {toTitleCase(job.category || "Engineering")}
                             </span>
                           </div>
 
@@ -666,7 +742,9 @@ export function Jobs() {
                           {/* Company Name & Verification */}
                           <div className="flex items-center gap-2 text-sm font-semibold text-[#22C55E]/90">
                             <Building2 className="w-4 h-4 text-[#22C55E] shrink-0" />
-                            <span>{job.company?.name || 'Vetted Tech Partner'}</span>
+                            <span>
+                              {job.company?.name || "Vetted Tech Partner"}
+                            </span>
                             <span className="text-[#9AAEA3]">•</span>
                             <span className="text-[#9AAEA3] text-xs font-normal flex items-center gap-1">
                               <ShieldCheck className="w-3.5 h-3.5 text-[#22C55E]" />
@@ -684,7 +762,8 @@ export function Jobs() {
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-950/60 to-teal-950/60 border border-emerald-500/30 text-[#34D399] text-xs font-bold">
                               <IndianRupee className="w-3.5 h-3.5 text-[#22C55E]" />
                               <span>
-                                {job.salaryMin / 1000}k - {job.salaryMax / 1000}k / yr
+                                {job.salaryMin / 1000}k - {job.salaryMax / 1000}
+                                k / yr
                               </span>
                             </div>
 
@@ -699,11 +778,7 @@ export function Jobs() {
                       {/* Right: Actions */}
                       <div className="flex md:flex-col items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-[#20352B] w-full md:w-auto justify-end">
                         <button
-                          onClick={() => {
-                            navigate(`/jobs/search/${job.id}`, {
-                              state: job,
-                            });
-                          }}
+                          onClick={() => handleApply(job)}
                           className="flex-1 md:flex-none h-11 px-6 rounded-xl bg-gradient-to-r from-[#22C55E] to-[#34D399] hover:from-emerald-400 hover:to-cyan-300 text-neutral-950 font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(34,197,94,0.45)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <span>Apply Now</span>
@@ -726,7 +801,7 @@ export function Jobs() {
                             className="h-11 px-3.5 rounded-xl bg-[#111F19]/[0.03] hover:bg-[#22C55E]/15 border border-[#20352B] hover:border-[#22C55E]/30 text-[#9AAEA3] hover:text-[#34D399] transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
                           >
                             <Bookmark className="w-4 h-4" />
-                            <span >Save</span>
+                            <span>Save</span>
                           </button>
                         )}
                       </div>
@@ -738,9 +813,12 @@ export function Jobs() {
               /* Empty State */
               <div className="rounded-3xl bg-[#111F19]/85 border border-[#22C55E]/20 backdrop-blur-2xl p-12 text-center shadow-xl space-y-4">
                 <Briefcase className="w-10 h-10 text-[#22C55E] mx-auto" />
-                <h3 className="text-xl font-bold text-[#F1F5F2]">No jobs match your criteria</h3>
+                <h3 className="text-xl font-bold text-[#F1F5F2]">
+                  No jobs match your criteria
+                </h3>
                 <p className="text-[#9AAEA3] text-sm">
-                  Try adjusting your keywords, work mode, or salary range filters to discover opportunities.
+                  Try adjusting your keywords, work mode, or salary range
+                  filters to discover opportunities.
                 </p>
                 <button
                   onClick={() =>
