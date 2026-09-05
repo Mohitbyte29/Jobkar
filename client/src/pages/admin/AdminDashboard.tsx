@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   AlertCircle,
 } from 'lucide-react';
+import LineMultiple from '@/components/charts/line-multiple';
 
 interface User {
   id: string;
@@ -67,6 +68,23 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const fetchStats = async() => {
+  const result = await axios.get("/api/monthly-stats");
+  return result.data;
+}
+
+useEffect(() => {
+  fetchStats().then((data) => {
+    console.log("Monthly Stats:", data);
+  }).catch((error) => {
+    console.error("Error fetching monthly stats:", error);
+    if(axios.isAxiosError(error)) {
+      console.error("Axios error details:", error.message);
+    }
+  });
+}, []);
+
 
   return (
     <div className="min-h-screen bg-[#07110D] text-[#F1F5F2] selection:bg-[#22C55E]/30 selection:text-[#34D399] font-sans">
@@ -213,47 +231,8 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Area SVG */}
-              <div className="h-64 w-full relative flex items-end">
-                <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 50">
-                  <defs>
-                    <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#22C55E" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M0,50 L0,38 Q20,30 40,32 T70,18 T100,8 L100,50 Z"
-                    fill="url(#userGrad)"
-                  />
-                  <path
-                    d="M0,38 Q20,30 40,32 T70,18 T100,8"
-                    fill="none"
-                    stroke="#22C55E"
-                    strokeWidth="1.5"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <path
-                    d="M0,46 Q25,40 50,38 T75,28 T100,20"
-                    fill="none"
-                    stroke="#34D399"
-                    strokeWidth="1.5"
-                    strokeDasharray="2 2"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              </div>
-              <div className="flex justify-between text-[11px] text-[#9AAEA3] font-bold mt-3 border-t border-[#20352B] pt-3">
-                <span>Jan</span>
-                <span>Feb</span>
-                <span>Mar</span>
-                <span>Apr</span>
-                <span>May</span>
-                <span>Jun</span>
-                <span>Jul</span>
-                <span>Aug</span>
-              </div>
+              <LineMultiple />
+            
             </div>
 
             {/* Category Breakdown (1 col) */}
@@ -399,4 +378,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminDashboard

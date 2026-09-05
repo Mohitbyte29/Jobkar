@@ -3,6 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import Home  from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import VerifyEmail from './pages/VerifyEmail';
+import ResendVerification from './pages/ResendVerification';
 import Categories from './pages/Category';
 import Companies from './pages/company/Companies';
 import { Internships } from './pages/internships/Internships';
@@ -61,6 +63,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/verify-email' element={<VerifyEmail />} />
+        <Route path='/resend-verification' element={<ResendVerification />} />
         <Route path='/categories' element={<Categories />} />
         <Route path='/companies' element={<Companies />} />
         <Route path='/companies/search' element={<CompanyCategories />} />

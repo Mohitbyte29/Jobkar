@@ -117,7 +117,7 @@ const AdminUpperNav = ({ searchType, search }: AdminUpperNavProps) => {
               Root Administrator
             </p>
             <p className="text-[10px] text-[#22C55E] uppercase tracking-wider font-extrabold">
-              Superadmin
+              admin
             </p>
           </div>
           <div className="w-9 h-9 rounded-full bg-[#22C55E]/15 border border-[#22C55E]/30 flex items-center justify-center text-[#22C55E] font-bold text-xs">

@@ -16,6 +16,7 @@ import passport from "passport";
 import "./config/passport.js";
 import { userRoutes } from "./routes/users.routes.js";
 import { experienceRoutes } from "./routes/experience.routes.js";
+import { analyticsRouter } from "./routes/analytics.routes.js";
 
 dotenv.config()
 
@@ -34,6 +35,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 // ! saveUninitialized : false ---> if my session is empty then don't save the session
 
+app.use(analyticsRouter);
 app.use(userRoutes);
 app.use(authRoutes);
 app.use(internshipsRoutes);

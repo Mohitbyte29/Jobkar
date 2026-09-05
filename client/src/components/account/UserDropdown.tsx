@@ -1,5 +1,5 @@
 
-import { Bell, Briefcase, CreditCard, Lock, LogOut, Mail, User, Users } from "lucide-react"
+import { Bell, Briefcase, CreditCard, Lock, LogOut, Mail, User, Users, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,7 +39,7 @@ export const  UserDropdown = () => {
   return (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-        <Avatar className="h-10 w-10 cursor-pointer rounded-[20px]">
+        <Avatar className="h-10 w-10 cursor-pointer rounded-[20px] ring-1 ring-[#20352B] hover:ring-[#22C55E]/50 transition-all">
           <AvatarImage alt="@haydenbleasel" src="https://github.com/haydenbleasel.png" />
           <AvatarFallback>HB</AvatarFallback>
         </Avatar>
@@ -51,9 +51,21 @@ export const  UserDropdown = () => {
             <AvatarImage alt="@haydenbleasel" src="https://github.com/haydenbleasel.png" />
             <AvatarFallback>HB</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col space-y-1">
-            <p className="font-medium text-sm leading-none">{user?.name}</p>
-            <p className="text-muted-foreground text-xs leading-none">{user?.email}</p>
+          <div className="flex flex-col space-y-1 overflow-hidden">
+            <p className="font-medium text-sm leading-none truncate">{user?.name}</p>
+            <p className="text-muted-foreground text-xs leading-none truncate">{user?.email}</p>
+            {user?.isVerified ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 pt-0.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Verified
+              </span>
+            ) : (
+              <Link 
+                to="/resend-verification" 
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 hover:text-amber-300 pt-0.5 hover:underline"
+              >
+                <AlertCircle className="w-3 h-3 text-amber-400" /> Unverified (Verify)
+              </Link>
+            )}
           </div>
         </div>
       </DropdownMenuLabel>

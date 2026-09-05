@@ -245,6 +245,7 @@ model Internship {
 
   @@index([CompanyId], map: "Internship_CompanyId_fkey")
   @@index([employerId], map: "Internship_employerId_fkey")
+  @@map("internships")
 }
 
 model SavedJobs {

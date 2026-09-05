@@ -19,7 +19,6 @@ import {
   Check,
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
-import Footer from '@/components/Footer';
 
 export default function Register() {
   const [name, setName] = useState<string>('');
@@ -47,19 +46,16 @@ export default function Register() {
 
     if (!name.trim() || !email.trim() || !password) {
       setErrorMessage('Please fill in all required fields.');
-      toast.error('Please fill in all required fields.');
       return;
     }
 
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
-      toast.error('Password must be at least 8 characters long.');
       return;
     }
 
     if (!agreeTerms) {
       setErrorMessage('Please agree to the Terms of Service & Privacy Policy.');
-      toast.error('Please agree to the Terms of Service & Privacy Policy.');
       return;
     }
 
@@ -71,17 +67,17 @@ export default function Register() {
         { withCredentials: true }
       );
       console.log('Registration successful:', res.data);
-
       try {
         await axios.patch('/api/me/onboarding', {}, { withCredentials: true });
       } catch (onboardingErr) {
         console.warn('Onboarding patch notice:', onboardingErr);
       }
-
-      toast.success('Account created successfully!');
+      const token = res.data.verificationToken;         
+      toast.success(res.data.message || 'Account created! Please check your Gmail for verification link.', { duration: 4000 });
       setTimeout(() => {
-        navigate('/auth-success');
-      }, 500);
+        navigate(`/verify-email?token=${token}`, {state: { email }});
+      }, 800);
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const msg =
